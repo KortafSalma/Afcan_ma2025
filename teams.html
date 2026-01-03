@@ -1,0 +1,2247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFCON 2025 Teams - Tournament Participants</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #C1272D;
+            --dark-bg: #1a0f0f;
+            --card-bg: rgba(0, 0, 0, 0.4);
+            --border-color: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --accent-green: #00CC66;
+            --accent-gold: #D4AF37;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a0f0f;
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        .bg-morocco {
+            background-color: #1a0f0f;
+            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+            background-attachment: fixed;
+        }
+        
+        /* Navigation Styles */
+        .nav-container {
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 204, 102, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .nav-logo-text {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
+        }
+        
+        .nav-logo-text span {
+            color: #00CC66;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            background: rgba(0, 204, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            color: #00CC66;
+            background: rgba(0, 204, 102, 0.1);
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #00CC66;
+            border-radius: 50%;
+        }
+        
+        .nav-mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-mobile-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: rgba(26, 15, 15, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+                border-bottom: 2px solid #00CC66;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-link {
+                width: 100%;
+                text-align: center;
+                padding: 0.75rem 1rem;
+            }
+        }
+        
+        .team-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 4px 0;
+        }
+        
+        .team-card:hover {
+            background: rgba(0, 0, 0, 0.6);
+            transform: translateX(5px);
+            border-color: #00CC66;
+        }
+        
+        .team-card.selected {
+            background: linear-gradient(135deg, rgba(0, 204, 102, 0.3) 0%, rgba(0, 204, 102, 0.6) 100%);
+            border-color: #00CC66;
+            box-shadow: 0 0 15px rgba(0, 204, 102, 0.4);
+        }
+        
+        .team-flag {
+            width: 40px;
+            height: 30px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .group-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .group-a { background: rgba(0, 204, 102, 0.2); color: var(--accent-green); }
+        .group-b { background: rgba(0, 123, 255, 0.2); color: #007BFF; }
+        .group-c { background: rgba(255, 193, 7, 0.2); color: #FFC107; }
+        .group-d { background: rgba(220, 53, 69, 0.2); color: #DC3545; }
+        .group-e { background: rgba(111, 66, 193, 0.2); color: #6F42C1; }
+        .group-f { background: rgba(253, 126, 20, 0.2); color: #FD7E14; }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .qualified-badge { 
+            background: rgba(0, 204, 102, 0.2); 
+            color: var(--accent-green); 
+            border: 1px solid rgba(0, 204, 102, 0.3);
+        }
+        
+        .eliminated-badge { 
+            background: rgba(220, 53, 69, 0.2); 
+            color: #DC3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--accent-green);
+        }
+        
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+        
+        .performance-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .performance-fill {
+            height: 100%;
+            border-radius: 2px;
+        }
+        
+        .performance-good { background: var(--accent-green); }
+        .performance-average { background: #FFC107; }
+        .performance-poor { background: #DC3545; }
+        
+        .search-container {
+            position: relative;
+        }
+        
+        .search-input {
+            padding-left: 40px;
+            background:var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: rgb(255, 255, 255);
+            border-radius: 25px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #00CC66;
+            box-shadow: 0 0 0 2px rgba(0, 204, 102, 0.2);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            background: transparent;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(0, 204, 102, 0.2);
+            color: #00CC66;
+            border-color: #00CC66;
+        }
+        
+        .round-label {
+            text-align: center;
+            font-family: 'Teko', sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            color: #00CC66;
+            text-transform: uppercase;
+        }
+        
+        ::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #4a080c; 
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+        
+        .team-detail-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .team-detail-card:hover {
+            border-color: #00CC66;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 204, 102, 0.1);
+        }
+        
+        .view-details-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background: #00CC66;
+            color: white;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        
+        .view-details-btn:hover {
+            background: #00b359;
+            transform: translateY(-2px);
+        }
+        
+        .view-details-btn.eliminated {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .view-details-btn.eliminated:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .fifa-rank {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+        
+        .coach-info, .captain-info, .best-afcon {
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .coach-info span:last-child,
+        .captain-info span:last-child,
+        .best-afcon span:last-child {
+            font-weight: 500;
+            color: #00CC66;
+        }
+        
+        .best-afcon span:last-child {
+            color: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-morocco">
+    <!-- Navigation Header -->
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <div class="w-24 h-8 flex items-center justify-center bg-[#00CC66] rounded-full">
+                    <img src="logo1.png" alt="afcon-2025.ma" >
+                </div>
+                <div class="nav-logo-text">
+                    AFCON <span>2025</span>
+                </div>
+            </a>
+            
+            <button class="nav-mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="predictor.html" class="nav-link">
+                    <i class="fas fa-predict mr-2"></i>Predictions
+                </a>
+                <a href="#history" class="nav-link">
+                    <i class="fas fa-history mr-2"></i>Your History
+                </a>
+                <a href="teams.html" class="nav-link active">
+                    <i class="fas fa-users mr-2"></i>Teams
+                </a>
+                <a href="teams-details.html" class="nav-link">
+                    <i class="fas fa-flag mr-2"></i>Team Details (Host)
+                </a>
+                <a href="index.html#portfolio" class="nav-link">
+                    <i class="fas fa-star mr-2"></i>Our Team
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="absolute inset-0 bg-moroccan-pattern opacity-10 pointer-events-none z-0"></div>
+    
+    <!-- Header Section -->
+    <header class="relative z-10 w-full text-center pt-24 pb-8">
+        <div class="flex flex-col items-center justify-center gap-2">
+            <div class="flex items-center gap-4 mb-2">
+                <div class="bg-white px-2 py-1 rounded shadow-md">
+                    <span class="text-[#1a0f0f] font-bold text-xl font-['Teko'] tracking-wide">CAF</span>
+                </div>
+                <div class="h-8 w-[1px] bg-white/50"></div>
+                <div class="text-left leading-tight uppercase font-['Teko'] font-bold text-xl md:text-2xl tracking-wider drop-shadow-md">
+                    <span class="block text-white">Africa Cup</span>
+                    <span class="block text-white">Of Nations</span>
+                    <span class="block text-[#00CC66]">Morocco 25</span>
+                </div>
+            </div>
+            <div class="mt-2">
+                <p class="text-xs text-gray-300">24 National Teams • Knockout Stage • January 2025</p>
+                <div class="flex flex-wrap justify-center gap-4 mt-3">
+                    <div class="bg-green-500/20 text-green-500 px-4 py-2 rounded-lg text-sm">
+                        <span class="font-bold">16</span> Teams in Round of 16
+                    </div>
+                    <div class="bg-red-500/20 text-red-500 px-4 py-2 rounded-lg text-sm">
+                        <span class="font-bold">8</span> Teams Eliminated
+                    </div>
+                    <div class="bg-yellow-500/20 text-yellow-500 px-4 py-2 rounded-lg text-sm">
+                        <span class="font-bold">6</span> Groups
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 flex-grow w-full px-4 py-8 max-w-7xl mx-auto">
+        <!-- Search and Filters -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <div class="search-container w-full md:w-auto md:flex-1">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Search teams..." class="search-input w-full py-3 px-4">
+                </div>
+                
+                <div class="flex flex-wrap gap-2 justify-center mt-4 md:mt-0">
+                    <button class="filter-btn active" data-filter="all">All Teams</button>
+                    <button class="filter-btn" data-filter="qualified">Round of 16</button>
+                    <button class="filter-btn" data-filter="eliminated">Eliminated</button>
+                    <button class="filter-btn" data-filter="group-a">Group A</button>
+                    <button class="filter-btn" data-filter="group-b">Group B</button>
+                    <button class="filter-btn" data-filter="group-c">Group C</button>
+                    <button class="filter-btn" data-filter="group-d">Group D</button>
+                    <button class="filter-btn" data-filter="group-e">Group E</button>
+                    <button class="filter-btn" data-filter="group-f">Group F</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teams Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="teamsContainer">
+            
+            <!-- Group A Teams -->
+            <!-- Morocco -->
+            <div class="team-detail-card" data-group="a" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQbsID6JdLTdIdXSd0AUABj_QHRwfI6a5bsffKjDs1zjEbNFL2wxZhYeZO_a514qEWaVfSZ3dTQPHuYwBVbkjdwaZd6WZoEBpc45rk6zd6g7bkGNhxFa6iYd781TTQzTi1y0WJ2diszansdRrj8VXjQDZPeUOBcksuWwp2b-3iDg7IvuEaUxehZWUjmPFRebnrURIh7mDbkYHw9GHpkzwQ1I1bQcSNrBkpPzPt-xB9yLyr83YjiCTmUB2tt9cmtx2w4_6BFAqygan7" alt="Morocco" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Morocco 🇲🇦</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-a">Group A</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #12</div>
+                        <div class="text-xs text-green-500 font-bold">Host</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Walid Regragui</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Romain Saïss</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (1976)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Quarter-finals</span>
+                        <span>5/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-good" style="width: 50%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn" onclick="window.location.href='team-details.html'">
+                    View Details
+                </button>
+            </div>
+
+            <!-- DR Congo -->
+            <div class="team-detail-card" data-group="a" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze61qqTwylBe3vZeEhcOsopHM3JPCw0EyqnXgEvVB_m0w439rBCUXWGzoj8JzFW35tni0AIxdxlg5Ile6PSq-_cJhkeQF4Zq4t_VVsgH_TOIFudbTtn5oDy7lKdvpjArYvvbVU1z6eXj0WtLhMIiM2JEUiKeWE3BCTjnjs04-nGR2GahkkC1BnoRWrwVG3dzGa8wMzu6hgQFc8dGYLRcBRRvb6gA87_0p9TpAUY0QTmmEGjmQMJv2jlGkXD4nG6G8VlOYbcbcJvWE" alt="DR Congo" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">DR Congo 🇨🇩</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-a">Group A</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #67</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Sébastien Desabre</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Chancel Mbemba</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (1968, 1974)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Group Stage</span>
+                        <span>3/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-poor" style="width: 30%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Zambia -->
+            <div class="team-detail-card" data-group="a" data-status="eliminated">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGQ7MYGhmXwGrbnLXp4tdY0xxvYw1o1rKbwUFDqknOMXghBfQr1pQQlI-f3lx1IPQ_Hm_HRt7H2gVKKgQjyWc_gyK-ZgXXh7oQ3nA_AKhHQDQrLhU8Utr5iL_aJ2c9rORgPz7vP2yTQKt5o6j22hjffnNK9fLvhp6cZ0myWtULoMiEIZx6OmJQJ9MLxHroQnTVS0ydiZ6EO1YQ7aSBbQN7ciNlZ3B92YH-SK5gBuSBP0_Bw4DphWl5c3RlQnZq6z02E3zr" alt="Zambia" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Zambia 🇿🇲</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-a">Group A</span>
+                                <span class="eliminated-badge status-badge">Eliminated</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #84</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Avram Grant</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Patson Daka</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (2012)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Group Stage</span>
+                        <span>4/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 40%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn eliminated">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Tanzania -->
+            <div class="team-detail-card" data-group="a" data-status="eliminated">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJJvmKhcHq1kSljHNHd9SnSR2QLXjPN1Qd66_zIa9bfxrYrf1W0eBT2lKR1nV3MswPp8HauL5K3XBlPWO0snjcbDbGRumCY7jG__AHXZiGfN21l30l3qHZVedkeabNFLMNdUkFKE_KVCKZf1DkxpAJiISyUj0QsSMIWlFzZX4Ve_Qgh1KvBEiXjWrUrG8GojxfvhtqOiI5BCzHw04K8aUV8zTJKZCS4YDk-fIO7hqslBAAn-o71TDziRYvOH2JVH3KU31oV95hZOAm" alt="Tanzania" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Tanzania 🇹🇿</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-a">Group A</span>
+                                <span class="eliminated-badge status-badge">Eliminated</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #121</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Hemed Suleiman</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Mbwana Samatta</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Group Stage</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Group Stage</span>
+                        <span>2/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-poor" style="width: 20%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn eliminated">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Group B Teams -->
+            <!-- Senegal -->
+            <div class="team-detail-card" data-group="b" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVsBSgNnoR7MSvkzh7X-i6rtJrTt5Ec7jmPt9AVswga4ludqMYWTwLdOrM5IwbIUcWVrZwB4F2L715ku5GXe2BI0QqKwQL1EAF_h6kxuASaYnSwfZRt1UFDOLGRgwKhQWYX8sFRDM2s5iy7WZg_JqN703fYM02Kmh6IFk2dEGpYPUmQuP8vh3pSaS02A815oRUzSq_tYjS3nwxRTyyDpMjHp1vCWbFJe1fXXf8tTeLq07F4e-RODnItlVM4OLLAkLJFuO2bCc-M7pA" alt="Senegal" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Senegal 🇸🇳</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-b">Group B</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #20</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Aliou Cissé</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Kalidou Koulibaly</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (2021)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">9</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Champions</span>
+                        <span>9/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-good" style="width: 90%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Cameroon -->
+            <div class="team-detail-card" data-group="b" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsCqVSTmM3jfrQzopBwK-PprjEokJ_qVdTgTqTrVnpeQc6WhiDZNFJmHn24jf7lctMgy_DzXGSNDY4OvcXgb_0T2fakvU_uhS6CPkCzslrBfNV9cXaE3DlW0CTUUh4lVUQHPsY-VSHxOIEZn_2Tcf3ssq8tFp3R8ml9U8ysyhXaPDgQ-JVbT8N3X2J3q5mpft-QX-YjZg_8nO_H6tA5e_6PvRscTruCId9qW8ylSKUjeTqM1quD_bnBJW9ORLubAezOPI5I4g2" alt="Cameroon" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Cameroon 🇨🇲</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-b">Group B</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #46</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Rigobert Song</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Vincent Aboubakar</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (1984, 1988, 2000, 2002, 2017)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: 3rd Place</span>
+                        <span>6/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 60%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Guinea -->
+            <div class="team-detail-card" data-group="b" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7HP9psC_PxQPSnTitl9-y5KxxKTF69pR9uMcu4R-2Kp6-_Xx-5Gykymq5vClUTil2_eeiZQ2J0PEFHDQNnSDQBL6AraK2on-RtYPK-7E7Yyy0b89DH5CMaUV9xN_NQxXxUtr0vJAXGmY4Er36hPKLZ7kgLy97m1hTdLqC1rx0jEKKWkQhNN3UJWAcvIeDqeyMWaInBOGreP54H_jkU6-MWhpvnC2LvMpnE49lmB0Zf9Euy4pAbPL_Hj8JlFrh30GcQwpx5p5jfUhm" alt="Guinea" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Guinea 🇬🇳</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-b">Group B</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #80</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Kaba Diawara</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Naby Keïta</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Runners-up (1976)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Round of 16</span>
+                        <span>4/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 40%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Burundi -->
+            <div class="team-detail-card" data-group="b" data-status="eliminated">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSuymZt_eHbrn2Avun1hVK3VJR4lFflAH_3xZzVCRQJ6rdz_vO5PvnjCJ37apqjUvDf3zn5j9bgwQN7hdrf5H-tG_H4G-UmUQ2D_hgZCFM2DFLUSwjRfqjPpC_SfLSECcUZz-Cp2bClJ9wNMeX5RE07Zoh4XQgs_4s7Wdb-JsriXvU_DWW-NTTZADx1aYQdE2eN2rJAPRZyg9AUS40nfJBqsRfzTYiTihSauCvIsDFCT5wC3LkkyVdU5r66-T8zL3_9LEszAFGh8g6" alt="Burundi" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Burundi 🇧🇮</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-b">Group B</span>
+                                <span class="eliminated-badge status-badge">Eliminated</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #139</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Etienne Ndayiragije</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Saido Berahino</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Group Stage (2019)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">9</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Group Stage</span>
+                        <span>2/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-poor" style="width: 20%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn eliminated">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Group C Teams -->
+            <!-- Nigeria -->
+            <div class="team-detail-card" data-group="c" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzTQnWgV6NPHSfi7oJXvERrE2f01DnMSF46tsSOcMl1Og0iQhj49rgYQ4H_8C8f8lImc5gVLUgl9qGixp9N-g1MvX5Fc3bizcDvNbbvJxEGTrrPTRMC7w6lR0ySzyr12DQ-5mh-t7kKXqAWyfLxU1VwS0L8gGtO1aRZGG5hEoM_LSdO3MvGgB2LqlyXUJwIC80SfWQzw2tIKfBqCedBvE9dttmMvjYcmfPvY1xTL43rhv46a3tQ3fx_PS9sUwsyNt-J4FHRVYQ" alt="Nigeria" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Nigeria 🇳🇬</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-c">Group C</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #42</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>José Peseiro</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>William Troost-Ekong</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (1980, 1994, 2013)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Round of 16</span>
+                        <span>6/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 60%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Egypt -->
+            <div class="team-detail-card" data-group="c" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmOP0bK0u1vVVCCpgLwG-v9Ts7iBum4p2R3H6N8WFYQazdNYqJ9i7sSTp0x_URjE_Y5Zt6DgDYlnmIq0rZ56ZvTgngY69cqfezqPF_wXQdX0bSQcD7tDgzfl2lEcf2OJNQ0I97f4TrlRac7KYNvj4vqvN5PJvsM4Q5msXy5AQ5Fuk3m7OEXc9y4oEvzS6htZLCV3JJw43PP0ZQcH3eAPSpblgrhJXx4S_sCwCMgCk1_T7I8oRh3LtM2hD9CS36Z-R8QO87lYATcUTn" alt="Egypt" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Egypt 🇪🇬</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-c">Group C</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #33</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Rui Vitória</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Mohamed Salah</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (1957, 1959, 1986, 1998, 2006, 2008, 2010)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Runners-up</span>
+                        <span>8/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-good" style="width: 80%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Ghana -->
+            <div class="team-detail-card" data-group="c" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZ1tdkRHHn2OPt1x7W0s2tJel-jgVHY7y8u31l5nDzzW7HvXPDHmxZJ6tF4vC50-VkFcM-qs69LkZfX1f5w8f9KtWf3LpV1brdLcCrUsxLzCr4VWcp_niFKiVK5A4VInK7SUlAPsLk93k4_ihldAJK4m82eLWYrKPP-RPHn9Vzy1rQYOW-NVUMjPr8PrhT6C2Xc-SAQh8mIK6b3B3tgL9S6Nx8hCQFxYoZg90IqYGVgafADxXyyDIZuX1p6-YppXfR-96q3gA4UZ8UBzVQ" alt="Ghana" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Ghana 🇬🇭</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-c">Group C</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #61</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Chris Hughton</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>André Ayew</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (1963, 1965, 1978, 1982)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Group Stage</span>
+                        <span>4/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 40%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Mozambique -->
+            <div class="team-detail-card" data-group="c" data-status="eliminated">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKWgUskXcNIPZYLjwNYnZW9E14cfySDR2cvmVjsUu5ejgjgxZ9BeU51s1w1QZJpamZ3hZ6VjP28xR4sf86uobur7cA06F-1OanqXQxzxPdxAARZH6v2rVxVD0yJMBK_Ty42V__nJsvb0q9yLMKopGVUEnKMR8s8uwDy7n-8h5KbCSj6uT83VJt9x94UqgsK44Fbm06lO4gQUz-MnVri7m7O9I9I8fDOP-F2sZ_jxEYJVblm6J-SUBJHE9yJjgsE7a1yI6ewRWevHTp" alt="Mozambique" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Mozambique 🇲🇿</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-c">Group C</span>
+                                <span class="eliminated-badge status-badge">Eliminated</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #111</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Chiquinho Conde</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Reinildo Mandava</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Group Stage</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Group Stage</span>
+                        <span>3/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-poor" style="width: 30%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn eliminated">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Group D Teams -->
+            <!-- Ivory Coast -->
+            <div class="team-detail-card" data-group="d" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrJNqz6uTQN1tyPFrASXp9XyixdFyhoy1QLs0s-OCj9sFifMY8QwV8PF9l3-X2V7W6Z_tIY1kQ6pMts5u7Yd6rN2x40weflj7av-Q1v1F3y1gqNWaE0SkOj1GcEry7OCX3vTwALs3xtKN3o4hVrhlXogwWETrP_RQEXh8gxXPTmmJZPL5MvNpl8ddBNjMVD1Qg6U6tqKl-QpyObIZKLTgh5AOUx7MqukRXbJOfQU4m8gXGS0Kc8yT8BeZ_vI5k28f9lgqyqQSpU-0EoDw" alt="Ivory Coast" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Ivory Coast 🇨🇮</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-d">Group D</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #49</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Jean-Louis Gasset</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Serge Aurier</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (1992, 2015)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Round of 16</span>
+                        <span>5/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 50%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Algeria -->
+            <div class="team-detail-card" data-group="d" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3jhsh7weDV9lK5Z4Zc33o_IHTV9h26quLCz0y1fhr3q-KNtNc2Q5KtU1UVvjJLE-JtJXSO5qnS1Wgag0U7j-XlzX-5ZPL7O0FJpJ3XlFd_RQ6XWRbUfhnZqU--aIKYcp0m5zFk7qaj-jzMngEVy7E6UJqm6l8XcCb7WpxQ_eNDeOe0Wq4aLXo6RqJ1J9SUC0tKpPkXqjQfA-ZTgZDHyyB-4mlq7bmlUZPxJqyU7PjXwILyOQyQX2FHVlVpNwqV4z6k1P8mtWjp5KjynH4" alt="Algeria" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Algeria 🇩🇿</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-d">Group D</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #43</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Djamel Belmadi</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Riyad Mahrez</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (1990, 2019)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Group Stage</span>
+                        <span>4/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 40%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Angola -->
+            <div class="team-detail-card" data-group="d" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd8fUgpobshsU3lGjDPoV23VtT8P8qq02X2g0EdSGO7Hj2OAGK4urj6YI2OFqit1v6ruc0CyWXH_vnW_bap2c8rhhDQphXfMobggtrhh0elIDQmtC5nNHZ1TZ8i-0pEaNbQq1lmB3vGlKyCExttIn6GpR1zIKmJJROm8Gz5MhOZjUQ0dy8l-qZ6j2c95SqSUt6J23H1Hk1hrkQqEx2TX2yF0nQyhIHJjVUFpVHX3b2UZ-PFOnYzN0-BgGgBtdsBp63w0J8xXNgPjc6" alt="Angola" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Angola 🇦🇴</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-d">Group D</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #117</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Pedro Gonçalves</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Fredy</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Quarter-finals (2008, 2010)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Group Stage</span>
+                        <span>3/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-poor" style="width: 30%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Burkina Faso -->
+            <div class="team-detail-card" data-group="d" data-status="eliminated">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1uJCLLEdVpCs7m7uUOSDLdpArV7aK2E-8XTPgrKOTBqTqyY9G2s6JQefnOoD1yZyTkvJNpL5wO47o_HfE6ogkzYfDfeaGeX5TSZbVKvGvb9wv9UFFpxTqTdDD0izS9JTV7nMFCcP49hJpI5Wr_vwBqgLVmFXsMO2s5oGXX1C3HLP3flR9gn6DTYQyPyJ-9Xp8N4C2Kb0UFu0oAJ92W5emXig3mXEm5hzrjyqv49g4jR-mPmNGU4ESbCMJ_nbA5M4J2H0gHlGXeknzU" alt="Burkina Faso" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Burkina Faso 🇧🇫</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-d">Group D</span>
+                                <span class="eliminated-badge status-badge">Eliminated</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #58</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Hubert Velud</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Bertrand Traoré</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Runners-up (2013)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: 4th Place</span>
+                        <span>5/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 50%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn eliminated">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Group E Teams -->
+            <!-- Tunisia -->
+            <div class="team-detail-card" data-group="e" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0CxAJh__6d1_pN_ajc5OqB30y-ItT5mSWVMMb_-_SsJY_Y6BBQDN7Xx6F2y-7Wfphge-rNtAayEM5vYRN8HOFVPrnN80h2i4RRcH2gN0_6S1J7jE7w1dxCBBGqpsd-XyJgdlXcukv4ejER0M1YIDeS0PYvFZujjMh5Q2U9OmvG6WwOj6o8IQz22w9VbLcHpQkutJMYVVy72oVByvBsttUyiYv2Z4scH1H3-8jvww8A_Gjp0uQ-B4vw3yZ8UXUyBISErQ3I65znhCs" alt="Tunisia" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Tunisia 🇹🇳</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-e">Group E</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #41</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Jalel Kadri</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Youssef Msakni</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (2004)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Quarter-finals</span>
+                        <span>6/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 60%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Mali -->
+            <div class="team-detail-card" data-group="e" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0OQggs_nB2BzqWzUPyKjHWHaG9LrHcdvAdm1OPPbFcK0zNQOZ6v8EKr6R7jsRXOo0uOnRk-RjPqhJ5AeG9mI-BJ-0mKqIt5q_Sspl5AhkF8-4N-VS1KJfvWROXe_2GzJ_K5l6nq-1B3XX_71d9r9Wej_vhHdPn-9nwQuAlwyq5bWmp0ef9fU2fUXK3rdTpFizDDvF10YJEnC5wvPrw8h5hGoxrd45k-ZAVgvN4sQYSUg8G_tOpmUnTyCsqmQl34IniW-g3nPQm65eB3F" alt="Mali" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Mali 🇲🇱</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-e">Group E</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #51</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Éric Chelle</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Hamari Traoré</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Runners-up (1972)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Round of 16</span>
+                        <span>5/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 50%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- South Africa -->
+            <div class="team-detail-card" data-group="e" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCW4rV38mJgVmgCgj3QZ1o1jOhtK4U03cDlAVqPw8PxqkFKcGSBcDNF74Q5D8CqgTgbAn8lWp_roi1WwA9pE8L6oUJEDX0kL48u-MzBv5JjHqk9cZ8ItoTtoQf8NHCpfm-icCz4Q_15JJgjMTT5e9SXb-fE3jfqlsGOYZwOJ7GcFNFswY61kyRvg5au5kfs5oW8JvZExBLXgLcvI8D5B0TuhkhKCDD9xfxMgq41iRg7oV3EdiAHRQa2dVSK_UrhqjFwT6NhwQnQl2LkyhT" alt="South Africa" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">South Africa 🇿🇦</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-e">Group E</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #66</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Hugo Broos</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Ronwen Williams</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Champions (1996)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Quarter-finals</span>
+                        <span>5/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 50%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Namibia -->
+            <div class="team-detail-card" data-group="e" data-status="eliminated">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBh8UknMn-_3kATeT3m4A8NvdfW0Q75kn3Bk_1gJl-ZMxK7tnLDRp2oSkVffk3ChRjfsmg5vFMWZXuqhWjN1t1n9-pVctyepiYf52o9k6IiyzMnre4T1_DNUxH3ss8-29qR9gZQmNRDL5qTZch5hLhOVEMbVvoh0PrLpRlSDg0bb85Z29tQHMAh9ZRxZ4jsIBK3q5sqgIDb-rqXThoN0Y4Xj72pXxPpM9PHiOOwxV0E4eJe2w49aO0PycJTbFpI7IX0nMYeZv5SJpZ_glI" alt="Namibia" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Namibia 🇳🇦</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-e">Group E</span>
+                                <span class="eliminated-badge status-badge">Eliminated</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #115</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Collin Benjamin</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Peter Shalulile</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Group Stage</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Group Stage</span>
+                        <span>3/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-poor" style="width: 30%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn eliminated">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Group F Teams -->
+            <!-- Cape Verde -->
+            <div class="team-detail-card" data-group="f" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdTv0dxrZqDY82NRrt7jBymtO0zWqhDhyo9wvq6cPvCFQAXFvMYVK7-MUX8P0QlwlVdJvxcnjThcC0pNoDDbR5D5nGg1jPxWPYdpHmmxfwXjL44sPyxMJ_Tatf6vYMDd8-vRZK9j_Zt1-ei68aJ8mAkb3XyJg39flMrDLSzP1sTb-8InE4H8_yJ-wCccY4S56F0rGCLid4dbl2o7b68X4TPpJ18IQn7Pl5N6FzxSp8Sdg8d9m2lPjxO9kq_Q6Zk75fApzsc6u4IB0Q" alt="Cape Verde" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Cape Verde 🇨🇻</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-f">Group F</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #73</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Bubista</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Ryan Mendes</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Quarter-finals (2013)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">7</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Round of 16</span>
+                        <span>5/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 50%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Mauritania -->
+            <div class="team-detail-card" data-group="f" data-status="qualified">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLrCFVZTDnlE7YpHDj8fC2JZ7axqQ11Fq2g3XAYEWTlIR2lDl4mJlyngRhOc8r_3evkl72e5OnM7dCCc4mZP_57H2vNlYWhOe-Ryd0lFPLfqahmBd4IruLhLgHq8J5ljB8jJ6IdLJ6nV4z3rg9WhGtqhK6TswXZZRfT6NZwzwvOqTmVjLPFhVBL-P8s_wy9APJh04Qjf1RZtad9r3Kf7rbnPFXjM4M3oKtM7tbrc2h4XHQ8vKwVNGVvij9_Vy3HYn-s7aRDeIMXrSKn1C" alt="Mauritania" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Mauritania 🇲🇷</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-f">Group F</span>
+                                <span class="qualified-badge status-badge">Round of 16</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #105</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Amir Abdou</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Bakary N'Diaye</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Round of 16 (2023)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Round of 16</span>
+                        <span>4/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 40%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Gabon -->
+            <div class="team-detail-card" data-group="f" data-status="eliminated">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCc1sJIC9ifT1Rr-0c2W_T9Udxqph6Jqup2S12alhzzwEfXeA8o6CPoWJUK7r84bQHe7Kqgx01A8KlF5tAwwgAYx_Z9CM6QcQ6HosmsUxsfWgIxJ_q3UJbq7qJVb1KBv1vBdGUDdQvx0VH2uPN2Cq7pZDF6t6NydUtozBjO4SqZXZ9m-1prlRCLl3r7Q3DgtmDudZ51uB7URprd2yDlVXr28Bp8-dYk9R9ZtTnOnApy1W4qtD51Tlnq0wPWsJyfD_BVd6mzx-aXzGcHk" alt="Gabon" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Gabon 🇬🇦</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-f">Group F</span>
+                                <span class="eliminated-badge status-badge">Eliminated</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #86</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Patrice Neveu</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Pierre-Emerick Aubameyang</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Quarter-finals (1996, 2012)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Round of 16</span>
+                        <span>4/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 40%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn eliminated">
+                    View Details
+                </button>
+            </div>
+
+            <!-- Gambia -->
+            <div class="team-detail-card" data-group="f" data-status="eliminated">
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-3">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz28tK2uonvS-oQIVPRPk27R72ehNAn4eW0VhcpfnIHF2Vkql_hcowB8HrzXvEbmwS3pe3Vx7SpUZETU7jGFnm9rJ7oJvXRN2oxx0GtY6yOGiIeT3cX27KlP_1H9fEeY6dUYWH0J-TYYWg4HLhVdPnnW0LZswHTHK3xscPeW-FKZk4ZKBfOJk9aexkP9vx-fI5gjztyn88jGsg7AGjD7g8l9a6O7wzVlGjfUlnEJk7CL4n0-h_hmn7a8AjVHj7x9wIF3FPTk8K23rGe" alt="Gambia" class="team-flag">
+                        <div>
+                            <h3 class="font-bold text-lg">Gambia 🇬🇲</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="group-badge group-f">Group F</span>
+                                <span class="eliminated-badge status-badge">Eliminated</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="fifa-rank">FIFA #118</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="coach-info">
+                        <span>Coach:</span>
+                        <span>Tom Saintfiet</span>
+                    </div>
+                    <div class="captain-info">
+                        <span>Captain:</span>
+                        <span>Musa Barrow</span>
+                    </div>
+                    <div class="best-afcon">
+                        <span>Best AFCON:</span>
+                        <span>Quarter-finals (2023)</span>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">1</div>
+                        <div class="stat-label">Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Wins</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">GF</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">GA</div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span>Last AFCON: Quarter-finals</span>
+                        <span>5/10</span>
+                    </div>
+                    <div class="performance-bar">
+                        <div class="performance-fill performance-average" style="width: 50%"></div>
+                    </div>
+                </div>
+                
+                <button class="view-details-btn eliminated">
+                    View Details
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-gray-800 bg-black/40 py-6 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 flex items-center justify-center bg-[#00CC66] rounded-full">
+                            <span class="font-bold text-black">CAF</span>
+                        </div>
+                        <div class="text-xl font-bold font-['Teko']">
+                            AFCON <span class="text-[#00CC66]">2025</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2">Official AFCON 2025 Tournament Hub</p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center gap-4 md:gap-8">
+                    <div class="text-center md:text-right">
+                        <p class="text-sm text-gray-300 mb-2">Follow the tournament</p>
+                        <div class="flex gap-4 justify-center md:justify-end">
+                            <a href="#" class="text-gray-400 hover:text-[#00CC66] transition">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-[#00CC66] transition">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-[#00CC66] transition">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="text-gray-400 hover:text-[#00CC66] transition">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <p class="text-xs text-gray-400">
+                            © 2025 CAF Africa Cup of Nations. All rights reserved.<br>
+                            This is a fan-made project. Not affiliated with CAF.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile navigation toggle
+        document.getElementById('mobileToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('active');
+            });
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                const teams = document.querySelectorAll('.team-detail-card');
+                
+                teams.forEach(team => {
+                    if (filter === 'all') {
+                        team.style.display = 'block';
+                    } else if (filter === 'qualified') {
+                        if (team.getAttribute('data-status') === 'qualified') {
+                            team.style.display = 'block';
+                        } else {
+                            team.style.display = 'none';
+                        }
+                    } else if (filter === 'eliminated') {
+                        if (team.getAttribute('data-status') === 'eliminated') {
+                            team.style.display = 'block';
+                        } else {
+                            team.style.display = 'none';
+                        }
+                    } else {
+                        if (team.getAttribute('data-group') === filter.split('-')[1]) {
+                            team.style.display = 'block';
+                        } else {
+                            team.style.display = 'none';
+                        }
+                    }
+                });
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const teams = document.querySelectorAll('.team-detail-card');
+            
+            teams.forEach(team => {
+                const teamName = team.querySelector('h3').textContent.toLowerCase();
+                if (teamName.includes(searchTerm)) {
+                    team.style.display = 'block';
+                } else {
+                    team.style.display = 'none';
+                }
+            });
+        });
+
+        // View details button functionality
+        document.querySelectorAll('.view-details-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const teamName = this.closest('.team-detail-card').querySelector('h3').textContent;
+                alert(`More details about ${teamName} will be displayed here. This would navigate to a detailed team page.`);
+                // In a real implementation, this would redirect to a team details page
+                // window.location.href = `team-details.html?team=${teamName}`;
+            });
+        });
+    </script>
+</body>
+</html>

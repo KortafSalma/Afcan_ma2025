@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Details - AFCON Predictor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-red: #C1272D;
+            --dark-bg: #120808;
+            --card-bg: #1a0f0f;
+            --border-color: #2d1b1c;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --accent-green: #00CC66;
+            --accent-gold: #D4AF37;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Team Header */
+        .team-header-bg {
+            background: linear-gradient(135deg, rgba(193, 39, 45, 0.2) 0%, rgba(18, 8, 8, 1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .team-header-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+            opacity: 0.1;
+            pointer-events: none;
+        }
+        
+        /* Custom Card */
+        .custom-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Player Table */
+        .player-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .player-table th {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .player-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .player-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .position-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .position-gk { background: rgba(212, 175, 55, 0.2); color: var(--accent-gold); }
+        .position-df { background: rgba(0, 204, 102, 0.2); color: var(--accent-green); }
+        .position-mf { background: rgba(0, 123, 255, 0.2); color: #007BFF; }
+        .position-fw { background: rgba(193, 39, 45, 0.2); color: var(--primary-red); }
+        
+        /* Progress Bars */
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-green);
+            border-radius: 3px;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        /* Match Card */
+        .match-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .match-card:hover {
+            border-color: var(--accent-green);
+            transform: translateY(-2px);
+        }
+        
+        /* Social Media Links */
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background: rgba(193, 39, 45, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .player-table {
+                font-size: 0.875rem;
+            }
+            
+            .player-table td, .player-table th {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation (Same as above, can be included separately) -->
+    <nav class="navbar sticky top-0 z-50 bg-gray-900/90 backdrop-blur-sm border-b border-gray-800">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4" >
+                    <a href="index.html" class="nav-logo">
+                    <div class="w-24 h-10 bg-red-600 rounded-full flex items-center justify-center">
+                        <img src="logo1.png" alt="AFCON-Logo.ma">
+                    </div>
+                    <div class="text-xl font-bold font-teko">
+                        AFCON <span class="text-red-500">2025</span>
+                    </div>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-white transition">Home</a>
+                    <a href="predictor.html" class="text-gray-300 hover:text-white transition">Predictor</a>
+                    <a href="teams.html" class="text-gray-300 hover:text-white transition">Teams</a>
+                    <a href="teams-details.html" class="text-green-500 font-semibold">Team Details (Host)</a>
+                    <a href="index.html#portfolio" class="text-gray-300 hover:text-white transition">Our Team</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-yellow-500 rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Team Details Content -->
+    <div class="container mx-auto px-4 py-8 mt-4">
+        <!-- Team Header -->
+        <div class="team-header-bg rounded-2xl p-8 mb-8">
+            <div class="relative z-10">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="flex items-center space-x-6 mb-6 md:mb-0">
+                        <div class="text-6xl">🇲🇦</div>
+                        <div>
+                            <h1 class="text-4xl md:text-5xl font-bold mb-2">Morocco</h1>
+                            <div class="flex items-center space-x-4">
+                                <span class="px-3 py-1 bg-gray-800 rounded-full text-sm">Group A</span>
+                                <span class="px-3 py-1 bg-gray-800 rounded-full text-sm">FIFA #12</span>
+                                <span class="px-3 py-1 bg-red-500/20 text-red-500 rounded-full text-sm">MAR</span>
+                                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-500 rounded-full text-sm">Captain: Romain Saïss</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="custom-card p-6 min-w-[300px]">
+                        <h3 class="text-lg font-bold mb-4">AFCON 2025 Group Stage Stats</h3>
+                        <div class="grid grid-cols-4 gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">7</div>
+                                <div class="text-sm text-gray-400">Points</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">2</div>
+                                <div class="text-sm text-gray-400">Wins</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">5</div>
+                                <div class="text-sm text-gray-400">GF</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold">1</div>
+                                <div class="text-sm text-gray-400">GA</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Team Overview -->
+                <div class="custom-card p-6">
+                    <h2 class="text-2xl font-bold mb-6">Team Overview</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-bold mb-4 text-red-500">Team Details</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between py-2 border-b border-gray-800">
+                                    <span class="text-gray-400">Coach</span>
+                                    <span class="font-medium">Walid Regragui</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b border-gray-800">
+                                    <span class="text-gray-400">Captain</span>
+                                    <span class="font-medium">Romain Saïss</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b border-gray-800">
+                                    <span class="text-gray-400">Best AFCON Finish</span>
+                                    <span class="font-medium">Champions (1976)</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b border-gray-800">
+                                    <span class="text-gray-400">AFCON Appearances</span>
+                                    <span class="font-medium">19</span>
+                                </div>
+                                <div class="flex justify-between py-2 border-b border-gray-800">
+                                    <span class="text-gray-400">Best Player</span>
+                                    <span class="font-medium">Achraf Hakimi</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6">
+                                <h4 class="text-lg font-bold mb-3 text-red-500">Social Media & Links</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <a href="https://www.frmf.ma/" target="_blank" class="social-link">
+                                        <i class="fas fa-globe"></i>
+                                        <span>Official Website</span>
+                                    </a>
+                                    <a href="https://twitter.com/FRMFOFFICIEL" target="_blank" class="social-link">
+                                        <i class="fab fa-twitter"></i>
+                                        <span>Twitter</span>
+                                    </a>
+                                    <a href="https://www.instagram.com/frmfofficiel/" target="_blank" class="social-link">
+                                        <i class="fab fa-instagram"></i>
+                                        <span>Instagram</span>
+                                    </a>
+                                    <a href="https://www.facebook.com/FRMFOFFICIEL" target="_blank" class="social-link">
+                                        <i class="fab fa-facebook"></i>
+                                        <span>Facebook</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-bold mb-4 text-red-500">AFCON 2025 Performance</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span>Group Stage Progress</span>
+                                        <span>100% (Qualified)</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span>Championship Odds</span>
+                                        <span class="text-green-500">+350 (3rd Favorite)</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill bg-yellow-500" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h4 class="text-lg font-bold mb-2 text-red-500">AFCON History</h4>
+                                    <p class="text-sm text-gray-300 mb-2">
+                                        Morocco won their only AFCON title in 1976. They finished as runners-up in 2004 and have reached the semi-finals 4 times (1986, 1988, 2017, 2019).
+                                    </p>
+                                    <p class="text-sm text-gray-300">
+                                        In AFCON 2025, Morocco topped Group A with 7 points (2 wins, 1 draw) and advanced to the Round of 16 as one of the tournament favorites.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Squad Players -->
+                <div class="custom-card p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold">AFCON 2025 Squad (27 Players)</h2>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 bg-gray-800 rounded-lg text-sm">All Players</button>
+                            <button class="px-3 py-1 bg-red-500/20 text-red-500 rounded-lg text-sm">Key Players</button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="player-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Player</th>
+                                    <th>Position</th>
+                                    <th>Club</th>
+                                    <th>Age</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-medium">1</td>
+                                    <td class="font-medium">Yassine Bounou</td>
+                                    <td><span class="position-badge position-gk">GK</span></td>
+                                    <td class="text-gray-400">Al Hilal (KSA)</td>
+                                    <td>32</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">2</td>
+                                    <td class="font-medium">Achraf Hakimi</td>
+                                    <td><span class="position-badge position-df">DF</span></td>
+                                    <td class="text-gray-400">Paris Saint-Germain (FRA)</td>
+                                    <td>25</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">3</td>
+                                    <td class="font-medium">Noussair Mazraoui</td>
+                                    <td><span class="position-badge position-df">DF</span></td>
+                                    <td class="text-gray-400">Bayern Munich (GER)</td>
+                                    <td>26</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">4</td>
+                                    <td class="font-medium">Sofyan Amrabat</td>
+                                    <td><span class="position-badge position-mf">MF</span></td>
+                                    <td class="text-gray-400">Manchester United (ENG)</td>
+                                    <td>27</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">5</td>
+                                    <td class="font-medium">Nayef Aguerd</td>
+                                    <td><span class="position-badge position-df">DF</span></td>
+                                    <td class="text-gray-400">West Ham United (ENG)</td>
+                                    <td>27</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">6</td>
+                                    <td class="font-medium">Romain Saïss (C)</td>
+                                    <td><span class="position-badge position-df">DF</span></td>
+                                    <td class="text-gray-400">Al Sadd (QAT)</td>
+                                    <td>34</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">7</td>
+                                    <td class="font-medium">Hakim Ziyech</td>
+                                    <td><span class="position-badge position-mf">MF</span></td>
+                                    <td class="text-gray-400">Galatasaray (TUR)</td>
+                                    <td>30</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">8</td>
+                                    <td class="font-medium">Azzedine Ounahi</td>
+                                    <td><span class="position-badge position-mf">MF</span></td>
+                                    <td class="text-gray-400">Olympique Marseille (FRA)</td>
+                                    <td>23</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">9</td>
+                                    <td class="font-medium">Youssef En-Nesyri</td>
+                                    <td><span class="position-badge position-fw">FW</span></td>
+                                    <td class="text-gray-400">Sevilla (ESP)</td>
+                                    <td>26</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">10</td>
+                                    <td class="font-medium">Amine Harit</td>
+                                    <td><span class="position-badge position-mf">MF</span></td>
+                                    <td class="text-gray-400">Olympique Marseille (FRA)</td>
+                                    <td>26</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">11</td>
+                                    <td class="font-medium">Tarik Tissoudali</td>
+                                    <td><span class="position-badge position-fw">FW</span></td>
+                                    <td class="text-gray-400">Gent (BEL)</td>
+                                    <td>30</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">12</td>
+                                    <td class="font-medium">Munir El Kajoui</td>
+                                    <td><span class="position-badge position-gk">GK</span></td>
+                                    <td class="text-gray-400">Al Wehda (KSA)</td>
+                                    <td>33</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">13</td>
+                                    <td class="font-medium">Ilias Chair</td>
+                                    <td><span class="position-badge position-mf">MF</span></td>
+                                    <td class="text-gray-400">Queens Park Rangers (ENG)</td>
+                                    <td>26</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">14</td>
+                                    <td class="font-medium">Zakaria Aboukhlal</td>
+                                    <td><span class="position-badge position-fw">FW</span></td>
+                                    <td class="text-gray-400">Toulouse (FRA)</td>
+                                    <td>24</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">15</td>
+                                    <td class="font-medium">Samy Mmaee</td>
+                                    <td><span class="position-badge position-df">DF</span></td>
+                                    <td class="text-gray-400">Ferencváros (HUN)</td>
+                                    <td>26</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">16</td>
+                                    <td class="font-medium">Abdelhamid Sabiri</td>
+                                    <td><span class="position-badge position-mf">MF</span></td>
+                                    <td class="text-gray-400">Al Fayha (KSA)</td>
+                                    <td>27</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">17</td>
+                                    <td class="font-medium">Sofiane Boufal</td>
+                                    <td><span class="position-badge position-mf">MF</span></td>
+                                    <td class="text-gray-400">Al Rayyan (QAT)</td>
+                                    <td>30</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">18</td>
+                                    <td class="font-medium">Jawad El Yamiq</td>
+                                    <td><span class="position-badge position-df">DF</span></td>
+                                    <td class="text-gray-400">Real Valladolid (ESP)</td>
+                                    <td>32</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">19</td>
+                                    <td class="font-medium">Youssef El Arabi</td>
+                                    <td><span class="position-badge position-fw">FW</span></td>
+                                    <td class="text-gray-400">Olympiacos (GRE)</td>
+                                    <td>36</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-medium">20</td>
+                                    <td class="font-medium">Ayoub El Kaabi</td>
+                                    <td><span class="position-badge position-fw">FW</span></td>
+                                    <td class="text-gray-400">Hatayspor (TUR)</td>
+                                    <td>30</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Matches - AFCON 2025 -->
+                <div class="custom-card p-6">
+                    <h2 class="text-2xl font-bold mb-6">AFCON 2025 Matches</h2>
+                    <div class="space-y-4">
+                        <!-- Round of 16 Match -->
+                        <div class="match-card">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-center">
+                                        <div class="text-sm text-gray-400">Jan 04</div>
+                                        <div class="text-xs text-gray-500">17:00</div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="text-lg font-medium">Morocco</div>
+                                        <div class="text-sm text-gray-400">vs</div>
+                                        <div class="text-lg font-medium">Tanzania</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <span class="px-3 py-1 rounded text-sm bg-green-500/20 text-green-500">W</span>
+                                    <div class="text-xl font-bold">3-0</div>
+                                    <span class="text-sm text-gray-400">Round of 16</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-sm text-gray-400">
+                                Scorers: En-Nesyri (23'), Ziyech (51'), Hakimi (67')
+                            </div>
+                        </div>
+                        
+                        <!-- Group Stage Match 3 -->
+                        <div class="match-card">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-center">
+                                        <div class="text-sm text-gray-400">Dec 31</div>
+                                        <div class="text-xs text-gray-500">20:00</div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="text-lg font-medium">Morocco</div>
+                                        <div class="text-sm text-gray-400">vs</div>
+                                        <div class="text-lg font-medium">DR Congo</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <span class="px-3 py-1 rounded text-sm bg-green-500/20 text-green-500">W</span>
+                                    <div class="text-xl font-bold">2-0</div>
+                                    <span class="text-sm text-gray-400">Group A</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-sm text-gray-400">
+                                Scorers: Ziyech (15' pen), En-Nesyri (72')
+                            </div>
+                        </div>
+                        
+                        <!-- Group Stage Match 2 -->
+                        <div class="match-card">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-center">
+                                        <div class="text-sm text-gray-400">Dec 27</div>
+                                        <div class="text-xs text-gray-500">20:00</div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="text-lg font-medium">Morocco</div>
+                                        <div class="text-sm text-gray-400">vs</div>
+                                        <div class="text-lg font-medium">Zambia</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <span class="px-3 py-1 rounded text-sm bg-yellow-500/20 text-yellow-500">D</span>
+                                    <div class="text-xl font-bold">1-1</div>
+                                    <span class="text-sm text-gray-400">Group A</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-sm text-gray-400">
+                                Scorer: Hakimi (33')
+                            </div>
+                        </div>
+                        
+                        <!-- Group Stage Match 1 -->
+                        <div class="match-card">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-center">
+                                        <div class="text-sm text-gray-400">Dec 23</div>
+                                        <div class="text-xs text-gray-500">17:00</div>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="text-lg font-medium">Morocco</div>
+                                        <div class="text-sm text-gray-400">vs</div>
+                                        <div class="text-lg font-medium">Tanzania</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <span class="px-3 py-1 rounded text-sm bg-green-500/20 text-green-500">W</span>
+                                    <div class="text-xl font-bold">3-0</div>
+                                    <span class="text-sm text-gray-400">Group A</span>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-sm text-gray-400">
+                                Scorers: En-Nesyri (12', 45+1'), Ziyech (61')
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-8">
+                <!-- Make Prediction -->
+                <div class="custom-card p-6">
+                    <h2 class="text-2xl font-bold mb-6">Your Prediction</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Predicted Finish</label>
+                            <select class="w-full px-4 py-3 bg-gray-900 border border-gray-800 rounded-lg">
+                                <option>Group Stage</option>
+                                <option>Round of 16</option>
+                                <option>Quarter-Finals</option>
+                                <option>Semi-Finals</option>
+                                <option>Runner-Up</option>
+                                <option selected>Champion</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Confidence</label>
+                            <div class="flex items-center space-x-2">
+                                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-800">
+                                    <i class="fas fa-star text-yellow-500"></i>
+                                </button>
+                                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-800">
+                                    <i class="fas fa-star text-yellow-500"></i>
+                                </button>
+                                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-800">
+                                    <i class="fas fa-star text-yellow-500"></i>
+                                </button>
+                                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-800">
+                                    <i class="fas fa-star text-gray-600"></i>
+                                </button>
+                                <button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-800">
+                                    <i class="fas fa-star text-gray-600"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="w-full py-3 bg-red-600 hover:bg-red-700 rounded-lg font-bold transition">
+                            Save Prediction
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Team Statistics -->
+                <div class="custom-card p-6">
+                    <h2 class="text-2xl font-bold mb-6">Team Statistics</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Attack Rating</span>
+                                <span>8.5/10</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Defense Rating</span>
+                                <span>8.2/10</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 82%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Midfield Control</span>
+                                <span>8.7/10</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 87%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Overall Strength</span>
+                                <span class="text-green-500">8.5/10</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill bg-green-500" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <h4 class="text-lg font-bold mb-2 text-red-500">Key Strengths</h4>
+                            <ul class="space-y-1 text-sm text-gray-300">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-500 mr-2"></i>
+                                    Strong defense with European experience
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-500 mr-2"></i>
+                                    Creative midfield with Ziyech and Amrabat
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-500 mr-2"></i>
+                                    World Cup 2022 semi-finalists momentum
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check text-green-500 mr-2"></i>
+                                    Home advantage as tournament hosts
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AFCON History -->
+                <div class="custom-card p-6">
+                    <h2 class="text-2xl font-bold mb-6">AFCON History</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="font-bold text-lg text-red-500">Achievements</h4>
+                            <ul class="space-y-2 mt-2 text-sm">
+                                <li class="flex justify-between">
+                                    <span>🏆 Champions</span>
+                                    <span class="text-yellow-500">1976</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span>🥈 Runners-up</span>
+                                    <span class="text-gray-400">2004</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span>🥉 Semi-finals</span>
+                                    <span class="text-gray-400">1986, 1988, 2017, 2019</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-bold text-lg text-red-500">Recent Performance</h4>
+                            <ul class="space-y-2 mt-2 text-sm">
+                                <li class="flex justify-between">
+                                    <span>AFCON 2023</span>
+                                    <span class="text-gray-400">Quarter-finals</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span>AFCON 2021</span>
+                                    <span class="text-gray-400">Quarter-finals</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span>AFCON 2019</span>
+                                    <span class="text-yellow-500">Semi-finals</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span>AFCON 2017</span>
+                                    <span class="text-yellow-500">Semi-finals</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Team prediction functionality
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', function() {
+                console.log('Prediction updated:', this.value);
+            });
+        });
+        
+        // Star rating functionality
+        const stars = document.querySelectorAll('.fa-star');
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                stars.forEach((s, i) => {
+                    if(i <= index) {
+                        s.classList.remove('text-gray-600');
+                        s.classList.add('text-yellow-500');
+                    } else {
+                        s.classList.remove('text-yellow-500');
+                        s.classList.add('text-gray-600');
+                    }
+                });
+            });
+        });
+        
+        // Save prediction button
+        document.querySelector('button.bg-red-600').addEventListener('click', function() {
+            const finish = document.querySelector('select').value;
+            const confidence = document.querySelectorAll('.fa-star.text-yellow-500').length;
+            
+            alert(`Prediction saved!\nFinish: ${finish}\nConfidence: ${confidence}/5 stars`);
+            
+            // Add animation
+            this.classList.add('animate-pulse');
+            setTimeout(() => this.classList.remove('animate-pulse'), 500);
+        });
+    </script>
+</body>
+</html>

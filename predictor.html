@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AFCON 2025 Full Tournament Bracket - Predictor</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a0f0f;
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .bg-morocco {
+            background-color: #1a0f0f;
+            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+            background-attachment: fixed;
+        }
+        
+        /* Navigation Styles */
+        .nav-container {
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 204, 102, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .nav-logo-text {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
+        }
+        
+        .nav-logo-text span {
+            color: #00CC66;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            background: rgba(0, 204, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            color: #00CC66;
+            background: rgba(0, 204, 102, 0.1);
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #00CC66;
+            border-radius: 50%;
+        }
+        
+        .nav-mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-mobile-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: rgba(26, 15, 15, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+                border-bottom: 2px solid #00CC66;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-link {
+                width: 100%;
+                text-align: center;
+                padding: 0.75rem 1rem;
+            }
+        }
+        
+        /* Saved Predictions Panel */
+        .saved-predictions-panel {
+            position: fixed;
+            top: 120px;
+            left: 20px;
+            width: 320px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 204, 102, 0.3);
+            border-radius: 12px;
+            z-index: 999;
+            padding: 16px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+        }
+        
+        .saved-predictions-panel.active {
+            transform: translateX(0);
+        }
+        
+        .saved-predictions-toggle {
+            position: fixed;
+            top: 120px;
+            left: 0;
+            background: rgba(0, 204, 102, 0.9);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 0 12px 12px 0;
+            cursor: pointer;
+            z-index: 1000;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .saved-predictions-toggle:hover {
+            background: #00CC66;
+            padding-left: 20px;
+        }
+        
+        .prediction-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .prediction-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .prediction-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .prediction-champion {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(212, 175, 55, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+        
+        .team-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            min-width: 160px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 4px 0;
+        }
+        
+        .team-box:hover {
+            background: rgba(0, 0, 0, 0.6);
+            transform: translateX(5px);
+            border-color: #00CC66;
+        }
+        
+        .team-box.selected {
+            background: linear-gradient(135deg, rgba(0, 204, 102, 0.3) 0%, rgba(0, 204, 102, 0.6) 100%);
+            border-color: #00CC66;
+            box-shadow: 0 0 15px rgba(0, 204, 102, 0.4);
+        }
+        
+        .team-box.locked {
+            cursor: default;
+            opacity: 0.9;
+        }
+        
+        .team-box.locked:hover {
+            transform: none;
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.4);
+        }
+        
+        .flag-icon {
+            width: 24px;
+            height: 18px;
+            object-fit: cover;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        ::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #4a080c; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00CC66, #D4AF37);
+            transition: width 0.5s ease;
+        }
+        
+        /* Save Animation */
+        @keyframes saveAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .save-animation {
+            animation: saveAnimation 0.5s ease;
+        }
+        
+        /* Trophy Glow */
+        @keyframes trophyGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5)); }
+            100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.9)); }
+        }
+        
+        .trophy-glow {
+            animation: trophyGlow 2s infinite alternate;
+        }
+        
+        /* Bracket Container */
+        .bracket-table {
+            display: table;
+            width: 100%;
+            min-width: 1400px;
+            position: relative;
+        }
+        
+        .bracket-round {
+            display: table-cell;
+            vertical-align: top;
+            position: relative;
+            padding: 0 30px;
+        }
+        
+        /* Match Container */
+        .match-container {
+            margin: 70px 0;
+            position: relative;
+            min-height: 140px;
+        }
+        
+        /* Round Labels */
+        .round-label {
+            text-align: center;
+            font-family: 'Teko', sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            color: #00CC66;
+            text-transform: uppercase;
+        }
+        
+        .final-label {
+            font-size: 28px;
+            color: #D4AF37;
+            margin-top: 80px;
+        }
+        
+        /* Match Info */
+        .match-info {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        /* Empty team box */
+        .empty-team {
+            opacity: 0.3;
+            border-style: dashed;
+        }
+        
+        .empty-team .flag-placeholder {
+            width: 24px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            display: inline-block;
+        }
+        
+        /* Screenshot Modal */
+        .screenshot-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* background: rgba(0, 0, 0, 0.9); */
+            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .screenshot-modal.active {
+            display: flex;
+        }
+        
+        .screenshot-container {
+            background: white;
+            border-radius: 12px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow: auto;
+            position: relative;
+        }
+        
+        .screenshot-buttons {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .screenshot-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-download {
+            background: #00CC66;
+            color: white;
+        }
+        
+        .btn-share {
+            background: #D4AF37;
+            color: black;
+        }
+        
+        .btn-close {
+            background: #c1272d;
+            color: white;
+        }
+        
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            flex-direction: column;
+            color: white;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #00CC66;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-morocco">
+    <!-- Navigation Header -->
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <div class="w-24 h-8 flex items-center justify-center bg-[#00CC66] rounded-full">
+                    <img src="logo1.png" alt="afcon-2025.ma" >
+                </div>
+                <div class="nav-logo-text">
+                    AFCON <span>2025</span>
+                </div>
+            </a>
+            
+            <button class="nav-mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link ">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="predictor.html" class="nav-link active">
+                    <i class="fas fa-predict mr-2"></i>Predictions
+                </a>
+                <a href="#history" class="nav-link">
+                    <i class="fas fa-history mr-2"></i>Your History
+                </a>
+                <a href="teams.html" class="nav-link">
+                    <i class="fas fa-users mr-2"></i>Teams
+                </a>
+                <a href="teams-details.html" class="nav-link">
+                    <i class="fas fa-flag mr-2"></i>Team Details (Host)
+                </a>
+                <a href="index.html#portfolio" class="nav-link">
+                    <i class="fas fa-star mr-2"></i>Our Team
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Saved Predictions Toggle -->
+    <button class="saved-predictions-toggle" id="savedPredictionsToggle">
+        <i class="fas fa-history"></i>
+        <span>Saved Predictions</span>
+    </button>
+    
+    <!-- Saved Predictions Panel -->
+    <div class="saved-predictions-panel" id="savedPredictionsPanel">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-[#00CC66] flex items-center gap-2">
+                <i class="fas fa-save"></i>
+                Saved Predictions
+            </h3>
+            <button id="closeSavedPanel" class="text-white/60 hover:text-white">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div id="savedPredictionsList" class="space-y-3">
+            <p class="text-center text-white/60 py-4">No saved predictions yet</p>
+        </div>
+        
+        <div class="mt-4 pt-4 border-t border-white/10">
+            <button id="clearAllPredictions" class="w-full bg-[#c1272d] hover:bg-[#a02025] text-white py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2">
+                <i class="fas fa-trash"></i>
+                Clear All Saved
+            </button>
+        </div>
+    </div>
+    
+    <!-- Control Panel -->
+    <div class="fixed top-20 right-4 z-50 flex gap-2 bg-black/80 backdrop-blur-md p-3 rounded-lg border border-white/10">
+        <button id="saveBtn" class="bg-[#00CC66] hover:bg-[#00b359] text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2">
+            <i class="fas fa-save"></i>
+            <span>Save</span>
+        </button>
+        <button id="screenshotBtn" class="bg-[#007bff] hover:bg-[#0056b3] text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2">
+            <i class="fas fa-camera"></i>
+            <span>Screenshot</span>
+        </button>
+        <button id="resetBtn" class="bg-[#c1272d] hover:bg-[#a02025] text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2">
+            <i class="fas fa-redo"></i>
+            <span>Reset</span>
+        </button>
+        <button id="shareBtn" class="bg-[#D4AF37] hover:bg-[#b8942a] text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-2">
+            <i class="fas fa-share"></i>
+            <span>Share</span>
+        </button>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="fixed top-16 left-0 right-0 z-40 bg-black/50 backdrop-blur-sm p-2">
+        <div class="container mx-auto">
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-[#00CC66]">YOUR PREDICTIONS</span>
+                <span id="progressText" class="text-xs font-bold">0/15</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Creating screenshot...</p>
+    </div>
+    
+    <!-- Screenshot Modal -->
+    <div class="screenshot-modal" id="screenshotModal">
+        <div class="screenshot-container">
+            <img id="screenshotImage" alt="Screenshot" style="max-width: 100%; display: block;">
+            <div class="screenshot-buttons">
+                <button id="downloadScreenshot" class="btn-download">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button id="shareScreenshot" class="btn-share">
+                    <i class="fas fa-share"></i> Share
+                </button>
+                <button id="closeScreenshot" class="btn-close">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute inset-0 bg-moroccan-pattern opacity-10 pointer-events-none z-0"></div>
+    
+    <header id="home" class="relative z-10 w-full text-center pt-24 pb-8">
+        <div class="flex flex-col items-center justify-center gap-2">
+            <div class="flex items-center gap-4 mb-2">
+                <div class="bg-white px-2 py-1 rounded shadow-md">
+                    <span class="text-[#1a0f0f] font-bold text-xl font-['Teko'] tracking-wide">CAF</span>
+                </div>
+                <div class="h-8 w-[1px] bg-white/50"></div>
+                <div class="text-left leading-tight uppercase font-['Teko'] font-bold text-xl md:text-2xl tracking-wider drop-shadow-md">
+                    <span class="block text-white">Africa Cup</span>
+                    <span class="block text-white">Of Nations</span>
+                    <span class="block text-[#00CC66]">Morocco 25</span>
+                </div>
+            </div>
+            <div class="mt-2">
+                <p class="text-xs text-gray-300">Interactive Predictor • Click teams to make your picks</p>
+                <p id="championText" class="text-sm font-bold text-[#D4AF37] mt-1 hidden">Your Champion: <span id="championName"></span></p>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="relative z-10 flex-grow w-full px-2 py-4 md:py-8 overflow-x-auto">
+        <!-- Desktop Bracket -->
+        <div class="bracket-table" id="bracketContainer">
+            <!-- ========== LEFT SIDE ========== -->
+            
+            <!-- Round of 16 - Left -->
+            <div class="bracket-round" style="width: 250px;">
+                <div class="round-label">ROUND OF 16</div>
+                
+                <!-- Match 1: Mali vs Tunisia -->
+                <div class="match-container">
+                    <div data-match="m1" data-team="MLI" class="team-box">
+                        <img alt="Mali Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4CHdOGFVRiWhQNa53MC-tDdLGFzvesipqdhfezBGSZwTGTTREvuoC40qSK2Oc3SHBiDbFlPWigObmmSuNihlXHjAErLbYBwHG31m-dSHHvn5PksaeW0L6mvYD6Ir5in49nHUA69A7hxKcp6nvYVV7QDUzXPOUhY_oaORoHblR0lSxa2BYh4w5Y50zKjP7iZ5Mlzk90ZjY7pvT_oiBcUSmNOhSZ-uLwIpYeUuKpWSsDk09dAImASd0aJwQPau-7fhFoKwL_xesgPzz"/>
+                        <span class="font-bold">MLI</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div data-match="m1" data-team="TUN" class="team-box">
+                        <img alt="Tunisia Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-zF51CL-0EsymMCataYoqVKzPd9UTrJoecYSuor_7RhYcdMt99v8FpcqlyTJEuAGxTRJDJMMGXXqeAORz7ZlOC9lTmtKYVfJ8wGeXZlZxxIq19TAON7PSKXmS1r5FkxpFMSGMCoqulGE3LLgqv9W1v6EY2Jkpgbf7x842lOaXeVVuh5iRuZ1YU7FqAoiLVoSNrb6r-MzYQIfAUqKZvdu8eOQr2aeVAgEijQxy-NXkSzxgjZpHwY8aeLVahiXkaDyZDpCoktByHW3_"/>
+                        <span class="font-bold">TUN</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div class="match-info">
+                        38 | 03 JAN - 20:00<br/><span class="opacity-75">STADE MOHAMMED V</span>
+                    </div>
+                </div>
+                
+                <!-- Match 2: Senegal vs Sudan -->
+                <div class="match-container">
+                    <div data-match="m2" data-team="SEN" class="team-box">
+                        <img alt="Senegal Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVsBSgNnoR7MSvkzh7X-i6rtJrTt5Ec7jmPt9AVswga4ludqMYWTwLdOrM5IwbIUcWVrZwB4F2L715ku5GXe2BI0QqKwQL1EAF_h6kxuASaYnSwfZRt1UFDOLGRgwKhQWYX8sFRDM2s5iy7WZg_JqN703fYM02Kmh6IFk2dEGpYPUmQuP8vh3pSaS02A815oRUzSq_tYjS3nwxRTyyDpMjHp1vCWbFJe1fXXf8tTeLq07F4e-RODnItlVM4OLLAkLJFuO2bCc-M7pA"/>
+                        <span class="font-bold">SEN</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div data-match="m2" data-team="SDN" class="team-box">
+                        <img alt="Sudan Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAP3RQlbill-zrhAiq1jmITmpWABiHxCraxJvxWBE7lpQfIoSzWFszlmIwwZfo1-M7YKicXrzuFy2eCJED4vh09_SpnPQS89YJ3S_T1R57S1JE4kwYg_vA0u7UXpI1rqvRpm2ecFEK0WFQfarxboxreYmy0jM8xUCWGp-3KNFBKvagTCDu8h-E8DtjuRtkXPULU3F3L0o-l8JhMkOZxl6BlqKpq_W75CJx7hktgsj-bA7T7NlPD2aOWW0-VT6VHwQccqcFP30c5y-rD"/>
+                        <span class="font-bold">SDN</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div class="match-info">
+                        37 | 03 JAN - 17:00<br/><span class="opacity-75">GRAND STADE TANGER</span>
+                    </div>
+                </div>
+                
+                <!-- Match 3: Egypt vs Benin -->
+                <div class="match-container">
+                    <div data-match="m3" data-team="EGY" class="team-box">
+                        <img alt="Egypt Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-UeN93MCDXx1uf6EJNlO9MeD2bcVHltkbZSbcN9qzf5kwHSSB-fG1MExK-EKee7M-MkqxlonFIIGa2iKQNfVLhRxcYR9dff0OgzuUrl7FOXcFCASOqUX9-ENVdfrE4D_ZDL8AlO_Wyp1bMuOqOWuc-1lDsHjpL4qwqShqhTlWmm2H-1R9PN-0CCJD2B1WLkhCMMz4j9Qr48DMDAy5mf7ABTab5L609Fq44-NLS3mEwAwm1FZaSyHyjiZ8Ys50Z_v1XyEawhQRcFrq"/>
+                        <span class="font-bold">EGY</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div data-match="m3" data-team="BEN" class="team-box">
+                        <img alt="Benin Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjDsYSx1WaRcedoksJwkRc9tzYFSe3sYjPMyvfk4HBtXnSgnPjtqKOg7QgZzt3e6MXMSivh7Yh17FkgBg31G8i33F_K9y3gc8rmKcZyCZvoDFmvNGv1dCQ0PKkKrcmw9QgOfqz9w-aFFXxXH-rTVBpeky-uBIpUrcpIA1qmJHOsZdbFwgdOId_IsgXpGQwr03pa8BDhd4w_X7H6AJYwpUSgF90-9IhrBec8t-BEtQIBJ-hsByIrlvkbsR_ZBz3KzaN-uQQg-Mx5yOt"/>
+                        <span class="font-bold">BEN</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div class="match-info">
+                        41 | 05 JAN - 17:00<br/><span class="opacity-75">GRAND STADE AGADIR</span>
+                    </div>
+                </div>
+                
+                <!-- Match 4: Ivory Coast vs Burkina Faso -->
+                <div class="match-container">
+                    <div data-match="m4" data-team="CIV" class="team-box">
+                        <img alt="Ivory Coast Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqdQuEmbh76tUI0mNMlhTRQLtUxISRwrEIaSiUmWAk0whzgVcYn9gLNaFRN_9BxICO_Qi-oGef4weF0DjC1WGBK-Zxo0kfy1sRd3uyooDbiZ9bsdfxQ_2_R6o68fWz0dtabbgbDbU5ul0SWiasmhKK6F60P0I9XzuBQickYCL3KTeXmTgBcpn7eK0DZBrrfSJthYyXTl5-HpvtlIpoD8JjrHu56EzOJhktinbFKQPehQ7yhY_7g73SPlWbuUX3A_TPED-VbF8YriZU"/>
+                        <span class="font-bold">CIV</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div data-match="m4" data-team="BFA" class="team-box">
+                        <img alt="Burkina Faso Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXT1I55PhnU9xb-89sKo7IXc3YlLhwuNhkhLAXfsgliY4ElXJrg1YS42GER4fQgUoruRespziNlJl7jJj1oRxJw8pYum2Y6zUMXORROqVKUJucBfL5jdtQRlW_ZifWU8JQPFIMwEIs8Stf8JgJPJy5FgmOgR1GrAxcdrUbjOhZx4Wjd5mG1OKFRlmzIhDaOiEHk4JwyEGX6bqjrWCIv6Sg1Uv1VZHgnDGwfju2UFYLeZoUmLRFUkwiM6lQisgU5B4L8gdT1uNAt1gk"/>
+                        <span class="font-bold">BFA</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div class="match-info">
+                        44 | 06 JAN - 20:00<br/><span class="opacity-75">GRAND STADE MARRAKECH</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quarter Finals - Left -->
+            <div class="bracket-round" style="width: 250px;">
+                <div class="round-label">QUARTER FINALS</div>
+                
+                <!-- QF 1: Winner of Match 1 vs Winner of Match 2 -->
+                <div class="match-container" style="margin-top: 100px;">
+                    <div id="qf1-team1" class="team-box locked empty-team">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner M1</span>
+                    </div>
+                    <div id="qf1-team2" class="team-box locked empty-team">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner M2</span>
+                    </div>
+                    <div class="match-info">
+                        45 | 09 JAN - 17:00<br/><span class="opacity-75">TANGER</span>
+                    </div>
+                </div>
+                
+                <!-- QF 2: Winner of Match 3 vs Winner of Match 4 -->
+                <div class="match-container" style="margin-top: 140px;">
+                    <div id="qf2-team1" class="team-box locked empty-team">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner M3</span>
+                    </div>
+                    <div id="qf2-team2" class="team-box locked empty-team">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner M4</span>
+                    </div>
+                    <div class="match-info">
+                        48 | 10 JAN - 17:00<br/><span class="opacity-75">AGADIR</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Semi Finals - Left -->
+            <div class="bracket-round" style="width: 250px;">
+                <div class="round-label">SEMI FINALS</div>
+                
+                <!-- SF 1: Winner of QF 1 vs Winner of QF 2 -->
+                <div class="match-container" style="margin-top: 170px;">
+                    <div id="sf1-team1" class="team-box locked empty-team" style="min-width: 180px; padding: 12px 20px;">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold text-lg">Winner QF1</span>
+                    </div>
+                    <div id="sf1-team2" class="team-box locked empty-team" style="min-width: 180px; padding: 12px 20px;">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold text-lg">Winner QF2</span>
+                    </div>
+                    <div class="match-info">
+                        49 | 14 JAN - 18:00<br/><span class="opacity-75">TANGER</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ========== FINAL CENTER ========== -->
+            <div class="bracket-round" style="width: 400px; text-align: center;">
+                <div class="round-label final-label">GRAND FINAL</div>
+                
+                <div class="text-center mb-8">
+                    <div class="text-lg font-bold">52 | 18 JAN - 20:00</div>
+                    <div class="text-sm text-[#00CC66] font-medium">COMPLEXE SPORTIF PRINCE MOULAY ABDELLAH</div>
+                    <div class="text-xs text-white/60">RABAT</div>
+                </div>
+                
+                <!-- Final Teams -->
+                <div class="flex items-center justify-center gap-6 mb-6">
+                    <!-- Final Team 1 -->
+                    <div id="final-team1" class="team-box locked empty-team" style="min-width: 180px; padding: 14px 24px; border-width: 3px;">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold text-xl">Winner SF1</span>
+                    </div>
+                    
+                    <div class="text-xl font-bold text-[#D4AF37]">VS</div>
+                    
+                    <!-- Final Team 2 -->
+                    <div id="final-team2" class="team-box locked empty-team" style="min-width: 180px; padding: 14px 24px; border-width: 3px;">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold text-xl">Winner SF2</span>
+                    </div>
+                </div>
+                
+                <!-- Champion Selection -->
+                <div class="mt-6">
+                    <div id="final-winner-box" class="team-box locked empty-team" style="min-width: 200px; padding: 16px 28px; border: 3px solid #D4AF37; background: rgba(212, 175, 55, 0.1);">
+                        <div class="flag-placeholder"></div>
+                        <span id="final-winner" class="font-bold text-xl">Select Champion</span>
+                    </div>
+                </div>
+                
+                <!-- Trophy -->
+                <div class="relative z-10 mb-8 transform hover:scale-105 transition duration-500 mt-8 flex justify-center items-center">
+                    <div class="absolute inset-0 bg-[#D4AF37]/20 blur-3xl rounded-full"></div>
+                        <img alt="AFCON Trophy" class="h-56 object-contain drop-shadow-2xl relative z-10 trophy-glow mx-auto" src="can.png"/>
+                </div>
+                
+                <!-- Third Place Match -->
+                <div class="mt-8">
+                    <div class="text-sm font-bold tracking-widest text-white/80 mb-3">3rd Place</div>
+                    <div class="flex items-center justify-center gap-4">
+                        <div id="third-team1" class="team-box locked empty-team">
+                            <div class="flag-placeholder"></div>
+                            <span class="font-bold">Loser SF1</span>
+                        </div>
+                        <div class="text-xs text-center">
+                            <span class="block font-bold">51 | 17 JAN - 17:00</span>
+                            <span class="text-white/50">CASABLANCA</span>
+                        </div>
+                        <div id="third-team2" class="team-box locked empty-team">
+                            <div class="flag-placeholder"></div>
+                            <span class="font-bold">Loser SF2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ========== RIGHT SIDE ========== -->
+            
+            <!-- Semi Finals - Right -->
+            <div class="bracket-round" style="width: 250px;">
+                <div class="round-label">SEMI FINALS</div>
+                
+                <!-- SF 2: Winner of QF 3 vs Winner of QF 4 -->
+                <div class="match-container" style="margin-top: 170px;">
+                    <div id="sf2-team1" class="team-box locked empty-team" style="min-width: 180px; padding: 12px 20px;">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold text-lg">Winner QF3</span>
+                    </div>
+                    <div id="sf2-team2" class="team-box locked empty-team" style="min-width: 180px; padding: 12px 20px;">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold text-lg">Winner QF4</span>
+                    </div>
+                    <div class="match-info">
+                        50 | 14 JAN - 21:00<br/><span class="opacity-75">RABAT</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quarter Finals - Right -->
+            <div class="bracket-round" style="width: 250px;">
+                <div class="round-label">QUARTER FINALS</div>
+                
+                <!-- QF 3: Winner of Match 5 vs Winner of Match 6 -->
+                <div class="match-container" style="margin-top: 100px;">
+                    <div id="qf3-team1" class="team-box locked empty-team">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner M5</span>
+                    </div>
+                    <div id="qf3-team2" class="team-box locked empty-team">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner M6</span>
+                    </div>
+                    <div class="match-info">
+                        47 | 09 JAN - 20:00<br/><span class="opacity-75">MARRAKECH</span>
+                    </div>
+                </div>
+                
+                <!-- QF 4: Winner of Match 7 vs Winner of Match 8 -->
+                <div class="match-container" style="margin-top: 140px;">
+                    <div id="qf4-team1" class="team-box locked empty-team">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner M7</span>
+                    </div>
+                    <div id="qf4-team2" class="team-box locked empty-team">
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner M8</span>
+                    </div>
+                    <div class="match-info">
+                        46 | 10 JAN - 20:00<br/><span class="opacity-75">RABAT</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Round of 16 - Right -->
+            <div class="bracket-round" style="width: 250px;">
+                <div class="round-label">ROUND OF 16</div>
+                
+                <!-- Match 5: Algeria vs DR Congo -->
+                <div class="match-container">
+                    <div data-match="m5" data-team="ALG" class="team-box">
+                        <img alt="Algeria Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzdw9SIlq8_JDUOmdOkKubuyrq7revC__2CHcpguLSjBbxxp6Ra-Jr6Cc66vWISl0zsflROqf4nfJosmFYL7YB3ANaSk3e76a7kMY4C9YpRuiECiHBHqDPxOB2J46MDj2U1wJ8jQvUTuW4eVZWwSAOlWSxV3Nxpff7W06uw9lK0qnPOz2a5g4_FH4vFdZmkIZJKEGbLpOkZ1tOfQBckYROxcaFekqLe1J2c2W0K2CiVoD9ue4IFGd_qgMSUKZNVGdSi_ftokF8hOId"/>
+                        <span class="font-bold">ALG</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div data-match="m5" data-team="COD" class="team-box">
+                        <img alt="DR Congo Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze61qqTwylBe3vZeEhcOsopHM3JPCw0EyqnXgEvVB_m0w439rBCUXWGzoj8JzFW35tni0AIxdxlg5Ile6PSq-_cJhkeQF4Zq4t_VVsgH_TOIFudbTtn5oDy7lKdvpjArYvvbVU1z6eXj0WtLhMIiM2JEUiKeWE3BCTjnjs04-nGR2GahkkC1BnoRWrwVG3dzGa8wMzu6hgQFc8dGYLRcBRRvb6gA87_0p9TpAUY0QTmmEGjmQMJv2jlGkXD4nG6G8VlOYbcbcJvWE"/>
+                        <span class="font-bold">COD</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div class="match-info">
+                        43 | 06 JAN - 17:00<br/><span class="opacity-75">PRINCE MOULAY HASSAN</span>
+                    </div>
+                </div>
+                
+                <!-- Match 6: Nigeria vs Mozambique -->
+                <div class="match-container">
+                    <div data-match="m6" data-team="NGA" class="team-box">
+                        <img alt="Nigeria Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-KIMVTVH2_DaaFbR7dlSicHvpuB67XmPqANrfAdncGZv9rbltonBzrJPTOM5-Z8uHhG_ruMioBakDXZP1mrcYZcFCZEv42kNR3vWyDuKQADeWmk1UOxJTsHvrV1L-7WSnP4j7-w8nhvmGgdIzUgPkDUqZ-H-ZlFgnocKsJn7SiOETNru_HN5SuOS8wpWyoT1AjWlz4EnuJN_A2qbOWA9pDs0lhYWFH1jFWzHCE4cIzxPYQu_JysjuzLkeJDFqNqJdJaBs5rkpKyvF"/>
+                        <span class="font-bold">NGA</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div data-match="m6" data-team="MOZ" class="team-box">
+                        <img alt="Mozambique Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7isQ-z-MyUPn4c0l5XIP6zGuylaYMKDsGN6DLCN3rMtDQzPzvew-3Y5dAzeaWruSm_5lTbgSfHBIcwQmYwk5xZUKgQfArGWOc3njRZOemTKHIeAQXz8312-bSQs48ZT9SmFs1VC7M-M5ZwX7j0CaV30fsIw6FPaWzIYnY0AhWUXPqu6HHQ-HQLQQ3cseNG5CROGt6xTN6XkKSdQEVeSzHY9pFkFLfoLs_Wkf2Et79pjMFqLubh6qbRpXZnX-h-KH6WY86Ra5RsXVY"/>
+                        <span class="font-bold">MOZ</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div class="match-info">
+                        42 | 05 JAN - 20:00<br/><span class="opacity-75">COMPLEXE FES</span>
+                    </div>
+                </div>
+                
+                <!-- Match 7: South Africa vs Cameroon -->
+                <div class="match-container">
+                    <div data-match="m7" data-team="RSA" class="team-box">
+                        <img alt="South Africa Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3ZDoi7umSYfWjpi5WGPSsCIfWbie0HCIm7KBdWJD23bEnE9ZRuPG26YEBRUtiscWdyu798LZAy22qIp_gvJ9KFlD3u1HnuhBhZAYa6LOwv8c_eFItuy4YRlD5KC2y_0R2ub549n48Dn3SyF5Ig_daXz4XzZSV_uZS7uyc1Cl6ajYCKihqF3Q4qVAOduJW_We46Zaip2pzvvRFrIjLJUqMCIJYEDhtfOzUR55jTszDqnx_aSgCUupWdKVIoTIHDvCuMSaqr_uS2-I7"/>
+                        <span class="font-bold">RSA</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div data-match="m7" data-team="CMR" class="team-box">
+                        <img alt="Cameroon Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKm6FqE_dz6L6lV_Nylqt3WVvy8p154VRfkRvNBG92HG4HnhFdBNE86GhH5FJc5DsX6FYx844mU61GXdPpAuRNP815c980ikPlUepk5uBP0HkJH6g_VpEfiLyVcaKdjc5fA-csSNQsY-TYSmGc6Zbly9K5_4g23IjU2FT4-XPCyJ9qmMmID-L8dlNemshxOW16rFmTW7B8jTRPjUXj1O5jlcSZtBweMJLPYp0y4Ib5R76tGjCZPFQk8guwBuEEVzSgfi7gis3UDOnU"/>
+                        <span class="font-bold">CMR</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div class="match-info">
+                        40 | 04 JAN - 20:00<br/><span class="opacity-75">AL MEDINA RABAT</span>
+                    </div>
+                </div>
+                
+                <!-- Match 8: Morocco vs Tanzania -->
+                <div class="match-container">
+                    <div data-match="m8" data-team="MAR" class="team-box">
+                        <img alt="Morocco Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQbsID6JdLTdIdXSd0AUABj_QHRwfI6a5bsffKjDs1zjEbNFL2wxZhYeZO_a514qEWaVfSZ3dTQPHuYwBVbkjdwaZd6WZoEBpc45rk6zd6g7bkGNhxFa6iYd781TTQzTi1y0WJ2diszansdRrj8VXjQDZPeUOBcksuWwp2b-3iDg7IvuEaUxehZWUjmPFRebnrURIh7mDbkYHw9GHpkzwQ1I1bQcSNrBkpPzPt-xB9yLyr83YjiCTmUB2tt9cmtx2w4_6BFAqygan7"/>
+                        <span class="font-bold">MAR</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div data-match="m8" data-team="TAN" class="team-box">
+                        <img alt="Tanzania Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJJvmKhcHq1kSljHNHd9SnSR2QLXjPN1Qd66_zIa9bfxrYrf1W0eBT2lKR1nV3MswPp8HauL5K3XBlPWO0snjcbDbGRumCY7jG__AHXZiGfN21l30l3qHZVedkeabNFLMNdUkFKE_KVCKZf1DkxpAJiISyUj0QsSMIWlFzZX4Ve_Qgh1KvBEiXjWrUrG8GojxfvhtqOiI5BCzHw04K8aUV8zTJKZCS4YDk-fIO7hqslBAAn-o71TDziRYvOH2JVH3KU31oV95hZOAm"/>
+                        <span class="font-bold">TAN</span>
+                        <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                    </div>
+                    <div class="match-info">
+                        39 | 04 JAN - 17:00<br/><span class="opacity-75">PRINCE MOULAY ABDELLAH</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="relative z-10 w-full text-center py-6 bg-black/30 backdrop-blur-sm border-t border-white/10 mt-auto">
+        <p class="text-sm font-bold tracking-widest text-white/80 uppercase">All kick-off times are in the local time of Morocco</p>
+    </footer>
+
+    <!-- Font Awesome for Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        // ALL AFCON 2025 TEAMS
+        const allTeams = [
+            { code: 'MLI', name: 'Mali', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB4CHdOGFVRiWhQNa53MC-tDdLGFzvesipqdhfezBGSZwTGTTREvuoC40qSK2Oc3SHBiDbFlPWigObmmSuNihlXHjAErLbYBwHG31m-dSHHvn5PksaeW0L6mvYD6Ir5in49nHUA69A7hxKcp6nvYVV7QDUzXPOUhY_oaORoHblR0lSxa2BYh4w5Y50zKjP7iZ5Mlzk90ZjY7pvT_oiBcUSmNOhSZ-uLwIpYeUuKpWSsDk09dAImASd0aJwQPau-7fhFoKwL_xesgPzz' },
+            { code: 'TUN', name: 'Tunisia', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-zF51CL-0EsymMCataYoqVKzPd9UTrJoecYSuor_7RhYcdMt99v8FpcqlyTJEuAGxTRJDJMMGXXqeAORz7ZlOC9lTmtKYVfJ8wGeXZlZxxIq19TAON7PSKXmS1r5FkxpFMSGMCoqulGE3LLgqv9W1v6EY2Jkpgbf7x842lOaXeVVuh5iRuZ1YU7FqAoiLVoSNrb6r-MzYQIfAUqKZvdu8eOQr2aeVAgEijQxy-NXkSzxgjZpHwY8aeLVahiXkaDyZDpCoktByHW3_' },
+            { code: 'SEN', name: 'Senegal', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAVsBSgNnoR7MSvkzh7X-i6rtJrTt5Ec7jmPt9AVswga4ludqMYWTwLdOrM5IwbIUcWVrZwB4F2L715ku5GXe2BI0QqKwQL1EAF_h6kxuASaYnSwfZRt1UFDOLGRgwKhQWYX8sFRDM2s5iy7WZg_JqN703fYM02Kmh6IFk2dEGpYPUmQuP8vh3pSaS02A815oRUzSq_tYjS3nwxRTyyDpMjHp1vCWbFJe1fXXf8tTeLq07F4e-RODnItlVM4OLLAkLJFuO2bCc-M7pA' },
+            { code: 'SDN', name: 'Sudan', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAP3RQlbill-zrhAiq1jmITmpWABiHxCraxJvxWBE7lpQfIoSzWFszlmIwwZfo1-M7YKicXrzuFy2eCJED4vh09_SpnPQS89YJ3S_T1R57S1JE4kwYg_vA0u7UXpI1rqvRpm2ecFEK0WFQfarxboxreYmy0jM8xUCWGp-3KNFBKvagTCDu8h-E8DtjuRtkXPULU3F3L0o-l8JhMkOZxl6BlqKpq_W75CJx7hktgsj-bA7T7NlPD2aOWW0-VT6VHwQccqcFP30c5y-rD' },
+            { code: 'EGY', name: 'Egypt', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC-UeN93MCDXx1uf6EJNlO9MeD2bcVHltkbZSbcN9qzf5kwHSSB-fG1MExK-EKee7M-MkqxlonFIIGa2iKQNfVLhRxcYR9dff0OgzuUrl7FOXcFCASOqUX9-ENVdfrE4D_ZDL8AlO_Wyp1bMuOqOWuc-1lDsHjpL4qwqShqhTlWmm2H-1R9PN-0CCJD2B1WLkhCMMz4j9Qr48DMDAy5mf7ABTab5L609Fq44-NLS3mEwAwm1FZaSyHyjiZ8Ys50Z_v1XyEawhQRcFrq' },
+            { code: 'BEN', name: 'Benin', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAjDsYSx1WaRcedoksJwkRc9tzYFSe3sYjPMyvfk4HBtXnSgnPjtqKOg7QgZzt3e6MXMSivh7Yh17FkgBg31G8i33F_K9y3gc8rmKcZyCZvoDFmvNGv1dCQ0PKkKrcmw9QgOfqz9w-aFFXxXH-rTVBpeky-uBIpUrcpIA1qmJHOsZdbFwgdOId_IsgXpGQwr03pa8BDhd4w_X7H6AJYwpUSgF90-9IhrBec8t-BEtQIBJ-hsByIrlvkbsR_ZBz3KzaN-uQQg-Mx5yOt' },
+            { code: 'CIV', name: 'Ivory Coast', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqdQuEmbh76tUI0mNMlhTRQLtUxISRwrEIaSiUmWAk0whzgVcYn9gLNaFRN_9BxICO_Qi-oGef4weF0DjC1WGBK-Zxo0kfy1sRd3uyooDbiZ9bsdfxQ_2_R6o68fWz0dtabbgbDbU5ul0SWiasmhKK6F60P0I9XzuBQickYCL3KTeXmTgBcpn7eK0DZBrrfSJthYyXTl5-HpvtlIpoD8JjrHu56EzOJhktinbFKQPehQ7yhY_7g73SPlWbuUX3A_TPED-VbF8YriZU' },
+            { code: 'BFA', name: 'Burkina Faso', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXT1I55PhnU9xb-89sKo7IXc3YlLhwuNhkhLAXfsgliY4ElXJrg1YS42GER4fQgUoruRespziNlJl7jJj1oRxJw8pYum2Y6zUMXORROqVKUJucBfL5jdtQRlW_ZifWU8JQPFIMwEIs8Stf8JgJPJy5FgmOgR1GrAxcdrUbjOhZx4Wjd5mG1OKFRlmzIhDaOiEHk4JwyEGX6bqjrWCIv6Sg1Uv1VZHgnDGwfju2UFYLeZoUmLRFUkwiM6lQisgU5B4L8gdT1uNAt1gk' },
+            { code: 'ALG', name: 'Algeria', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDzdw9SIlq8_JDUOmdOkKubuyrq7revC__2CHcpguLSjBbxxp6Ra-Jr6Cc66vWISl0zsflROqf4nfJosmFYL7YB3ANaSk3e76a7kMY4C9YpRuiECiHBHqDPxOB2J46MDj2U1wJ8jQvUTuW4eVZWwSAOlWSxV3Nxpff7W06uw9lK0qnPOz2a5g4_FH4vFdZmkIZJKEGbLpOkZ1tOfQBckYROxcaFekqLe1J2c2W0K2CiVoD9ue4IFGd_qgMSUKZNVGdSi_ftokF8hOId' },
+            { code: 'COD', name: 'DR Congo', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBze61qqTwylBe3vZeEhcOsopHM3JPCw0EyqnXgEvVB_m0w439rBCUXWGzoj8JzFW35tni0AIxdxlg5Ile6PSq-_cJhkeQF4Zq4t_VVsgH_TOIFudbTtn5oDy7lKdvpjArYvvbVU1z6eXj0WtLhMIiM2JEUiKeWE3BCTjnjs04-nGR2GahkkC1BnoRWrwVG3dzGa8wMzu6hgQFc8dGYLRcBRRvb6gA87_0p9TpAUY0QTmmEGjmQMJv2jlGkXD4nG6G8VlOYbcbcJvWE' },
+            { code: 'NGA', name: 'Nigeria', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-KIMVTVH2_DaaFbR7dlSicHvpuB67XmPqANrfAdncGZv9rbltonBzrJPTOM5-Z8uHhG_ruMioBakDXZP1mrcYZcFCZEv42kNR3vWyDuKQADeWmk1UOxJTsHvrV1L-7WSnP4j7-w8nhvmGgdIzUgPkDUqZ-H-ZlFgnocKsJn7SiOETNru_HN5SuOS8wpWyoT1AjWlz4EnuJN_A2qbOWA9pDs0lhYWFH1jFWzHCE4cIzxPYQu_JysjuzLkeJDFqNqJdJaBs5rkpKyvF' },
+            { code: 'MOZ', name: 'Mozambique', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB7isQ-z-MyUPn4c0l5XIP6zGuylaYMKDsGN6DLCN3rMtDQzPzvew-3Y5dAzeaWruSm_5lTbgSfHBIcwQmYwk5xZUKgQfArGWOc3njRZOemTKHIeAQXz8312-bSQs48ZT9SmFs1VC7M-M5ZwX7j0CaV30fsIw6FPaWzIYnY0AhWUXPqu6HHQ-HQLQQ3cseNG5CROGt6xTN6XkKSdQEVeSzHY9pFkFLfoLs_Wkf2Et79pjMFqLubh6qbRpXZnX-h-KH6WY86Ra5RsXVY' },
+            { code: 'RSA', name: 'South Africa', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA3ZDoi7umSYfWjpi5WGPSsCIfWbie0HCIm7KBdWJD23bEnE9ZRuPG26YEBRUtiscWdyu798LZAy22qIp_gvJ9KFlD3u1HnuhBhZAYa6LOwv8c_eFItuy4YRlD5KC2y_0R2ub549n48Dn3SyF5Ig_daXz4XzZSV_uZS7uyc1Cl6ajYCKihqF3Q4qVAOduJW_We46Zaip2pzvvRFrIjLJUqMCIJYEDhtfOzUR55jTszDqnx_aSgCUupWdKVIoTIHDvCuMSaqr_uS2-I7' },
+            { code: 'CMR', name: 'Cameroon', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCKm6FqE_dz6L6lV_Nylqt3WVvy8p154VRfkRvNBG92HG4HnhFdBNE86GhH5FJc5DsX6FYx844mU61GXdPpAuRNP815c980ikPlUepk5uBP0HkJH6g_VpEfiLyVcaKdjc5fA-csSNQsY-TYSmGc6Zbly9K5_4g23IjU2FT4-XPCyJ9qmMmID-L8dlNemshxOW16rFmTW7B8jTRPjUXj1O5jlcSZtBweMJLPYp0y4Ib5R76tGjCZPFQk8guwBuEEVzSgfi7gis3UDOnU' },
+            { code: 'MAR', name: 'Morocco', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAQbsID6JdLTdIdXSd0AUABj_QHRwfI6a5bsffKjDs1zjEbNFL2wxZhYeZO_a514qEWaVfSZ3dTQPHuYwBVbkjdwaZd6WZoEBpc45rk6zd6g7bkGNhxFa6iYd781TTQzTi1y0WJ2diszansdRrj8VXjQDZPeUOBcksuWwp2b-3iDg7IvuEaUxehZWUjmPFRebnrURIh7mDbkYHw9GHpkzwQ1I1bQcSNrBkpPzPt-xB9yLyr83YjiCTmUB2tt9cmtx2w4_6BFAqygan7' },
+            { code: 'TAN', name: 'Tanzania', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCJJvmKhcHq1kSljHNHd9SnSR2QLXjPN1Qd66_zIa9bfxrYrf1W0eBT2lKR1nV3MswPp8HauL5K3XBlPWO0snjcbDbGRumCY7jG__AHXZiGfN21l30l3qHZVedkeabNFLMNdUkFKE_KVCKZf1DkxpAJiISyUj0QsSMIWlFzZX4Ve_Qgh1KvBEiXjWrUrG8GojxfvhtqOiI5BCzHw04K8aUV8zTJKZCS4YDk-fIO7hqslBAAn-o71TDziRYvOH2JVH3KU31oV95hZOAm' }
+        ];
+
+        // Store predictions
+        let predictions = {
+            m1: null, m2: null, m3: null, m4: null, m5: null, m6: null, m7: null, m8: null,
+            qf1: null, qf2: null, qf3: null, qf4: null,
+            sf1: null, sf2: null,
+            'final-team1': null, 'final-team2': null, 'final-winner': null,
+            'third-team1': null, 'third-team2': null
+        };
+
+        // Match mappings
+        const matchMappings = {
+            'qf1': ['m1', 'm2'],
+            'qf2': ['m3', 'm4'],
+            'qf3': ['m5', 'm6'],
+            'qf4': ['m7', 'm8'],
+            'sf1': ['qf1', 'qf2'],
+            'sf2': ['qf3', 'qf4']
+        };
+
+        // Saved predictions storage
+        let savedPredictions = JSON.parse(localStorage.getItem('afcon2025_saved_predictions')) || [];
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeRoundOf16();
+            updateProgress();
+            loadSavedPredictions();
+            
+            // Add event listeners for control buttons
+            document.getElementById('saveBtn').addEventListener('click', savePredictions);
+            document.getElementById('screenshotBtn').addEventListener('click', takeScreenshot);
+            document.getElementById('resetBtn').addEventListener('click', resetAllPredictions);
+            document.getElementById('shareBtn').addEventListener('click', sharePredictions);
+            
+            // Navigation functionality
+            initializeNavigation();
+            
+            // Screenshot modal events
+            document.getElementById('downloadScreenshot').addEventListener('click', downloadScreenshot);
+            document.getElementById('shareScreenshot').addEventListener('click', shareScreenshot);
+            document.getElementById('closeScreenshot').addEventListener('click', () => {
+                document.getElementById('screenshotModal').classList.remove('active');
+            });
+            
+            // Saved predictions panel events
+            document.getElementById('savedPredictionsToggle').addEventListener('click', toggleSavedPredictionsPanel);
+            document.getElementById('closeSavedPanel').addEventListener('click', toggleSavedPredictionsPanel);
+            document.getElementById('clearAllPredictions').addEventListener('click', clearAllSavedPredictions);
+        });
+
+        // Initialize navigation
+        function initializeNavigation() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            // Mobile menu toggle
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                });
+            }
+            
+            // Update active link on click
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Update active class
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Close mobile menu if open
+                    if (navLinks && window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                    }
+                    
+                    // Get the target section
+                    const targetId = this.getAttribute('href');
+                    if (targetId.startsWith('#')) {
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            e.preventDefault();
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const isClickInsideNav = navLinks.contains(event.target) || mobileToggle.contains(event.target);
+                if (!isClickInsideNav && navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        }
+
+        // Toggle saved predictions panel
+        function toggleSavedPredictionsPanel() {
+            const panel = document.getElementById('savedPredictionsPanel');
+            panel.classList.toggle('active');
+        }
+
+        // Load saved predictions
+        function loadSavedPredictions() {
+            const savedList = document.getElementById('savedPredictionsList');
+            
+            if (savedPredictions.length === 0) {
+                savedList.innerHTML = '<p class="text-center text-white/60 py-4">No saved predictions yet</p>';
+                return;
+            }
+            
+            savedList.innerHTML = '';
+            
+            savedPredictions.forEach((prediction, index) => {
+                const championTeam = allTeams.find(t => t.code === prediction.predictions['final-winner']);
+                const date = new Date(prediction.timestamp);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                const predictionItem = document.createElement('div');
+                predictionItem.className = 'prediction-item';
+                predictionItem.innerHTML = `
+                    <div class="prediction-item-header">
+                        <span class="text-sm font-bold">Prediction #${index + 1}</span>
+                        <span class="text-xs text-white/60">${formattedDate}</span>
+                    </div>
+                    <div class="prediction-champion">
+                        <img src="${championTeam.flag}" alt="${championTeam.name} Flag" class="flag-icon" style="width: 20px; height: 15px;">
+                        <span class="font-bold text-[#D4AF37]">${championTeam.name}</span>
+                        <span class="ml-auto text-xs">🏆 Champion</span>
+                    </div>
+                    <div class="flex gap-2 mt-2">
+                        <button class="text-xs bg-[#00CC66] hover:bg-[#00b359] text-white px-3 py-1 rounded flex-1" onclick="loadPrediction(${index})">
+                            <i class="fas fa-eye mr-1"></i> View
+                        </button>
+                        <button class="text-xs bg-[#c1272d] hover:bg-[#a02025] text-white px-3 py-1 rounded" onclick="deletePrediction(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                savedList.appendChild(predictionItem);
+            });
+        }
+
+        // Load a saved prediction
+        function loadPrediction(index) {
+            if (index >= 0 && index < savedPredictions.length) {
+                const savedPrediction = savedPredictions[index];
+                predictions = {...savedPrediction.predictions};
+                
+                // Update UI with loaded prediction
+                resetAllPredictionsUI();
+                applyPredictionsToUI();
+                updateProgress();
+                
+                // Close panel
+                toggleSavedPredictionsPanel();
+                
+                alert('Prediction loaded successfully!');
+            }
+        }
+
+        // Delete a saved prediction
+        function deletePrediction(index) {
+            if (confirm('Are you sure you want to delete this prediction?')) {
+                savedPredictions.splice(index, 1);
+                localStorage.setItem('afcon2025_saved_predictions', JSON.stringify(savedPredictions));
+                loadSavedPredictions();
+            }
+        }
+
+        // Clear all saved predictions
+        function clearAllSavedPredictions() {
+            if (savedPredictions.length === 0) {
+                alert('No saved predictions to clear.');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to clear ALL saved predictions? This action cannot be undone.')) {
+                savedPredictions = [];
+                localStorage.setItem('afcon2025_saved_predictions', JSON.stringify(savedPredictions));
+                loadSavedPredictions();
+                alert('All saved predictions have been cleared.');
+            }
+        }
+
+        // Apply predictions to UI
+        function applyPredictionsToUI() {
+            // Apply R16 predictions
+            Object.keys(predictions).forEach(key => {
+                if (key.startsWith('m')) {
+                    const teamCode = predictions[key];
+                    if (teamCode) {
+                        const teamBox = document.querySelector(`[data-match="${key}"][data-team="${teamCode}"]`);
+                        if (teamBox) {
+                            selectRoundOf16Winner(key, teamCode, teamBox);
+                        }
+                    }
+                }
+            });
+            
+            // Apply QF predictions
+            ['qf1', 'qf2', 'qf3', 'qf4'].forEach(qfMatch => {
+                const winnerCode = predictions[qfMatch];
+                if (winnerCode) {
+                    const winnerBox = document.querySelector(`[id^="${qfMatch}-team"][data-team="${winnerCode}"]`);
+                    if (winnerBox) {
+                        selectQuarterFinalWinner(qfMatch, winnerCode, winnerBox);
+                    }
+                }
+            });
+            
+            // Apply SF predictions
+            ['sf1', 'sf2'].forEach(sfMatch => {
+                const winnerCode = predictions[sfMatch];
+                if (winnerCode) {
+                    const winnerBox = document.querySelector(`[id^="${sfMatch}-team"][data-team="${winnerCode}"]`);
+                    if (winnerBox) {
+                        selectSemiFinalWinner(sfMatch, winnerCode, winnerBox);
+                    }
+                }
+            });
+            
+            // Apply final champion
+            const championCode = predictions['final-winner'];
+            if (championCode) {
+                const championBox = document.querySelector(`[data-team="${championCode}"]`);
+                if (championBox) {
+                    selectChampion(championBox);
+                }
+            }
+        }
+
+        // Initialize Round of 16 selections
+        function initializeRoundOf16() {
+            document.querySelectorAll('.team-box[data-match]').forEach(element => {
+                element.addEventListener('click', function() {
+                    if (this.classList.contains('locked')) return;
+                    
+                    const match = this.getAttribute('data-match');
+                    const team = this.getAttribute('data-team');
+                    selectRoundOf16Winner(match, team, this);
+                });
+            });
+            
+            // Initialize final winner selection
+            document.getElementById('final-winner-box').addEventListener('click', function() {
+                if (!this.classList.contains('locked')) {
+                    selectChampion(this);
+                }
+            });
+        }
+
+        // Select winner in Round of 16
+        function selectRoundOf16Winner(match, teamCode, element) {
+            const team = allTeams.find(t => t.code === teamCode);
+            predictions[match] = teamCode;
+            
+            // Update UI for this match
+            document.querySelectorAll(`[data-match="${match}"]`).forEach(el => {
+                el.classList.remove('selected');
+                el.querySelector('.prediction-check')?.classList.add('hidden');
+            });
+            
+            element.classList.add('selected');
+            element.querySelector('.prediction-check')?.classList.remove('hidden');
+            
+            // Update quarter finals
+            updateQuarterFinals();
+            
+            updateProgress();
+        }
+
+        // Update quarter finals based on R16 selections
+        function updateQuarterFinals() {
+            // Update each quarter final match
+            Object.keys(matchMappings).forEach(qfMatch => {
+                if (qfMatch.startsWith('qf')) {
+                    const [match1, match2] = matchMappings[qfMatch];
+                    const team1Code = predictions[match1];
+                    const team2Code = predictions[match2];
+                    
+                    updateMatchDisplay(qfMatch, team1Code, team2Code);
+                    
+                    // If both teams are selected, make QF match clickable
+                    if (team1Code && team2Code) {
+                        enableQuarterFinalSelection(qfMatch);
+                    }
+                }
+            });
+        }
+
+        // Update match display with actual teams
+        function updateMatchDisplay(matchId, team1Code, team2Code) {
+            const team1Box = document.getElementById(`${matchId}-team1`);
+            const team2Box = document.getElementById(`${matchId}-team2`);
+            
+            if (team1Box && team1Code) {
+                const team = allTeams.find(t => t.code === team1Code);
+                updateTeamBox(team1Box, team);
+            }
+            
+            if (team2Box && team2Code) {
+                const team = allTeams.find(t => t.code === team2Code);
+                updateTeamBox(team2Box, team);
+            }
+        }
+
+        // Update a team box with team data
+        function updateTeamBox(box, team) {
+            box.classList.remove('empty-team');
+            box.innerHTML = `
+                <img src="${team.flag}" alt="${team.name} Flag" class="flag-icon">
+                <span class="font-bold">${team.code}</span>
+            `;
+            
+            // Store team data
+            box.dataset.team = team.code;
+            box.dataset.match = box.id.split('-')[0];
+        }
+
+        // Enable quarter final selection (make boxes clickable)
+        function enableQuarterFinalSelection(qfMatch) {
+            const team1Box = document.getElementById(`${qfMatch}-team1`);
+            const team2Box = document.getElementById(`${qfMatch}-team2`);
+            
+            if (team1Box && team2Box) {
+                // Remove locked class
+                team1Box.classList.remove('locked');
+                team2Box.classList.remove('locked');
+                
+                // Add click event listeners
+                team1Box.addEventListener('click', function() {
+                    selectQuarterFinalWinner(qfMatch, this.dataset.team, this);
+                });
+                
+                team2Box.addEventListener('click', function() {
+                    selectQuarterFinalWinner(qfMatch, this.dataset.team, this);
+                });
+            }
+        }
+
+        // Select winner in quarter finals
+        function selectQuarterFinalWinner(match, teamCode, element) {
+            const team = allTeams.find(t => t.code === teamCode);
+            predictions[match] = teamCode;
+            
+            // Update UI for this match
+            document.querySelectorAll(`[id^="${match}-team"]`).forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            
+            // Update semi finals
+            updateSemiFinals();
+            
+            updateProgress();
+        }
+
+        // Update semi finals based on QF selections
+        function updateSemiFinals() {
+            // Update SF1
+            const qf1Winner = predictions['qf1'];
+            const qf2Winner = predictions['qf2'];
+            
+            if (qf1Winner) {
+                const team = allTeams.find(t => t.code === qf1Winner);
+                updateTeamBox(document.getElementById('sf1-team1'), team);
+            }
+            
+            if (qf2Winner) {
+                const team = allTeams.find(t => t.code === qf2Winner);
+                updateTeamBox(document.getElementById('sf1-team2'), team);
+            }
+            
+            // Update SF2
+            const qf3Winner = predictions['qf3'];
+            const qf4Winner = predictions['qf4'];
+            
+            if (qf3Winner) {
+                const team = allTeams.find(t => t.code === qf3Winner);
+                updateTeamBox(document.getElementById('sf2-team1'), team);
+            }
+            
+            if (qf4Winner) {
+                const team = allTeams.find(t => t.code === qf4Winner);
+                updateTeamBox(document.getElementById('sf2-team2'), team);
+            }
+            
+            // Enable SF selection if both teams are available
+            if (qf1Winner && qf2Winner) {
+                enableSemiFinalSelection('sf1');
+            }
+            
+            if (qf3Winner && qf4Winner) {
+                enableSemiFinalSelection('sf2');
+            }
+            
+            // Update finals
+            updateFinals();
+        }
+
+        // Enable semi final selection
+        function enableSemiFinalSelection(sfMatch) {
+            const team1Box = document.getElementById(`${sfMatch}-team1`);
+            const team2Box = document.getElementById(`${sfMatch}-team2`);
+            
+            if (team1Box && team2Box) {
+                team1Box.classList.remove('locked');
+                team2Box.classList.remove('locked');
+                
+                team1Box.addEventListener('click', function() {
+                    selectSemiFinalWinner(sfMatch, this.dataset.team, this);
+                });
+                
+                team2Box.addEventListener('click', function() {
+                    selectSemiFinalWinner(sfMatch, this.dataset.team, this);
+                });
+            }
+        }
+
+        // Select winner in semi finals
+        function selectSemiFinalWinner(match, teamCode, element) {
+            const team = allTeams.find(t => t.code === teamCode);
+            predictions[match] = teamCode;
+            
+            // Update UI for this match
+            document.querySelectorAll(`[id^="${match}-team"]`).forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            
+            // Update finals
+            updateFinals();
+            
+            updateProgress();
+        }
+
+        // Update finals based on SF selections
+        function updateFinals() {
+            const sf1Winner = predictions['sf1'];
+            const sf2Winner = predictions['sf2'];
+            
+            // Update final teams
+            if (sf1Winner) {
+                const team = allTeams.find(t => t.code === sf1Winner);
+                updateTeamBox(document.getElementById('final-team1'), team);
+            }
+            
+            if (sf2Winner) {
+                const team = allTeams.find(t => t.code === sf2Winner);
+                updateTeamBox(document.getElementById('final-team2'), team);
+            }
+            
+            // Update third place teams
+            if (sf1Winner) {
+                // Find loser of SF1
+                const sf1Teams = matchMappings['sf1'].map(qf => predictions[qf]);
+                const sf1Loser = sf1Teams.find(teamCode => teamCode && teamCode !== sf1Winner);
+                if (sf1Loser) {
+                    const team = allTeams.find(t => t.code === sf1Loser);
+                    updateTeamBox(document.getElementById('third-team1'), team);
+                }
+            }
+            
+            if (sf2Winner) {
+                // Find loser of SF2
+                const sf2Teams = matchMappings['sf2'].map(qf => predictions[qf]);
+                const sf2Loser = sf2Teams.find(teamCode => teamCode && teamCode !== sf2Winner);
+                if (sf2Loser) {
+                    const team = allTeams.find(t => t.code === sf2Loser);
+                    updateTeamBox(document.getElementById('third-team2'), team);
+                }
+            }
+            
+            // Enable final selection if both finalists are available
+            if (sf1Winner && sf2Winner) {
+                enableFinalSelection();
+            }
+        }
+
+        // Enable final selection
+        function enableFinalSelection() {
+            const finalTeam1 = document.getElementById('final-team1');
+            const finalTeam2 = document.getElementById('final-team2');
+            const finalWinnerBox = document.getElementById('final-winner-box');
+            
+            if (finalTeam1 && finalTeam2) {
+                finalTeam1.classList.remove('locked');
+                finalTeam2.classList.remove('locked');
+                
+                // Make final teams clickable for champion selection
+                finalTeam1.addEventListener('click', function() {
+                    selectChampion(this);
+                });
+                
+                finalTeam2.addEventListener('click', function() {
+                    selectChampion(this);
+                });
+                
+                // Also make champion box clickable
+                finalWinnerBox.classList.remove('locked');
+                finalWinnerBox.classList.remove('empty-team');
+            }
+        }
+
+        // Select champion
+        function selectChampion(element) {
+            const teamCode = element.dataset.team;
+            if (!teamCode) return;
+            
+            const team = allTeams.find(t => t.code === teamCode);
+            predictions['final-winner'] = teamCode;
+            
+            // Update champion box
+            const finalWinnerBox = document.getElementById('final-winner-box');
+            finalWinnerBox.innerHTML = `
+                <img src="${team.flag}" alt="${team.name} Flag" class="flag-icon">
+                <span class="font-bold text-xl">${team.code}</span>
+                <span class="ml-auto text-sm text-[#D4AF37]">✓</span>
+            `;
+            finalWinnerBox.classList.add('selected');
+            
+            // Show champion text
+            const championText = document.getElementById('championText');
+            const championName = document.getElementById('championName');
+            if (championText && championName) {
+                championName.textContent = team.name;
+                championText.classList.remove('hidden');
+            }
+            
+            updateProgress();
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const totalPredictions = 15;
+            let completed = Object.values(predictions).filter(p => p !== null).length;
+            
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            if (progressFill) {
+                const percentage = (completed / totalPredictions) * 100;
+                progressFill.style.width = `${percentage}%`;
+            }
+            
+            if (progressText) {
+                progressText.textContent = `${completed}/${totalPredictions}`;
+            }
+            
+            if (completed === totalPredictions) {
+                document.getElementById('saveBtn').classList.add('save-animation');
+                setTimeout(() => {
+                    document.getElementById('saveBtn').classList.remove('save-animation');
+                }, 500);
+            }
+        }
+
+        // Save predictions
+        function savePredictions() {
+            const completed = Object.values(predictions).filter(p => p !== null).length;
+            if (completed < 15) {
+                alert(`Please complete all predictions before saving (${completed}/15 completed).`);
+                return;
+            }
+            
+            const data = {
+                predictions: predictions,
+                timestamp: new Date().toISOString(),
+                champion: predictions['final-winner'] ? 
+                    allTeams.find(t => t.code === predictions['final-winner']).name : 'Not selected'
+            };
+            
+            // Save to saved predictions
+            savedPredictions.unshift(data); // Add to beginning
+            if (savedPredictions.length > 10) {
+                savedPredictions = savedPredictions.slice(0, 10); // Keep only last 10
+            }
+            
+            localStorage.setItem('afcon2025_saved_predictions', JSON.stringify(savedPredictions));
+            
+            // Update saved predictions list
+            loadSavedPredictions();
+            
+            alert('Predictions saved successfully!');
+            
+            const saveBtn = document.getElementById('saveBtn');
+            saveBtn.classList.add('save-animation');
+            setTimeout(() => saveBtn.classList.remove('save-animation'), 500);
+        }
+
+        // Reset all predictions UI (without confirmation)
+        function resetAllPredictionsUI() {
+            // Reset predictions object
+            Object.keys(predictions).forEach(key => {
+                predictions[key] = null;
+            });
+            
+            // Reset all team boxes
+            document.querySelectorAll('.team-box').forEach(box => {
+                box.classList.remove('selected');
+                box.classList.remove('locked');
+                box.querySelector('.prediction-check')?.classList.add('hidden');
+            });
+            
+            // Reset R16 boxes
+            document.querySelectorAll('.team-box[data-match^="m"]').forEach(box => {
+                const match = box.dataset.match;
+                const team = box.dataset.team;
+                const teamData = allTeams.find(t => t.code === team);
+                box.innerHTML = `
+                    <img src="${teamData.flag}" alt="${teamData.name} Flag" class="flag-icon">
+                    <span class="font-bold">${teamData.code}</span>
+                    <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
+                `;
+            });
+            
+            // Reset quarter finals to empty
+            document.querySelectorAll('.team-box[id^="qf"]').forEach(box => {
+                box.classList.add('locked');
+                box.classList.add('empty-team');
+                box.innerHTML = `
+                    <div class="flag-placeholder"></div>
+                    <span class="font-bold">${box.id.includes('team1') ? 'Winner ' + box.id.split('-')[0].toUpperCase().replace('QF', 'M') + '1' : 'Winner ' + box.id.split('-')[0].toUpperCase().replace('QF', 'M') + '2'}</span>
+                `;
+            });
+            
+            // Reset semi finals
+            document.querySelectorAll('.team-box[id^="sf"]').forEach(box => {
+                box.classList.add('locked');
+                box.classList.add('empty-team');
+                box.innerHTML = `
+                    <div class="flag-placeholder"></div>
+                    <span class="font-bold ${box.id.includes('sf1') || box.id.includes('sf2') ? 'text-lg' : ''}">${box.id.includes('team1') ? 'Winner QF1' : 'Winner QF2'}</span>
+                `;
+            });
+            
+            // Reset finals
+            document.getElementById('final-team1').innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold text-xl">Winner SF1</span>
+            `;
+            document.getElementById('final-team1').classList.add('locked', 'empty-team');
+            
+            document.getElementById('final-team2').innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold text-xl">Winner SF2</span>
+            `;
+            document.getElementById('final-team2').classList.add('locked', 'empty-team');
+            
+            // Reset champion
+            document.getElementById('final-winner-box').innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span id="final-winner" class="font-bold text-xl">Select Champion</span>
+            `;
+            document.getElementById('final-winner-box').classList.add('locked', 'empty-team');
+            document.getElementById('final-winner-box').classList.remove('selected');
+            
+            // Reset third place
+            document.getElementById('third-team1').innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold">Loser SF1</span>
+            `;
+            document.getElementById('third-team1').classList.add('locked', 'empty-team');
+            
+            document.getElementById('third-team2').innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold">Loser SF2</span>
+            `;
+            document.getElementById('third-team2').classList.add('locked', 'empty-team');
+            
+            // Hide champion text
+            document.getElementById('championText').classList.add('hidden');
+            
+            // Reinitialize event listeners
+            initializeRoundOf16();
+        }
+
+        // Reset all predictions
+        function resetAllPredictions() {
+            if (confirm('Are you sure you want to reset all predictions?')) {
+                resetAllPredictionsUI();
+                updateProgress();
+                
+                alert('All predictions have been reset.');
+            }
+        }
+
+        // Share predictions
+        function sharePredictions() {
+            const champion = predictions['final-winner'] ? 
+                allTeams.find(t => t.code === predictions['final-winner']).name : 'Not selected yet';
+            
+            let shareText = `My AFCON 2025 Predictions:\n\n`;
+            shareText += `🏆 Champion: ${champion}\n\n`;
+            
+            const finalist1 = predictions['final-team1'] ? 
+                allTeams.find(t => t.code === predictions['final-team1']).name : 'TBD';
+            const finalist2 = predictions['final-team2'] ? 
+                allTeams.find(t => t.code === predictions['final-team2']).name : 'TBD';
+            
+            shareText += `Final: ${finalist1} vs ${finalist2}\n\n`;
+            shareText += `Make your predictions: ${window.location.href}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My AFCON 2025 Predictions',
+                    text: shareText,
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Predictions copied to clipboard!');
+                }).catch(() => {
+                    prompt('Copy your predictions:', shareText);
+                });
+            }
+        }
+
+        // Take screenshot
+        function takeScreenshot() {
+            const completed = Object.values(predictions).filter(p => p !== null).length;
+            if (completed < 15) {
+                alert(`Please complete all predictions before taking a screenshot (${completed}/15 completed).`);
+                return;
+            }
+            
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('active');
+            
+            // Hide control panels and navigation for clean screenshot
+            document.querySelector('.fixed.top-20.right-4').style.display = 'none';
+            document.querySelector('.fixed.top-16').style.display = 'none';
+            document.querySelector('.nav-container').style.display = 'none';
+            document.querySelector('.saved-predictions-toggle').style.display = 'none';
+            
+            // Add watermark text
+            const watermark = document.createElement('div');
+            watermark.innerHTML = `
+                <div style="position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 9999;">
+                    AFCON 2025 Predictor • ${window.location.href}
+                </div>
+            `;
+            document.body.appendChild(watermark);
+            
+            // Capture the bracket
+            html2canvas(document.getElementById('bracketContainer'), {
+                backgroundColor: '#1a0f0f',
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                allowTaint: true
+            }).then(canvas => {
+                // Restore hidden elements
+                document.querySelector('.fixed.top-20.right-4').style.display = '';
+                document.querySelector('.fixed.top-16').style.display = '';
+                document.querySelector('.nav-container').style.display = '';
+                document.querySelector('.saved-predictions-toggle').style.display = '';
+                document.body.removeChild(watermark);
+                
+                // Show screenshot in modal
+                const screenshotImage = document.getElementById('screenshotImage');
+                screenshotImage.src = canvas.toDataURL('image/png');
+                
+                const screenshotModal = document.getElementById('screenshotModal');
+                screenshotModal.classList.add('active');
+                
+                loadingOverlay.classList.remove('active');
+                
+                // Store canvas for download
+                window.screenshotCanvas = canvas;
+            }).catch(error => {
+                console.error('Screenshot error:', error);
+                alert('Error creating screenshot. Please try again.');
+                
+                // Restore hidden elements
+                document.querySelector('.fixed.top-20.right-4').style.display = '';
+                document.querySelector('.fixed.top-16').style.display = '';
+                document.querySelector('.nav-container').style.display = '';
+                document.querySelector('.saved-predictions-toggle').style.display = '';
+                if (document.body.contains(watermark)) {
+                    document.body.removeChild(watermark);
+                }
+                
+                loadingOverlay.classList.remove('active');
+            });
+        }
+
+        // Download screenshot
+        function downloadScreenshot() {
+            if (!window.screenshotCanvas) return;
+            
+            const link = document.createElement('a');
+            link.download = `afcon-2025-predictions-${Date.now()}.png`;
+            link.href = window.screenshotCanvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Share screenshot
+        function shareScreenshot() {
+            if (!window.screenshotCanvas) return;
+            
+            window.screenshotCanvas.toBlob(blob => {
+                const file = new File([blob], 'afcon-predictions.png', { type: 'image/png' });
+                
+                if (navigator.share && navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        files: [file],
+                        title: 'My AFCON 2025 Predictions',
+                        text: 'Check out my AFCON 2025 tournament predictions!'
+                    }).catch(console.error);
+                } else {
+                    alert('Sharing screenshots is not supported on this device/browser. You can download and share the image manually.');
+                }
+            }, 'image/png');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AFCON 2025 Morocco - Home</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a0f0f;
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .bg-morocco {
+            background-color: #1a0f0f;
+            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+            background-attachment: fixed;
+        }
+        
+        /* Navigation Styles */
+        .nav-container {
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 204, 102, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .nav-logo-text {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
+        }
+        
+        .nav-logo-text span {
+            color: #00CC66;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            background: rgba(0, 204, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            color: #00CC66;
+            background: rgba(0, 204, 102, 0.1);
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #00CC66;
+            border-radius: 50%;
+        }
+        
+        .nav-mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-mobile-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: rgba(26, 15, 15, 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+                border-bottom: 2px solid #00CC66;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-link {
+                width: 100%;
+                text-align: center;
+                padding: 0.75rem 1rem;
+            }
+        }
+        
+        /* Profile Section */
+        .profile-section {
+            background: linear-gradient(135deg, rgba(0, 204, 102, 0.1) 0%, rgba(26, 15, 15, 0.9) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 204, 102, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid #00CC66;
+            object-fit: cover;
+        }
+        
+        /* Login Modal */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .login-modal.active {
+            display: flex;
+        }
+        
+        .login-container {
+            background: rgba(26, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border: 2px solid #00CC66;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        /* City Cards */
+        .city-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 204, 102, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .city-card:hover {
+            background: rgba(0, 204, 102, 0.1);
+            transform: translateY(-5px);
+            border-color: #00CC66;
+        }
+        
+        .stadium-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        /* Portfolio Cards */
+        .portfolio-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .portfolio-card:hover {
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateY(-5px);
+            border-color: #D4AF37;
+        }
+        
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #00CC66;
+            margin: 0 auto 15px;
+        }
+        
+        /* How-to Steps */
+        .how-to-step {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border-left: 4px solid #00CC66;
+        }
+        
+        .step-number {
+            background: #00CC66;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #4a080c; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+        
+        /* Section Headers */
+        .section-header {
+            font-family: 'Teko', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #00CC66;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #00CC66, #D4AF37);
+            border-radius: 2px;
+        }
+        
+        .section-subheader {
+            font-family: 'Teko', sans-serif;
+            font-size: 24px;
+            color: #D4AF37;
+            margin-bottom: 20px;
+        }
+        
+        /* Tournament Info Cards */
+        .info-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(26, 15, 15, 0.8) 100%);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .info-card:hover {
+            border-color: #D4AF37;
+            transform: translateY(-3px);
+        }
+        
+        /* Stadium Card */
+        .stadium-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(26, 15, 15, 0.8) 100%);
+            border: 1px solid rgba(0, 204, 102, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .stadium-card:hover {
+            border-color: #00CC66;
+            transform: translateY(-5px);
+        }
+        
+        /* Loading State */
+        .loading {
+            position: relative;
+            min-height: 200px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Girls in Tech Badge */
+        .girls-in-tech {
+            background: linear-gradient(135deg, #ff6b9d, #ff4081);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-morocco">
+    <!-- Navigation Header -->
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <div class="w-24 h-8 flex items-center justify-center bg-[#00CC66] rounded-full">
+                    <img src="logo1.png" alt="AFCON-Logo.ma">
+                </div>
+                <div class="nav-logo-text">
+                    AFCON <span>2025</span>
+                </div>
+            </a>
+            
+            <button class="nav-mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link active">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="predictor.html" class="nav-link">
+                    <i class="fas fa-predict mr-2"></i>Predictions
+                </a>
+                <a href="#host-cities" class="nav-link">
+                    <i class="fas fa-city mr-2"></i>Host Cities
+                </a>
+                <a href="#how-to-play" class="nav-link">
+                    <i class="fas fa-gamepad mr-2"></i>How to Play
+                </a>
+                <a href="#portfolio" class="nav-link">
+                    <i class="fas fa-users mr-2"></i>Our Team
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="relative z-10 flex-grow w-full px-4 py-8 md:py-8 overflow-x-auto pt-24">
+        <div class="container mx-auto max-w-6xl">
+            <!-- Hero Section -->
+            <header class="relative z-10 w-full text-center mb-12">
+                <div class="flex flex-col items-center justify-center gap-2">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="bg-white px-2 py-1 rounded shadow-md">
+                            <span class="text-[#1a0f0f] font-bold text-xl font-['Teko'] tracking-wide">CAF</span>
+                        </div>
+                        <div class="h-8 w-[1px] bg-white/50"></div>
+                        <div class="text-left leading-tight uppercase font-['Teko'] font-bold text-xl md:text-2xl tracking-wider drop-shadow-md">
+                            <span class="block text-white">Africa Cup</span>
+                            <span class="block text-white">Of Nations</span>
+                            <span class="block text-[#00CC66]">Morocco 2025</span>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <p class="text-xs text-gray-300">Official Tournament Hub • Predict • Follow • Celebrate</p>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Profile/Login Section -->
+            <div id="profile" class="profile-section">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex items-center gap-4">
+                        <img id="profileAvatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="Profile Avatar" class="profile-avatar">
+                        <div>
+                            <h2 id="welcomeText" class="text-xl font-bold">Welcome, Guest!</h2>
+                            <p id="userCountry" class="text-gray-300">Sign in to personalize your experience</p>
+                        </div>
+                    </div>
+                    <div>
+                        <button id="loginBtn" class="bg-[#00CC66] hover:bg-[#00b359] text-white px-6 py-3 rounded-lg font-bold text-sm flex items-center gap-2">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Sign In / Register</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tournament Overview -->
+            <section class="mb-16">
+                <h2 class="section-header">TOURNAMENT OVERVIEW</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="info-card text-center">
+                        <div class="text-4xl text-[#00CC66] mb-2">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Tournament Duration</h3>
+                        <p class="text-gray-300">21 December 2025 - 18 January 2026</p>
+                        <p class="text-sm text-gray-400 mt-2">4 weeks of intense African football</p>
+                    </div>
+                    <div class="info-card text-center">
+                        <div class="text-4xl text-[#00CC66] mb-2">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Final Match</h3>
+                        <p class="text-gray-300">18 January 2026 - 20:00 Local Time</p>
+                        <p class="text-sm text-gray-400 mt-2">Complexe Sportif Prince Moulay Abdellah, Rabat</p>
+                    </div>
+                    <div class="info-card text-center">
+                        <div class="text-4xl text-[#00CC66] mb-2">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Participating Teams</h3>
+                        <p class="text-gray-300">24 National Teams</p>
+                        <p class="text-sm text-gray-400 mt-2">From across the African continent</p>
+                    </div>
+                </div>
+                
+                <div class="bg-black/30 backdrop-blur-sm p-6 rounded-lg border border-white/10">
+                    <h3 class="section-subheader text-center">About AFCON 2025 Morocco</h3>
+                    <p class="text-gray-300 text-center mb-4">
+                        The 35th edition of the Africa Cup of Nations returns to Morocco after decades of anticipation. 
+                        This tournament promises to be the most spectacular edition yet, featuring state-of-the-art stadiums, 
+                        passionate fans, and the best football talent Africa has to offer.
+                    </p>
+                    <p class="text-gray-300 text-center">
+                        Morocco, with its rich football history and modern infrastructure, is ready to host an unforgettable 
+                        celebration of African football that will showcase the continent's unity, talent, and passion for the beautiful game.
+                    </p>
+                </div>
+            </section>
+            
+            <!-- Stadium Information -->
+            <section class="mb-16">
+                <h2 class="section-header">TOURNAMENT STADIUMS</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Stadium 1: Rabat -->
+                    <div class="stadium-card">
+                        <img src="Stade Prince Molay Abdellah.jfif" alt="Complexe Sportif Prince Moulay Abdellah, Rabat" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551135042-1af3a2c85c57?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-3 text-[#00CC66]">Complexe Sportif Prince Moulay Abdellah</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-city text-[#D4AF37]"></i>
+                                    <span class="font-bold">City:</span> Rabat
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-users text-[#D4AF37]"></i>
+                                    <span class="font-bold">Capacity:</span> 53,000
+                                </p>
+                            </div>
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-star text-[#D4AF37]"></i>
+                                    <span class="font-bold">Status:</span> Tournament Final
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-calendar text-[#D4AF37]"></i>
+                                    <span class="font-bold">Built:</span> 1983 (Renovated 2024)
+                                </p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3">
+                            Recently renovated for AFCON 2025 with modern facilities, VIP sections, and improved accessibility.
+                            Will host the tournament final and several knockout stage matches.
+                        </p>
+                    </div>
+                    
+                    <!-- Stadium 2: Casablanca -->
+                    <div class="stadium-card">
+                        <img src="Stade Mohammed V.jfif" alt="Stade Mohammed V, Casablanca" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-3 text-[#00CC66]">Stade Mohammed V</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-city text-[#D4AF37]"></i>
+                                    <span class="font-bold">City:</span> Casablanca
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-users text-[#D4AF37]"></i>
+                                    <span class="font-bold">Capacity:</span> 67,000
+                                </p>
+                            </div>
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-star text-[#D4AF37]"></i>
+                                    <span class="font-bold">Status:</span> Semi-Finals
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-calendar text-[#D4AF37]"></i>
+                                    <span class="font-bold">Built:</span> 1955 (Renovated 2023)
+                                </p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3">
+                            Historic stadium with electric atmosphere. Renovated with new seating, lighting, 
+                            and media facilities for AFCON 2025. Will host key matches including quarter-finals and semi-finals.
+                        </p>
+                    </div>
+                    
+                    <!-- Stadium 3: Marrakech -->
+                    <div class="stadium-card">
+                        <img src="Grand Stade Marrakech.jfif" alt="Grand Stade de Marrakech" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1598880940080-ff9a29891b85?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-3 text-[#00CC66]">Grand Stade de Marrakech</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-city text-[#D4AF37]"></i>
+                                    <span class="font-bold">City:</span> Marrakech
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-users text-[#D4AF37]"></i>
+                                    <span class="font-bold">Capacity:</span> 45,240
+                                </p>
+                            </div>
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-star text-[#D4AF37]"></i>
+                                    <span class="font-bold">Status:</span> Group Stage & Knockout
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-calendar text-[#D4AF37]"></i>
+                                    <span class="font-bold">Built:</span> 2011
+                                </p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3">
+                            Modern stadium built in 2011. Features unique architecture inspired by Moroccan design. 
+                            Known for excellent pitch quality and fan amenities.
+                        </p>
+                    </div>
+                    
+                    <!-- Stadium 4: Tangier -->
+                    <div class="stadium-card">
+                        <img src="Stade Ibn Batota Tanger.jfif" alt="Grand Stade de Tanger" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-3 text-[#00CC66]">Grand Stade de Tanger</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-city text-[#D4AF37]"></i>
+                                    <span class="font-bold">City:</span> Tangier
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-users text-[#D4AF37]"></i>
+                                    <span class="font-bold">Capacity:</span> 65,000
+                                </p>
+                            </div>
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-star text-[#D4AF37]"></i>
+                                    <span class="font-bold">Status:</span> Quarter-Finals
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-calendar text-[#D4AF37]"></i>
+                                    <span class="font-bold">Built:</span> 2011
+                                </p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3">
+                            Also known as Stade Ibn Batouta. New stadium with stunning sea views of Tangier Bay. 
+                            One of Africa's most modern football venues with excellent facilities and accessibility.
+                        </p>
+                    </div>
+                    
+                    <!-- Stadium 5: Agadir -->
+                    <div class="stadium-card">
+                        <img src="Stade Adrar.jfif" alt="Stade Adrar, Agadir" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1467803738586-46b7eb7b16a1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-3 text-[#00CC66]">Stade Adrar</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-city text-[#D4AF37]"></i>
+                                    <span class="font-bold">City:</span> Agadir
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-users text-[#D4AF37]"></i>
+                                    <span class="font-bold">Capacity:</span> 45,480
+                                </p>
+                            </div>
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-star text-[#D4AF37]"></i>
+                                    <span class="font-bold">Status:</span> Group Stage
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-calendar text-[#D4AF37]"></i>
+                                    <span class="font-bold">Built:</span> 2013 (Renovated 2024)
+                                </p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3">
+                            Renovated for AFCON 2025 with improved facilities and seating. Known for its excellent pitch quality 
+                            and modern design inspired by traditional Moroccan architecture.
+                        </p>
+                    </div>
+                    
+                    <!-- Stadium 6: Fes -->
+                    <div class="stadium-card">
+                        <img src="Complexe Fes.jfif" alt="Complexe de Fès" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1529900748604-07564a03e7a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-3 text-[#00CC66]">Complexe de Fès</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-city text-[#D4AF37]"></i>
+                                    <span class="font-bold">City:</span> Fes
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-users text-[#D4AF37]"></i>
+                                    <span class="font-bold">Capacity:</span> 40,000
+                                </p>
+                            </div>
+                            <div>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-star text-[#D4AF37]"></i>
+                                    <span class="font-bold">Status:</span> Group Stage
+                                </p>
+                                <p class="flex items-center gap-2 text-sm mb-2">
+                                    <i class="fas fa-calendar text-[#D4AF37]"></i>
+                                    <span class="font-bold">Built:</span> 2007 (Renovated 2024)
+                                </p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3">
+                            Supporting venue for group stage matches. Recently renovated with improved spectator facilities. 
+                            Known for its passionate local supporters and historic city backdrop.
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Host Cities Section -->
+            <section id="host-cities" class="mb-16">
+                <h2 class="section-header">HOST CITIES & FAMOUS LANDMARKS</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- City 1: Rabat -->
+                    <div class="city-card">
+                        <img src="Hassan Tower.jfif" alt="Hassan Tower, Rabat" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1553748024-d1b27fb3f960?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-2 text-[#00CC66]">Rabat</h3>
+                        <p class="text-gray-300 mb-3">Capital City & Administrative Center</p>
+                        <div class="space-y-2">
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-landmark text-[#D4AF37]"></i>
+                                <span class="font-bold">Famous Landmark:</span> Hassan Tower & Mausoleum
+                            </p>
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-map-marker-alt text-[#D4AF37]"></i>
+                                <span class="font-bold">Location:</span> Central Rabat
+                            </p>
+                            <p class="text-sm text-gray-400">
+                                The Hassan Tower is the minaret of an incomplete mosque from the 12th century. 
+                                The nearby Mausoleum of Mohammed V contains the tombs of Moroccan kings.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- City 2: Casablanca -->
+                    <div class="city-card">
+                        <img src="Hassan II Mosque.jfif" alt="Hassan II Mosque, Casablanca" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-2 text-[#00CC66]">Casablanca</h3>
+                        <p class="text-gray-300 mb-3">Economic Capital & Largest City</p>
+                        <div class="space-y-2">
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-mosque text-[#D4AF37]"></i>
+                                <span class="font-bold">Famous Landmark:</span> Hassan II Mosque
+                            </p>
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-map-marker-alt text-[#D4AF37]"></i>
+                                <span class="font-bold">Location:</span> Casablanca coast
+                            </p>
+                            <p class="text-sm text-gray-400">
+                                The Hassan II Mosque is the largest mosque in Africa and the 7th largest in the world. 
+                                Its minaret is the world's tallest at 210 meters (689 ft).
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- City 3: Marrakech -->
+                    <div class="city-card">
+                        <img src="Jemaa ElFena.jfif" alt="Jemaa el-Fnaa Square, Marrakech" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1550340499-a6c60fc8287c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-2 text-[#00CC66]">Marrakech</h3>
+                        <p class="text-gray-300 mb-3">Cultural Capital & Tourist Hub</p>
+                        <div class="space-y-2">
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-square text-[#D4AF37]"></i>
+                                <span class="font-bold">Famous Landmark:</span> Jemaa el-Fnaa Square
+                            </p>
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-map-marker-alt text-[#D4AF37]"></i>
+                                <span class="font-bold">Location:</span> Marrakech Medina
+                            </p>
+                            <p class="text-sm text-gray-400">
+                                Jemaa el-Fnaa is the main square and market place in Marrakech's medina quarter. 
+                                By day it's filled with orange juice stalls and snake charmers, by night with food stalls.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- City 4: Tangier -->
+                    <div class="city-card">
+                        <img src="Tangier Kasbah.jfif" alt="Tangier Kasbah" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1585506936725-fd68e68bc5e6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-2 text-[#00CC66]">Tangier</h3>
+                        <p class="text-gray-300 mb-3">Strategic Port City</p>
+                        <div class="space-y-2">
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-fortress text-[#D4AF37]"></i>
+                                <span class="font-bold">Famous Landmark:</span> Tangier Kasbah
+                            </p>
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-map-marker-alt text-[#D4AF37]"></i>
+                                <span class="font-bold">Location:</span> Old Medina of Tangier
+                            </p>
+                            <p class="text-sm text-gray-400">
+                                The Kasbah of Tangier is a historic fortress in the old medina. It offers stunning views 
+                                of the Strait of Gibraltar and houses the Kasbah Museum of Mediterranean Cultures.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- City 5: Agadir -->
+                    <div class="city-card">
+                        <img src="Agadir kasbah.jfif" alt="Agadir Kasbah" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1598880940080-ff9a29891b85?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-2 text-[#00CC66]">Agadir</h3>
+                        <p class="text-gray-300 mb-3">Coastal Resort City</p>
+                        <div class="space-y-2">
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-hill text-[#D4AF37]"></i>
+                                <span class="font-bold">Famous Landmark:</span> Agadir Kasbah
+                            </p>
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-map-marker-alt text-[#D4AF37]"></i>
+                                <span class="font-bold">Location:</span> Hilltop overlooking Agadir
+                            </p>
+                            <p class="text-sm text-gray-400">
+                                The Kasbah of Agadir is a historic fortification built in 1540. Destroyed in the 1960 earthquake, 
+                                its ruins offer panoramic views of Agadir's bay and the modern city below.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- City 6: Fes -->
+                    <div class="city-card">
+                        <img src="Fes Medina.jfif" alt="Fes Medina" class="stadium-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1551135042-1af3a2c85c57?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'">
+                        <h3 class="text-xl font-bold mb-2 text-[#00CC66]">Fes</h3>
+                        <p class="text-gray-300 mb-3">Historic & Spiritual Capital</p>
+                        <div class="space-y-2">
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-city text-[#D4AF37]"></i>
+                                <span class="font-bold">Famous Landmark:</span> Fes el Bali Medina
+                            </p>
+                            <p class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-map-marker-alt text-[#D4AF37]"></i>
+                                <span class="font-bold">Location:</span> Fes Old City
+                            </p>
+                            <p class="text-sm text-gray-400">
+                                Fes el Bali is a UNESCO World Heritage Site and one of the world's largest urban pedestrian zones. 
+                                It's home to the University of Al Quaraouiyine, founded in 859 and considered the oldest continuously operating university.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- How to Play Section -->
+            <section id="how-to-play" class="mb-16">
+                <h2 class="section-header">HOW TO PLAY PREDICTOR</h2>
+                <div class="mb-8">
+                    <div class="how-to-step">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Access the Predictor</h3>
+                            <p class="text-gray-300">Click on the "Predictions" tab in the navigation or use the button below to access the interactive bracket predictor.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="how-to-step">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Make Your Round of 16 Picks</h3>
+                            <p class="text-gray-300">Click on the team you think will win each Round of 16 match. Selected teams will advance automatically to the next round.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="how-to-step">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Advance Through the Tournament</h3>
+                            <p class="text-gray-300">Continue selecting winners for quarter-finals, semi-finals, and finally the champion in the final match.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="how-to-step">
+                        <div class="step-number">4</div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-2">Save & Share Your Predictions</h3>
+                            <p class="text-gray-300">Once complete, save your prediction to compare with friends, take a screenshot, or share on social media.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <a href="predictor.html" class="inline-block bg-[#D4AF37] hover:bg-[#b8942a] text-white px-8 py-4 rounded-lg font-bold text-lg flex items-center gap-3 mx-auto w-fit">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Start Predicting Now!</span>
+                    </a>
+                </div>
+            </section>
+            
+            <!-- Team Portfolio Section -->
+            <section id="portfolio" class="mb-16">
+                <h2 class="section-header">
+                    OUR ALL-FEMALE DEVELOPMENT TEAM 
+                    <span class="girls-in-tech">Girls in Tech</span>
+                </h2>
+                
+                <div class="bg-gradient-to-r from-pink-500/10 to-purple-500/10 p-6 rounded-lg border border-pink-500/20 mb-8">
+                    <div class="flex items-center gap-4">
+                        <div class="text-3xl text-pink-400">
+                            <i class="fas fa-venus"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white mb-2">Celebrating Women in Web Development</h3>
+                            <p class="text-gray-300">
+                                This project was proudly developed by an all-female team of web developers. 
+                                We're passionate about football, technology, and breaking stereotypes in the tech industry!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    
+                    <!-- Ghita El Harzafi -->
+                    <div class="portfolio-card text-center">
+                        <div class="team-avatar mb-4">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=ghita&mouth=smile&eyebrows=default&eyes=happy&hair=fridaHair&hairColor=2c1810&skinColor=f9d9cc&clothing=shirtVNeck&clothingColor=ff6b9d&accessories=prescription02" 
+                                 alt="Ghita El Harzafi" 
+                                 class="w-24 h-24 rounded-full mx-auto border-2 border-[#00CC66]">
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Ghita El Harzafi</h3>
+                        <p class="text-[#00CC66] font-medium mb-3">Frontend Developer</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Specialized in responsive web design and user interface development. 
+                            Passionate about creating accessible and beautiful web experiences.
+                        </p>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <span class="px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-xs">HTML/CSS</span>
+                            <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">JavaScript</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">React</span>
+                        </div>
+                        <a href="https://ghitaharzafi.github.io/" 
+                           target="_blank" 
+                           class="inline-block px-4 py-2 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white rounded-lg text-sm transition-all duration-300">
+                            <i class="fas fa-external-link-alt mr-2"></i>View Portfolio
+                        </a>
+                    </div>
+                    
+                    <!-- Hiba Marzak -->
+                    <div class="portfolio-card text-center">
+                        <div class="team-avatar mb-4">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=hiba&mouth=smile&eyebrows=default&eyes=happy&hair=friHair&hairColor=2c1810&skinColor=f9d9cc&clothing=shirtVNeck&clothingColor=9c27b0&accessories=sunglasses" 
+                                 alt="Hiba Marzak" 
+                                 class="w-24 h-24 rounded-full mx-auto border-2 border-[#00CC66]">
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Hiba Marzak</h3>
+                        <p class="text-[#00CC66] font-medium mb-3">Full Stack Developer</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Experienced in modern web technologies and interactive applications.
+                            Loves solving complex problems with elegant code solutions.
+                        </p>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">Node.js</span>
+                            <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-xs">MongoDB</span>
+                            <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs">Express</span>
+                        </div>
+                        <a href="https://hiba997ugu.github.io/portfolio_total/" 
+                           target="_blank" 
+                           class="inline-block px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-lg text-sm transition-all duration-300">
+                            <i class="fas fa-external-link-alt mr-2"></i>View Portfolio
+                        </a>
+                    </div>
+                    
+                    <!-- Salma Kortaf -->
+                    <div class="portfolio-card text-center">
+                        <div class="team-avatar mb-4">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=salma&mouth=smile&eyebrows=default&eyes=happy&hair=fridaHair&hairColor=2c1810&skinColor=f9d9cc&clothing=shirtVNeck&clothingColor=00CC66&accessories=round" 
+                                 alt="Salma Kortaf" 
+                                 class="w-24 h-24 rounded-full mx-auto border-2 border-[#00CC66]">
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Salma Kortaf</h3>
+                        <p class="text-[#00CC66] font-medium mb-3">UI/UX Designer</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Focused on creating intuitive and visually appealing user experiences.
+                            Believes good design should be both beautiful and functional.
+                        </p>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <span class="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs">Figma</span>
+                            <span class="px-3 py-1 bg-pink-500/20 text-pink-300 rounded-full text-xs">Adobe XD</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs">Wireframing</span>
+                        </div>
+                        <a href="https://portfoliosalmakortaf24.vercel.app/" 
+                           target="_blank" 
+                           class="inline-block px-4 py-2 bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white rounded-lg text-sm transition-all duration-300">
+                            <i class="fas fa-external-link-alt mr-2"></i>View Portfolio
+                        </a>
+                    </div>
+                    
+                    <!-- Douaa Tabit -->
+                    <div class="portfolio-card text-center">
+                        <div class="team-avatar mb-4">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=douaa&mouth=smile&eyebrows=default&eyes=happy&hair=shortHair&hairColor=2c1810&skinColor=f9d9cc&clothing=graphicShirt&clothingColor=ff4081&accessories=prescription01" 
+                                 alt="Douaa Tabit" 
+                                 class="w-24 h-24 rounded-full mx-auto border-2 border-[#00CC66]">
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Douaa Tabit</h3>
+                        <p class="text-[#00CC66] font-medium mb-3">Backend Developer</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Expertise in server-side development and database management.
+                            Enjoys building robust and scalable backend systems.
+                        </p>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <span class="px-3 py-1 bg-red-500/20 text-red-300 rounded-full text-xs">Python</span>
+                            <span class="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs">Django</span>
+                            <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-xs">PostgreSQL</span>
+                        </div>
+                        <a href="https://portfolio-two-tau-1fsbqjfa48.vercel.app/" 
+                           target="_blank" 
+                           class="inline-block px-4 py-2 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white rounded-lg text-sm transition-all duration-300">
+                            <i class="fas fa-external-link-alt mr-2"></i>View Portfolio
+                        </a>
+                    </div>
+                    
+                    <!-- Salma Abayoud -->
+                    <div class="portfolio-card text-center">
+                        <div class="team-avatar mb-4">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=salma&mouth=smile&eyebrows=default&eyes=happy&hair=shortHair&hairColor=2c1810&skinColor=f9d9cc&clothing=graphicShirt&clothingColor=ff4081&accessories=prescription01" 
+                                 alt="Salma Abayoud" 
+                                 class="w-24 h-24 rounded-full mx-auto border-2 border-[#00CC66]">
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Salma Abayoud</h3>
+                        <p class="text-[#00CC66] font-medium mb-3">Project Coordinator & Frontend</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Manages project timelines and coordinates team collaboration efforts.
+                            Also contributes to frontend development and testing.
+                        </p>
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <span class="px-3 py-1 bg-indigo-500/20 text-indigo-300 rounded-full text-xs">Project Management</span>
+                            <span class="px-3 py-1 bg-teal-500/20 text-teal-300 rounded-full text-xs">Team Coordination</span>
+                            <span class="px-3 py-1 bg-cyan-500/20 text-cyan-300 rounded-full text-xs">Testing</span>
+                        </div>
+                        <a href="https://Salmabaryoud.github.io/" 
+                           target="_blank" 
+                           class="inline-block px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white rounded-lg text-sm transition-all duration-300">
+                            <i class="fas fa-external-link-alt mr-2"></i>View Portfolio
+                        </a>
+                    </div>
+                    
+                    <!-- Join Us Card -->
+                    <div class="portfolio-card text-center border-2 border-dashed border-pink-500/30">
+                        <div class="team-avatar mb-4 flex items-center justify-center">
+                            <div class="w-24 h-24 rounded-full bg-gradient-to-r from-pink-500/20 to-purple-500/20 border-2 border-dashed border-pink-500 flex items-center justify-center">
+                                <i class="fas fa-venus text-4xl text-pink-400"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Inspired by Our Work?</h3>
+                        <p class="text-[#00CC66] font-medium mb-3">Join Girls in Tech!</p>
+                        <p class="text-gray-300 text-sm mb-4">
+                            Are you a female developer interested in web development, design, or technology?
+                            We believe in empowering women in tech and creating more inclusive spaces.
+                        </p>
+                        <div class="mt-4">
+                            <button class="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-lg text-sm transition-all duration-300" onclick="alert('Contact us at: girlsintech@afcon2025.com')">
+                                <i class="fas fa-envelope mr-2"></i>Get in Touch
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm p-6 rounded-lg border border-pink-500/20 text-center">
+                    <h3 class="section-subheader mb-4 flex items-center justify-center gap-3">
+                        <i class="fas fa-venus text-pink-400"></i>
+                        Our Mission & Vision
+                        <i class="fas fa-venus text-pink-400"></i>
+                    </h3>
+                    <p class="text-gray-300 mb-4">
+                        As an all-female development team, we're passionate about breaking barriers in the tech industry. 
+                        We created this platform to combine our love for football with our technical skills, demonstrating 
+                        that women can excel in web development and contribute to sports technology.
+                    </p>
+                    <p class="text-gray-300 mb-6">
+                        Our goal is to inspire more young women to pursue careers in technology and show that diverse teams 
+                        create better, more innovative solutions. We believe in the power of representation and hope our 
+                        project encourages other women to explore web development.
+                    </p>
+                    
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-code text-[#00CC66]"></i>
+                            <span class="text-sm text-gray-300">Quality Code</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-heart text-pink-400"></i>
+                            <span class="text-sm text-gray-300">Passion for Tech</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-futbol text-[#D4AF37]"></i>
+                            <span class="text-sm text-gray-300">Love for Football</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-users text-purple-400"></i>
+                            <span class="text-sm text-gray-300">Team Collaboration</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-container">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-[#00CC66]">Sign In / Register</h3>
+                <button id="closeLoginModal" class="text-white/60 hover:text-white text-xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Your Name</label>
+                    <input type="text" id="userName" class="w-full bg-black/50 border border-white/20 rounded-lg px-4 py-3 text-white focus:border-[#00CC66] focus:outline-none" placeholder="Enter your name" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Your Country</label>
+                    <select id="userCountrySelect" class="w-full bg-black/50 border border-white/20 rounded-lg px-4 py-3 text-white focus:border-[#00CC66] focus:outline-none" required>
+                        <option value="">Select your country</option>
+                        <option value="Morocco">Morocco</option>
+                        <option value="Algeria">Algeria</option>
+                        <option value="Egypt">Egypt</option>
+                        <option value="Senegal">Senegal</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="Ivory Coast">Ivory Coast</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Tunisia">Tunisia</option>
+                        <option value="Cameroon">Cameroon</option>
+                        <option value="Other">Other African Country</option>
+                        <option value="International">International Fan</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Favorite Team (Optional)</label>
+                    <select id="userFavoriteTeam" class="w-full bg-black/50 border border-white/20 rounded-lg px-4 py-3 text-white focus:border-[#00CC66] focus:outline-none">
+                        <option value="">Select your favorite team</option>
+                        <option value="MAR">Morocco</option>
+                        <option value="ALG">Algeria</option>
+                        <option value="EGY">Egypt</option>
+                        <option value="SEN">Senegal</option>
+                        <option value="NGA">Nigeria</option>
+                        <option value="CIV">Ivory Coast</option>
+                        <option value="RSA">South Africa</option>
+                        <option value="GHA">Ghana</option>
+                        <option value="TUN">Tunisia</option>
+                        <option value="CMR">Cameroon</option>
+                    </select>
+                </div>
+                
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-[#00CC66] hover:bg-[#00b359] text-white py-3 rounded-lg font-bold">
+                        Save Profile
+                    </button>
+                </div>
+                
+                <p class="text-center text-gray-400 text-sm mt-4">
+                    Your data is stored locally in your browser. No account required!
+                </p>
+            </form>
+        </div>
+    </div>
+    
+    <footer class="relative z-10 w-full py-8 bg-black/30 backdrop-blur-sm border-t border-white/10">
+        <div class="container mx-auto max-w-6xl px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-4">AFCON 2025 Morocco</h4>
+                    <p class="text-sm text-gray-400">
+                        The ultimate hub for Africa Cup of Nations 2025 predictions and information.
+                        Experience the tournament like never before with our interactive predictor.
+                    </p>
+                    <div class="mt-4 flex items-center gap-2">
+                        <i class="fas fa-venus text-pink-400"></i>
+                        <span class="text-sm text-gray-300">Proudly developed by an all-female team</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-4">Our All-Female Team</h4>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="https://ghitaharzafi.github.io/" 
+                               target="_blank" 
+                               class="text-gray-300 hover:text-pink-300 text-sm flex items-center gap-2">
+                                <i class=" text-pink-400 text-xs"></i>
+                                Ghita El Harzafi
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://hiba997ugu.github.io/portfolio_total/" 
+                               target="_blank" 
+                               class="text-gray-300 hover:text-purple-300 text-sm flex items-center gap-2">
+                                <i class=" text-purple-400 text-xs"></i>
+                                Hiba Marzak
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://portfoliosalmakortaf24.vercel.app/" 
+                               target="_blank" 
+                               class="text-gray-300 hover:text-blue-300 text-sm flex items-center gap-2">
+                                <i class=" text-blue-400 text-xs"></i>
+                                Salma Kortaf
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://portfolio-two-tau-1fsbqjfa48.vercel.app/" 
+                               target="_blank" 
+                               class="text-gray-300 hover:text-red-300 text-sm flex items-center gap-2">
+                                <i class=" text-red-400 text-xs"></i>
+                                Douaa Tabit
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://Salmabaryoud.github.io/" 
+                               target="_blank" 
+                               class="text-gray-300 hover:text-indigo-300 text-sm flex items-center gap-2">
+                                <i class=" text-indigo-400 text-xs"></i>
+                                Salma Abayoud
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-300 hover:text-[#00CC66] text-sm">Home</a></li>
+                        <li><a href="predictor.html" class="text-gray-300 hover:text-[#00CC66] text-sm">Tournament Predictor</a></li>
+                        <li><a href="#host-cities" class="text-gray-300 hover:text-[#00CC66] text-sm">Host Cities</a></li>
+                        <li><a href="#how-to-play" class="text-gray-300 hover:text-[#00CC66] text-sm">How to Play</a></li>
+                        <li><a href="#portfolio" class="text-gray-300 hover:text-[#00CC66] text-sm">Our Team</a></li>
+                    </ul>
+                    
+                    <div class="mt-6">
+                        <a href="https://github.com/your-team/afcon-2025" 
+                           target="_blank" 
+                           class="inline-flex items-center gap-2 text-sm text-gray-300 hover:text-white">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub Repository</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                <div class="flex flex-col items-center gap-2 mb-4">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-venus text-pink-400"></i>
+                        <i class="fas fa-code text-[#00CC66]"></i>
+                        <i class="fas fa-futbol text-[#D4AF37]"></i>
+                    </div>
+                    <p class="text-sm font-bold tracking-widest text-white/80 uppercase">
+                        Girls in Tech Presents: AFCON 2025 Morocco
+                    </p>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">
+                    © 2025 AFCON Predictor Hub | Proudly developed by an all-female web development team | 
+                    Celebrating women in technology and African football
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Font Awesome for Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        // User profile management
+        let userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile')) || null;
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNavigation();
+            updateProfileDisplay();
+            
+            // Handle missing images
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('error', function() {
+                    if (this.classList.contains('stadium-img')) {
+                        // Stadium/city images fallback
+                        this.src = 'https://images.unsplash.com/photo-1551135042-1af3a2c85c57?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                    }
+                });
+            });
+            
+            // Login modal events
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                document.getElementById('loginModal').classList.add('active');
+            });
+            
+            document.getElementById('closeLoginModal').addEventListener('click', () => {
+                document.getElementById('loginModal').classList.remove('active');
+            });
+            
+            // Login form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const userName = document.getElementById('userName').value;
+                const userCountry = document.getElementById('userCountrySelect').value;
+                const favoriteTeam = document.getElementById('userFavoriteTeam').value;
+                
+                if (!userName || !userCountry) {
+                    alert('Please enter your name and select your country.');
+                    return;
+                }
+                
+                // Save user profile
+                userProfile = {
+                    name: userName,
+                    country: userCountry,
+                    favoriteTeam: favoriteTeam,
+                    avatarSeed: userName.toLowerCase().replace(/\s/g, ''),
+                    loginDate: new Date().toISOString()
+                };
+                
+                localStorage.setItem('afcon2025_user_profile', JSON.stringify(userProfile));
+                
+                // Update display
+                updateProfileDisplay();
+                
+                // Close modal
+                document.getElementById('loginModal').classList.remove('active');
+                
+                // Reset form
+                document.getElementById('loginForm').reset();
+                
+                // Show welcome message
+                const welcomeMessages = [
+                    `Welcome to AFCON 2025 Hub, ${userName}!`,
+                    `Get ready for the tournament, ${userName}!`,
+                    `${userName}, your AFCON 2025 journey begins!`,
+                    `Welcome aboard, ${userName}! Let's predict!`
+                ];
+                const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+                alert(randomMessage);
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('loginModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+            
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (this.getAttribute('href') === '#') return;
+                    
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Update active nav link
+                        document.querySelectorAll('.nav-link').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    }
+                });
+            });
+            
+            // Initialize tooltips for external links
+            document.querySelectorAll('a[target="_blank"]').forEach(link => {
+                link.title = 'Opens in new tab - Portfolio';
+            });
+            
+            // Add celebration effect for Girls in Tech section
+            const girlsInTechSection = document.getElementById('portfolio');
+            if (girlsInTechSection) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            // Add a subtle animation when section comes into view
+                            entry.target.style.animation = 'none';
+                            setTimeout(() => {
+                                entry.target.style.animation = 'pulse 2s ease-in-out';
+                            }, 100);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                observer.observe(girlsInTechSection);
+            }
+        });
+        
+        // Initialize navigation
+        function initializeNavigation() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            // Mobile menu toggle
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                });
+            }
+            
+            // Update active link on click
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Update active class
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Close mobile menu if open
+                    if (navLinks && window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                    }
+                    
+                    // Get the target section
+                    const targetId = this.getAttribute('href');
+                    if (targetId.startsWith('#')) {
+                        const targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            e.preventDefault();
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const isClickInsideNav = navLinks.contains(event.target) || mobileToggle.contains(event.target);
+                if (!isClickInsideNav && navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                }
+            });
+        }
+        
+        // Update profile display
+        function updateProfileDisplay() {
+            const welcomeText = document.getElementById('welcomeText');
+            const userCountry = document.getElementById('userCountry');
+            const profileAvatar = document.getElementById('profileAvatar');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (userProfile) {
+                // User is logged in
+                welcomeText.textContent = `Welcome back, ${userProfile.name}!`;
+                userCountry.textContent = `From ${userProfile.country}`;
+                
+                // Update avatar with user's seed
+                profileAvatar.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.avatarSeed}&backgroundColor=00CC66`;
+                
+                // Change button to logout
+                loginBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i><span>Sign Out</span>';
+                loginBtn.onclick = function() {
+                    if (confirm('Are you sure you want to sign out?')) {
+                        localStorage.removeItem('afcon2025_user_profile');
+                        userProfile = null;
+                        updateProfileDisplay();
+                        alert('You have been signed out successfully.');
+                    }
+                };
+            } else {
+                // User is not logged in
+                welcomeText.textContent = 'Welcome, Guest!';
+                userCountry.textContent = 'Sign in to personalize your experience';
+                profileAvatar.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest&backgroundColor=1a0f0f';
+                
+                // Set button to login
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Sign In / Register</span>';
+                loginBtn.onclick = function() {
+                    document.getElementById('loginModal').classList.add('active');
+                };
+            }
+        }
+        
+        // Add some interactive effects
+        function addInteractiveEffects() {
+            // Add hover effects to cards
+            document.querySelectorAll('.stadium-card, .city-card, .portfolio-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px)';
+                    this.style.boxShadow = '0 20px 40px rgba(0, 204, 102, 0.1)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+            
+            // Add animation to section headers on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe section headers
+            document.querySelectorAll('.section-header').forEach(header => {
+                header.style.opacity = '0';
+                header.style.transform = 'translateY(20px)';
+                header.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(header);
+            });
+            
+            // Add special effect to Girls in Tech badge
+            const girlsBadge = document.querySelector('.girls-in-tech');
+            if (girlsBadge) {
+                girlsBadge.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.1)';
+                    this.style.transition = 'transform 0.3s ease';
+                });
+                
+                girlsBadge.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            }
+        }
+        
+        // Initialize interactive effects when page loads
+        window.addEventListener('load', addInteractiveEffects);
+    </script>
+    
+    <style>
+        /* Add pulse animation for Girls in Tech section */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 157, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 157, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 157, 0); }
+        }
+        
+        /* Special styling for female avatars */
+        .team-avatar img {
+            transition: transform 0.3s ease;
+        }
+        
+        .team-avatar img:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Gradient backgrounds for team cards */
+        .portfolio-card:nth-child(1) {
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.8) 0%, rgba(255, 107, 157, 0.1) 100%);
+        }
+        
+        .portfolio-card:nth-child(2) {
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.8) 0%, rgba(156, 39, 176, 0.1) 100%);
+        }
+        
+        .portfolio-card:nth-child(3) {
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.8) 0%, rgba(0, 204, 102, 0.1) 100%);
+        }
+        
+        .portfolio-card:nth-child(4) {
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.8) 0%, rgba(255, 64, 129, 0.1) 100%);
+        }
+        
+        .portfolio-card:nth-child(5) {
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.8) 0%, rgba(103, 58, 183, 0.1) 100%);
+        }
+    </style>
+</body>
+</html>

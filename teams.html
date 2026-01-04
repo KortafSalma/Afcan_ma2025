@@ -1,3 +1,4 @@
+<!-- FINAL GIT TEST -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AFCON 2025 Teams - Tournament Participants</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -660,6 +661,267 @@
         background: rgba(0, 0, 0, 0.8);
     }
 }
+/* Team Stats Cards */
+.team-stats-overview {
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
+    animation-delay: 0.5s;
+}
+
+.stat-card {
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transition: left 0.7s ease;
+}
+
+.stat-card:hover::before {
+    left: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Focused card state */
+.team-detail-card.focused-card {
+    border-color: #00CC66 !important;
+    box-shadow: 0 0 25px rgba(0, 204, 102, 0.4) !important;
+    transform: scale(1.02);
+}
+
+/* Group header indicators */
+[data-group="a"]::after,
+[data-group="b"]::after,
+[data-group="c"]::after,
+[data-group="d"]::after,
+[data-group="e"]::after,
+[data-group="f"]::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    border-radius: 0 4px 4px 0;
+}
+
+[data-group="a"]::after { background: var(--accent-green); }
+[data-group="b"]::after { background: #007BFF; }
+[data-group="c"]::after { background: #FFC107; }
+[data-group="d"]::after { background: #DC3545; }
+[data-group="e"]::after { background: #6F42C1; }
+[data-group="f"]::after { background: #FD7E14; }
+
+/* Quick filter tags */
+.quick-filter-tags {
+    display: none; /* Hidden by default, can be toggled */
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+}
+
+.quick-tag {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.quick-tag:hover {
+    background: rgba(0, 204, 102, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Performance rating stars */
+.performance-stars {
+    display: flex;
+    gap: 2px;
+    margin-top: 5px;
+}
+
+.star {
+    color: rgba(255, 255, 255, 0.2);
+    font-size: 12px;
+}
+
+.star.filled {
+    color: #FFD700;
+}
+
+/* Team strength indicator */
+.team-strength {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.strength-bar {
+    flex-grow: 1;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.strength-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent-green), #00b359);
+}
+
+/* Animation for new elements */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Trophy icon for champions */
+.champions-icon {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: var(--accent-gold);
+    font-size: 16px;
+    opacity: 0.7;
+}
+
+/* Print-friendly styles */
+@media print {
+    .team-detail-card {
+        break-inside: avoid;
+        border: 1px solid #333;
+        box-shadow: none !important;
+    }
+    
+    .view-details-btn {
+        display: none;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .team-detail-card,
+    .stat-card,
+    .filter-btn {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* Custom scrollbar for team grid */
+#teamsContainer {
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-green) #2a1a1a;
+}
+
+/* Loading placeholder */
+.team-placeholder {
+    height: 200px;
+    background: linear-gradient(90deg, #1a0f0f 25%, #2a1a1a 50%, #1a0f0f 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 12px;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+        /* Stadium Image Styles - NEW ADDITION */
+        .team-stadium {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .team-stadium:hover {
+            transform: scale(1.02);
+            border-color: rgba(0, 204, 102, 0.5);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stadium-info {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        /* Fix search input text color */
+        .search-input {
+            color: white !important;
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        /* Stadium Image Styles - NEW ADDITION */
+.team-stadium {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.team-stadium:hover {
+    transform: scale(1.02);
+    border-color: rgba(0, 204, 102, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.stadium-info {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 5px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Fix search input text color */
+.search-input {
+    color: white !important;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
     </style>
 </head>
 <body class="bg-morocco">
@@ -668,7 +930,7 @@
         <div class="nav-content">
             <a href="index.html" class="nav-logo">
                 <div class="w-24 h-8 flex items-center justify-center bg-[#00CC66] rounded-full">
-                    <img src="logo1.png" alt="afcon-2025.ma" >
+                    <img src="logo1.png" alt="afcon-2025.ma">
                 </div>
                 <div class="nav-logo-text">
                     AFCON <span>2025</span>
@@ -739,12 +1001,11 @@
     <main class="relative z-10 flex-grow w-full px-4 py-8 max-w-7xl mx-auto">
         <!-- Search and Filters -->
         <div class="mb-8">
-    <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
-        <div class="search-container w-full md:w-auto md:flex-1">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" placeholder="Search teams by name (e.g., Morocco, Nigeria)..."  class="search-input w-full py-3 px-4"
-id="teamSearch">
-        </div>
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                <div class="search-container w-full md:w-auto md:flex-1">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" placeholder="Search teams by name (e.g., Morocco, Nigeria)..." class="search-input w-full py-3 px-4" id="teamSearch">
+                </div>
                 
                 <div class="flex flex-wrap gap-2 justify-center mt-4 md:mt-0">
                     <button class="filter-btn active" data-filter="all">All Teams</button>
@@ -797,6 +1058,10 @@ id="teamSearch">
                         <span>Champions (1976)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Mohammed_V_stadium.jpg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade Mohammed V, Casablanca</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -865,6 +1130,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Tanzania_National_Main_Stadium_Aerial.jpg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">National Stadium, Dar es Salaam</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">5</div>
@@ -932,6 +1201,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRxcIrzEuFbYTwzMxuXiYr1lfhU-YnJx5ppA&s" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">National Heroes Stadium, Lusaka</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">2</div>
@@ -998,6 +1271,10 @@ id="teamSearch">
                         <span>Champions (1968, 1974)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2a/6e/57/66/le-stade-de-martyrs-est.jpg?w=1100&h=-1&s=1" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade des Martyrs, Kinshasa</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -1067,6 +1344,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://stadiumdb.com/pictures/stadiums/sen/stade_du_senegal/stade_du_senegal02.jpg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade Abdoulaye Wade, Dakar</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">9</div>
@@ -1133,6 +1414,10 @@ id="teamSearch">
                         <span>Champions (1984, 1988, 2000, 2002, 2017)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/09_janvier_2022_Lancement_CAN_2021-2.jpg/1200px-09_janvier_2022_Lancement_CAN_2021-2.jpg?20220109141436" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Olembe Stadium, Yaoundé</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -1201,6 +1486,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://www.footafrique.com/wp-content/uploads/2025/07/stade-du-28-septembre-de-Guinee-780x470.webp" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade du 28 Septembre, Conakry</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">3</div>
@@ -1267,6 +1556,10 @@ id="teamSearch">
                         <span>Group Stage (2019)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQywpaHLBUnbM_Zwe7XfX4lEGwpudVeDnhJUg&s" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Intwari Stadium, Bujumbura</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -1336,6 +1629,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8gigRBVXKmpxkG362qzAfnafJjhj1se3IOw&s" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Abuja National Stadium, Abuja</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">7</div>
@@ -1402,6 +1699,10 @@ id="teamSearch">
                         <span>Champions (1957, 1959, 1986, 1998, 2006, 2008, 2010)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://sportsmatik.com/uploads/wiki-venues/cairo-international-stadium_1582019005.jpg"alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Cairo International Stadium, Cairo</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -1470,6 +1771,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXCr9iwJyIyNsezhW6n3F70n-K9iwPEgp29g&s" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade de l'Amitié, Cotonou</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">4</div>
@@ -1536,6 +1841,10 @@ id="teamSearch">
                         <span>Group Stage</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://footalgerien.com/wp-content/uploads/2023/10/Estadio-do-Zimpeto-a-Maputo.jpeg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Estádio do Zimpeto, Maputo</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -1605,6 +1914,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://www.ragni.com/wp-content/uploads/2024/04/stade-de-jour.jpg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade Félix Houphouët-Boigny, Abidjan</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">6</div>
@@ -1671,6 +1984,10 @@ id="teamSearch">
                         <span>Champions (1990, 2019)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://www.footafrique.com/wp-content/uploads/2024/04/STADE-DU-5-JUILLET-_555.jpeg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade du 5 Juillet, Algiers</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -1739,6 +2056,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuuKLNwd2RzEYu1JPeaoxzvGtZeggkI2fXiQ&s" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade du 4 Août, Ouagadougou</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">4</div>
@@ -1805,6 +2126,10 @@ id="teamSearch">
                         <span>Quarter-finals (2008, 2010)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSl00MlQhTkX7FdDVmNlY1nORvE2gJ1VtA9-A&s" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Estádio 11 de Novembro, Luanda</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -1874,6 +2199,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://cdn2.webmanagercenter.com/di/wp-content/uploads/2022/05/stade-olympique-rades2022.jpg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade Olympique Hammadi Agrebi, Tunis</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">7</div>
@@ -1940,6 +2269,10 @@ id="teamSearch">
                         <span>Runners-up (1972)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://stadiumdb.com/pictures/stadiums/mli/stade_du_26_mars/stade_du_26_mars01.jpg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade du 26 Mars, Bamako</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -2008,6 +2341,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://populous.com/uploads/2018/01/GettyImages-102810965-Do-not-use-after-31MAR2025.jpg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">FNB Stadium, Johannesburg</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">4</div>
@@ -2074,6 +2411,10 @@ id="teamSearch">
                         <span>Group Stage</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://assets.simpleviewinc.com/simpleview/image/upload/crm/shreveport/20241228_202959_032B00EF-CD4D-7480-D2225FCC188209DC-032af8dfb2655d3_032b0ebc-a656-af67-f8cec304f3a2e5c1.jpg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Independence Stadium, Windhoek</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -2143,6 +2484,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/18/ac/e2/65/a-casa-do-desporto-cabo.jpg?w=900&h=-1&s=1" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Estádio Nacional, Praia</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">3</div>
@@ -2209,6 +2554,10 @@ id="teamSearch">
                         <span>Round of 16 (2023)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKnQ5WNG8X3LZz4JoP6k7ZgZOOZeQ9M2aexA&s" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade Olympique, Nouakchott</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -2277,6 +2626,10 @@ id="teamSearch">
                     </div>
                 </div>
                 
+                <!-- إضافة صورة الملعب -->
+                <img src="https://stadiumdb.com/pictures/stadiums/gab/stade_de_la_renovation_franceville/stade_de_la_renovation_franceville07.jpg" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Stade de Franceville, Franceville</div>
+                
                 <div class="stats-grid">
                     <div class="stat-item">
                         <div class="stat-value">2</div>
@@ -2343,6 +2696,10 @@ id="teamSearch">
                         <span>Quarter-finals (2023)</span>
                     </div>
                 </div>
+                
+                <!-- إضافة صورة الملعب -->
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsHodKz77c-5sU_P6L-BUk2j_gYwsWvmab1g&s" alt="Stadium" class="team-stadium">
+                <div class="stadium-info">Independence Stadium, Bakau</div>
                 
                 <div class="stats-grid">
                     <div class="stat-item">
@@ -2426,97 +2783,96 @@ id="teamSearch">
         </div>
     </footer>
 
-    <!-- In the script section at the bottom of teams.html -->
-<script>
-    // Mobile navigation toggle
-    document.getElementById('mobileToggle').addEventListener('click', function() {
-        document.getElementById('navLinks').classList.toggle('active');
-    });
-
-    // Close mobile menu when clicking a link
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.addEventListener('click', () => {
-            document.getElementById('navLinks').classList.remove('active');
+    <script>
+        // Mobile navigation toggle
+        document.getElementById('mobileToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
         });
-    });
 
-    // Search functionality
-    const searchInput = document.querySelector('.search-input');
-    const teams = document.querySelectorAll('.team-detail-card');
-    
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.trim().toLowerCase();
-        
-        // If search is empty, show all teams
-        if (searchTerm === '') {
-            teams.forEach(team => {
-                team.style.display = 'block';
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('navLinks').classList.remove('active');
             });
-            return;
-        }
-        
-        teams.forEach(team => {
-            const teamName = team.querySelector('h3').textContent.toLowerCase();
-            const countryCode = team.querySelector('h3').textContent.match(/🇦🇫|🇦🇱|🇩🇿|🇦🇴|🇧🇯|🇧🇼|🇧🇫|🇧🇮|🇨🇻|🇨🇲|🇨🇩|🇨🇮|🇪🇬|🇬🇶|🇪🇷|🇸🇿|🇪🇹|🇬🇦|🇬🇲|🇬🇭|🇬🇳|🇬🇼|🇰🇪|🇱🇸|🇱🇷|🇱🇾|🇲🇬|🇲🇼|🇲🇱|🇲🇷|🇲🇺|🇲🇦|🇲🇿|🇳🇦|🇳🇪|🇳🇬|🇨🇬|🇷🇪|🇷🇼|🇸🇹|🇸🇳|🇸🇨|🇸🇱|🇸🇴|🇿🇦|🇸🇸|🇸🇩|🇹🇿|🇹🇬|🇹🇳|🇺🇬|🇿🇲|🇿🇼/)?.[0] || '';
-            const teamNameWithoutFlag = teamName.replace(countryCode, '').trim();
-            
-            // Search in team name and country name
-            if (teamNameWithoutFlag.includes(searchTerm) || teamName.includes(searchTerm)) {
-                team.style.display = 'block';
-            } else {
-                team.style.display = 'none';
-            }
         });
-    });
 
-    // Filter functionality
-    document.querySelectorAll('.filter-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove active class from all buttons
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+        // Search functionality
+        const searchInput = document.getElementById('teamSearch');
+        const teams = document.querySelectorAll('.team-detail-card');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.trim().toLowerCase();
             
-            // Add active class to clicked button
-            this.classList.add('active');
-            
-            const filter = this.getAttribute('data-filter');
-            
-            teams.forEach(team => {
-                if (filter === 'all') {
+            // If search is empty, show all teams
+            if (searchTerm === '') {
+                teams.forEach(team => {
                     team.style.display = 'block';
-                } else if (filter === 'qualified') {
-                    if (team.getAttribute('data-status') === 'qualified') {
-                        team.style.display = 'block';
-                    } else {
-                        team.style.display = 'none';
-                    }
-                } else if (filter === 'eliminated') {
-                    if (team.getAttribute('data-status') === 'eliminated') {
-                        team.style.display = 'block';
-                    } else {
-                        team.style.display = 'none';
-                    }
+                });
+                return;
+            }
+            
+            teams.forEach(team => {
+                const teamName = team.querySelector('h3').textContent.toLowerCase();
+                const countryCode = team.querySelector('h3').textContent.match(/🇦🇫|🇦🇱|🇩🇿|🇦🇴|🇧🇯|🇧🇼|🇧🇫|🇧🇮|🇨🇻|🇨🇲|🇨🇩|🇨🇮|🇪🇬|🇬🇶|🇪🇷|🇸🇿|🇪🇹|🇬🇦|🇬🇲|🇬🇭|🇬🇳|🇬🇼|🇰🇪|🇱🇸|🇱🇷|🇱🇾|🇲🇬|🇲🇼|🇲🇱|🇲🇷|🇲🇺|🇲🇦|🇲🇿|🇳🇦|🇳🇪|🇳🇬|🇨🇬|🇷🇪|🇷🇼|🇸🇹|🇸🇳|🇸🇨|🇸🇱|🇸🇴|🇿🇦|🇸🇸|🇸🇩|🇹🇿|🇹🇬|🇹🇳|🇺🇬|🇿🇲|🇿🇼/)?.[0] || '';
+                const teamNameWithoutFlag = teamName.replace(countryCode, '').trim();
+                
+                // Search in team name and country name
+                if (teamNameWithoutFlag.includes(searchTerm) || teamName.includes(searchTerm)) {
+                    team.style.display = 'block';
                 } else {
-                    if (team.getAttribute('data-group') === filter.split('-')[1]) {
-                        team.style.display = 'block';
-                    } else {
-                        team.style.display = 'none';
-                    }
+                    team.style.display = 'none';
                 }
             });
         });
-    });
 
-    // View details button functionality
-    document.querySelectorAll('.view-details-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const teamName = this.closest('.team-detail-card').querySelector('h3').textContent;
-            alert(`More details about ${teamName} will be displayed here. This would navigate to a detailed team page.`);
-            // In a real implementation, this would redirect to a team details page
-            // window.location.href = `team-details.html?team=${encodeURIComponent(teamName)}`;
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                
+                teams.forEach(team => {
+                    if (filter === 'all') {
+                        team.style.display = 'block';
+                    } else if (filter === 'qualified') {
+                        if (team.getAttribute('data-status') === 'qualified') {
+                            team.style.display = 'block';
+                        } else {
+                            team.style.display = 'none';
+                        }
+                    } else if (filter === 'eliminated') {
+                        if (team.getAttribute('data-status') === 'eliminated') {
+                            team.style.display = 'block';
+                        } else {
+                            team.style.display = 'none';
+                        }
+                    } else {
+                        if (team.getAttribute('data-group') === filter.split('-')[1]) {
+                            team.style.display = 'block';
+                        } else {
+                            team.style.display = 'none';
+                        }
+                    }
+                });
+            });
         });
-    });
-</script>
+
+        // View details button functionality
+        document.querySelectorAll('.view-details-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const teamName = this.closest('.team-detail-card').querySelector('h3').textContent;
+                alert(`More details about ${teamName} will be displayed here. This would navigate to a detailed team page.`);
+                // In a real implementation, this would redirect to a team details page
+                // window.location.href = `team-details.html?team=${encodeURIComponent(teamName)}`;
+            });
+        });
+    </script>
 </body>
 </html>

@@ -8,474 +8,1064 @@
     <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #1a0f0f;
-            color: #ffffff;
-            margin: 0;
-            overflow-x: hidden;
-        }
-        .bg-morocco {
-            background-color: #1a0f0f;
-            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
-            background-attachment: fixed;
-        }
-        
-        /* Navigation Styles */
-        .nav-container {
-            background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 204, 102, 0.3);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 0.5rem 1rem;
-        }
-        
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-        
-        .nav-logo-text {
-            font-family: 'Teko', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
-            letter-spacing: 1px;
-        }
-        
-        .nav-logo-text span {
-            color: #00CC66;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-        
-        .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-        
-        .nav-link:hover {
-            color: white;
-            background: rgba(0, 204, 102, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .nav-link.active {
-            color: #00CC66;
-            background: rgba(0, 204, 102, 0.1);
-        }
-        
-        .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            background: #00CC66;
-            border-radius: 50%;
-        }
-        
-        .nav-mobile-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-        
-        @media (max-width: 768px) {
-            .nav-mobile-toggle {
-                display: block;
-            }
-            
-            .nav-links {
-                position: fixed;
-                top: 60px;
-                left: 0;
-                right: 0;
-                background: rgba(26, 15, 15, 0.98);
-                backdrop-filter: blur(10px);
-                flex-direction: column;
-                padding: 1rem;
-                gap: 0.5rem;
-                border-bottom: 2px solid #00CC66;
-                transform: translateY(-100%);
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease;
-            }
-            
-            .nav-links.active {
-                transform: translateY(0);
-                opacity: 1;
-                visibility: visible;
-            }
-            
-            .nav-link {
-                width: 100%;
-                text-align: center;
-                padding: 0.75rem 1rem;
-            }
-        }
-        
-        /* Saved Predictions Panel */
-        .saved-predictions-panel {
-            position: fixed;
-            top: 120px;
-            left: 20px;
-            width: 320px;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 204, 102, 0.3);
-            border-radius: 12px;
-            z-index: 999;
-            padding: 16px;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            max-height: calc(100vh - 140px);
-            overflow-y: auto;
-        }
-        
-        .saved-predictions-panel.active {
-            transform: translateX(0);
-        }
-        
-        .saved-predictions-toggle {
-            position: fixed;
-            top: 120px;
-            left: 0;
-            background: rgba(0, 204, 102, 0.9);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 0 12px 12px 0;
-            cursor: pointer;
-            z-index: 1000;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .saved-predictions-toggle:hover {
-            background: #00CC66;
-            padding-left: 20px;
-        }
-        
-        .prediction-item {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-        }
-        
-        .prediction-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
-        }
-        
-        .prediction-item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        
-        .prediction-champion {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(212, 175, 55, 0.1);
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-top: 8px;
-        }
-        
-        .team-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 16px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 25px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            min-width: 160px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 4px 0;
-        }
-        
-        .team-box:hover {
-            background: rgba(0, 0, 0, 0.6);
-            transform: translateX(5px);
-            border-color: #00CC66;
-        }
-        
-        .team-box.selected {
-            background: linear-gradient(135deg, rgba(0, 204, 102, 0.3) 0%, rgba(0, 204, 102, 0.6) 100%);
-            border-color: #00CC66;
-            box-shadow: 0 0 15px rgba(0, 204, 102, 0.4);
-        }
-        
-        .team-box.locked {
-            cursor: default;
-            opacity: 0.9;
-        }
-        
-        .team-box.locked:hover {
-            transform: none;
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.4);
-        }
-        
-        .flag-icon {
-            width: 24px;
-            height: 18px;
-            object-fit: cover;
-            border-radius: 3px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        ::-webkit-scrollbar {
-            height: 8px;
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #4a080c; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555; 
-        }
-        
-        /* Progress Bar */
-        .progress-bar {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00CC66, #D4AF37);
-            transition: width 0.5s ease;
-        }
-        
-        /* Save Animation */
-        @keyframes saveAnimation {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-        
-        .save-animation {
-            animation: saveAnimation 0.5s ease;
-        }
-        
-        /* Trophy Glow */
-        @keyframes trophyGlow {
-            0% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5)); }
-            100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.9)); }
-        }
-        
-        .trophy-glow {
-            animation: trophyGlow 2s infinite alternate;
-        }
-        
-        /* Bracket Container */
-        .bracket-table {
-            display: table;
-            width: 100%;
-            min-width: 1400px;
-            position: relative;
-        }
-        
-        .bracket-round {
-            display: table-cell;
-            vertical-align: top;
-            position: relative;
-            padding: 0 30px;
-        }
-        
-        /* Match Container */
-        .match-container {
-            margin: 70px 0;
-            position: relative;
-            min-height: 140px;
-        }
-        
-        /* Round Labels */
-        .round-label {
-            text-align: center;
-            font-family: 'Teko', sans-serif;
-            font-size: 22px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            color: #00CC66;
-            text-transform: uppercase;
-        }
-        
-        .final-label {
-            font-size: 28px;
-            color: #D4AF37;
-            margin-top: 80px;
-        }
-        
-        /* Match Info */
-        .match-info {
-            font-size: 10px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 8px;
-            text-align: center;
-        }
-        
-        /* Empty team box */
-        .empty-team {
-            opacity: 0.3;
-            border-style: dashed;
-        }
-        
-        .empty-team .flag-placeholder {
-            width: 24px;
-            height: 18px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            display: inline-block;
-        }
-        
-        /* Screenshot Modal */
-        .screenshot-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            /* background: rgba(0, 0, 0, 0.9); */
-            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
-            z-index: 2000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .screenshot-modal.active {
-            display: flex;
-        }
-        
-        .screenshot-container {
-            background: white;
-            border-radius: 12px;
-            max-width: 90%;
-            max-height: 90%;
-            overflow: auto;
-            position: relative;
-        }
-        
-        .screenshot-buttons {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .screenshot-buttons button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-download {
-            background: #00CC66;
-            color: white;
-        }
-        
-        .btn-share {
-            background: #D4AF37;
-            color: black;
-        }
-        
-        .btn-close {
-            background: #c1272d;
-            color: white;
-        }
-        
-        /* Loading overlay */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3000;
-            flex-direction: column;
-            color: white;
-        }
-        
-        .loading-overlay.active {
-            display: flex;
-        }
-        
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid #00CC66;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #1a0f0f;
+    color: #ffffff;
+    margin: 0;
+    overflow-x: hidden;
+}
+.bg-morocco {
+    background-color: #1a0f0f;
+    background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+    background-attachment: fixed;
+}
+
+/* Navigation Styles */
+.nav-container {
+    background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 204, 102, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0.5rem 1rem;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.nav-logo-text {
+    font-family: 'Teko', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 1px;
+}
+
+.nav-logo-text span {
+    color: #00CC66;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: white;
+    background: rgba(0, 204, 102, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    color: #00CC66;
+    background: rgba(0, 204, 102, 0.1);
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #00CC66;
+    border-radius: 50%;
+}
+
+.nav-mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .nav-mobile-toggle {
+        display: block;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: rgba(26, 15, 15, 0.98);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        padding: 1rem;
+        gap: 0.5rem;
+        border-bottom: 2px solid #00CC66;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-link {
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Saved Predictions Panel */
+.saved-predictions-panel {
+    position: fixed;
+    top: 120px;
+    left: 20px;
+    width: 320px;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 204, 102, 0.3);
+    border-radius: 12px;
+    z-index: 999;
+    padding: 16px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+}
+
+.saved-predictions-panel.active {
+    transform: translateX(0);
+}
+
+.saved-predictions-toggle {
+    position: fixed;
+    top: 120px;
+    left: 0;
+    background: rgba(0, 204, 102, 0.9);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 0 12px 12px 0;
+    cursor: pointer;
+    z-index: 1000;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.saved-predictions-toggle:hover {
+    background: #00CC66;
+    padding-left: 20px;
+}
+
+.prediction-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+}
+
+.prediction-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.prediction-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.prediction-champion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(212, 175, 55, 0.1);
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+.team-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 25px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    min-width: 160px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 4px 0;
+}
+
+.team-box:hover {
+    background: rgba(0, 0, 0, 0.6);
+    transform: translateX(5px);
+    border-color: #00CC66;
+}
+
+.team-box.selected {
+    background: linear-gradient(135deg, rgba(0, 204, 102, 0.3) 0%, rgba(0, 204, 102, 0.6) 100%);
+    border-color: #00CC66;
+    box-shadow: 0 0 15px rgba(0, 204, 102, 0.4);
+}
+
+.team-box.locked {
+    cursor: default;
+    opacity: 0.9;
+}
+
+.team-box.locked:hover {
+    transform: none;
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.flag-icon {
+    width: 24px;
+    height: 18px;
+    object-fit: cover;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #4a080c; 
+}
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+/* Progress Bar */
+.progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00CC66, #D4AF37);
+    transition: width 0.5s ease;
+}
+
+/* Save Animation */
+@keyframes saveAnimation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.save-animation {
+    animation: saveAnimation 0.5s ease;
+}
+
+/* Trophy Glow */
+@keyframes trophyGlow {
+    0% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.5)); }
+    100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.9)); }
+}
+
+.trophy-glow {
+    animation: trophyGlow 2s infinite alternate;
+}
+
+/* Bracket Container */
+.bracket-table {
+    display: table;
+    width: 100%;
+    min-width: 1400px;
+    position: relative;
+}
+
+.bracket-round {
+    display: table-cell;
+    vertical-align: top;
+    position: relative;
+    padding: 0 30px;
+}
+
+/* Match Container */
+.match-container {
+    margin: 70px 0;
+    position: relative;
+    min-height: 140px;
+}
+
+/* Round Labels */
+.round-label {
+    text-align: center;
+    font-family: 'Teko', sans-serif;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    color: #00CC66;
+    text-transform: uppercase;
+}
+
+.final-label {
+    font-size: 28px;
+    color: #D4AF37;
+    margin-top: 80px;
+}
+
+/* Match Info */
+.match-info {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* Empty team box */
+.empty-team {
+    opacity: 0.3;
+    border-style: dashed;
+}
+
+.empty-team .flag-placeholder {
+    width: 24px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    display: inline-block;
+}
+
+/* Screenshot Modal */
+.screenshot-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.screenshot-modal.active {
+    display: flex;
+}
+
+.screenshot-container {
+    background: white;
+    border-radius: 12px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow: auto;
+    position: relative;
+}
+
+.screenshot-buttons {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.screenshot-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-download {
+    background: #00CC66;
+    color: white;
+}
+
+.btn-share {
+    background: #D4AF37;
+    color: black;
+}
+
+.btn-close {
+    background: #c1272d;
+    color: white;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    flex-direction: column;
+    color: white;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top: 4px solid #00CC66;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==================== */
+/* ALL MEDIA QUERIES */
+/* ==================== */
+
+/* Tablet (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .bracket-table {
+        min-width: 1200px;
+        overflow-x: auto;
+    }
+    
+    .bracket-round {
+        padding: 0 20px;
+        min-width: 180px;
+    }
+    
+    .team-box {
+        min-width: 140px;
+        padding: 8px 12px;
+    }
+    
+    .match-container {
+        margin: 60px 0;
+        min-height: 130px;
+    }
+    
+    .saved-predictions-panel {
+        width: 280px;
+        left: 15px;
+    }
+    
+    .trophy-glow {
+        height: 200px;
+    }
+    
+    .fixed.top-20.right-4 {
+        top: 100px;
+        right: 10px;
+        padding: 12px;
+    }
+    
+    .fixed.top-20.right-4 button {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    header {
+        padding-top: 100px;
+        padding-bottom: 20px;
+    }
+    
+    .nav-container {
+        padding: 0.5rem;
+    }
+    
+    .nav-logo-text {
+        font-size: 1.3rem;
+    }
+    
+    .round-label {
+        font-size: 20px;
+    }
+    
+    .final-label {
+        font-size: 24px;
+        margin-top: 70px;
+    }
+    
+    .match-info {
+        font-size: 9px;
+    }
+}
+
+/* Mobile (481px - 768px) */
+@media (max-width: 768px) {
+    .bracket-table {
+        min-width: 1200px;
+        transform: scale(0.85);
+        transform-origin: top left;
+        margin-left: -20px;
+        margin-top: -20px;
+    }
+    
+    main {
+        overflow-x: auto;
+        padding: 0 10px;
+    }
+    
+    header {
+        padding-top: 80px;
+        padding-bottom: 15px;
+    }
+    
+    .header-text {
+        font-size: 0.9rem;
+    }
+    
+    .fixed.top-20.right-4 {
+        position: fixed;
+        top: auto;
+        bottom: 15px;
+        left: 10px;
+        right: 10px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 10px;
+        gap: 8px;
+    }
+    
+    .fixed.top-20.right-4 button {
+        padding: 8px 12px;
+        font-size: 11px;
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .fixed.top-16 {
+        top: 60px;
+        padding: 8px 10px;
+    }
+    
+    .progress-bar {
+        height: 6px;
+    }
+    
+    .trophy-glow {
+        height: 150px;
+    }
+    
+    .saved-predictions-panel {
+        width: 90%;
+        left: 5%;
+        top: 80px;
+        max-height: 70vh;
+    }
+    
+    .saved-predictions-toggle {
+        top: 80px;
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .match-info {
+        font-size: 8px;
+    }
+    
+    .round-label {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+    
+    .final-label {
+        font-size: 22px;
+        margin-top: 60px;
+    }
+    
+    .match-container {
+        margin: 50px 0;
+        min-height: 120px;
+    }
+    
+    footer {
+        padding: 15px 10px;
+        font-size: 11px;
+    }
+    
+    /* Navigation mobile */
+    .nav-mobile-toggle {
+        display: block;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: rgba(26, 15, 15, 0.98);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        padding: 1rem;
+        gap: 0.5rem;
+        border-bottom: 2px solid #00CC66;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-link {
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* Small Mobile (up to 480px) */
+@media (max-width: 480px) {
+    .bracket-table {
+        transform: scale(0.75);
+        margin-left: -40px;
+        margin-top: -30px;
+    }
+    
+    .fixed.top-20.right-4 {
+        bottom: 10px;
+        left: 5px;
+        right: 5px;
+        padding: 8px;
+        gap: 5px;
+    }
+    
+    .fixed.top-20.right-4 button {
+        min-width: 110px;
+        padding: 6px 10px;
+        font-size: 10px;
+    }
+    
+    header {
+        padding-top: 70px;
+        padding-bottom: 10px;
+    }
+    
+    .header-text {
+        font-size: 0.8rem;
+    }
+    
+    .flex.items-center.gap-4.mb-2 {
+        gap: 8px;
+    }
+    
+    .trophy-glow {
+        height: 120px;
+    }
+    
+    .nav-logo-text {
+        font-size: 1.1rem;
+    }
+    
+    #championText {
+        font-size: 12px;
+        margin-top: 5px;
+    }
+    
+    .round-label {
+        font-size: 16px;
+    }
+    
+    .final-label {
+        font-size: 20px;
+        margin-top: 50px;
+    }
+    
+    .match-container {
+        margin: 40px 0;
+        min-height: 110px;
+    }
+    
+    .team-box {
+        min-width: 130px;
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .flag-icon {
+        width: 20px;
+        height: 15px;
+    }
+    
+    .saved-predictions-toggle span {
+        display: none;
+    }
+    
+    .saved-predictions-toggle {
+        padding: 10px;
+    }
+}
+
+/* Desktop (1025px - 1439px) */
+@media (min-width: 1025px) {
+    main {
+        padding: 20px 40px;
+    }
+    
+    .bracket-table {
+        margin: 0 auto;
+    }
+    
+    .team-box:hover {
+        transform: translateX(8px);
+        box-shadow: 0 0 20px rgba(0, 204, 102, 0.3);
+    }
+    
+    .trophy-glow {
+        transition: transform 0.5s ease;
+    }
+    
+    .trophy-glow:hover {
+        transform: scale(1.05);
+    }
+    
+    .fixed.top-20.right-4 {
+        background: rgba(0, 0, 0, 0.9);
+        border: 1px solid rgba(0, 204, 102, 0.3);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+    
+    .saved-predictions-panel {
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .match-container {
+        margin: 80px 0;
+    }
+    
+    .progress-bar {
+        height: 6px;
+    }
+    
+    .screenshot-container {
+        max-width: 80%;
+        max-height: 85%;
+    }
+}
+
+/* Large Desktop (1440px and above) */
+@media (min-width: 1440px) {
+    .bracket-round {
+        padding: 0 50px;
+    }
+    
+    .match-container {
+        margin: 90px 0;
+        min-height: 160px;
+    }
+    
+    .team-box {
+        min-width: 200px;
+        padding: 14px 20px;
+        font-size: 16px;
+    }
+    
+    .flag-icon {
+        width: 32px;
+        height: 24px;
+    }
+    
+    .round-label {
+        font-size: 26px;
+        margin-bottom: 40px;
+    }
+    
+    .final-label {
+        font-size: 32px;
+        margin-top: 100px;
+    }
+    
+    #final-team1, #final-team2 {
+        min-width: 220px;
+        padding: 18px 28px;
+    }
+    
+    #final-winner-box {
+        min-width: 240px;
+        padding: 20px 32px;
+    }
+    
+    .trophy-glow {
+        height: 280px;
+    }
+    
+    .nav-logo-text {
+        font-size: 1.8rem;
+    }
+    
+    .nav-link {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+    
+    header {
+        padding-top: 140px;
+        padding-bottom: 40px;
+    }
+    
+    #progressText {
+        font-size: 14px;
+    }
+    
+    .saved-predictions-panel {
+        width: 350px;
+    }
+}
+
+/* Extra Large Desktop (1920px and above) */
+@media (min-width: 1920px) {
+    .bracket-table {
+        min-width: 1600px;
+        max-width: 90%;
+        margin: 0 auto;
+    }
+    
+    .bracket-round {
+        padding: 0 60px;
+        min-width: 280px;
+    }
+    
+    .match-container {
+        margin: 100px 0;
+        min-height: 180px;
+    }
+    
+    .team-box {
+        min-width: 240px;
+        padding: 16px 24px;
+        font-size: 18px;
+    }
+    
+    .flag-icon {
+        width: 40px;
+        height: 30px;
+    }
+    
+    .trophy-glow {
+        height: 350px;
+    }
+    
+    #final-team1, #final-team2 {
+        min-width: 280px;
+        padding: 20px 32px;
+        font-size: 20px;
+    }
+    
+    #final-winner-box {
+        min-width: 300px;
+        padding: 24px 40px;
+        font-size: 22px;
+    }
+    
+    .round-label {
+        font-size: 30px;
+        margin-bottom: 50px;
+    }
+    
+    .final-label {
+        font-size: 36px;
+        margin-top: 120px;
+    }
+    
+    .nav-container {
+        padding: 1rem 2rem;
+    }
+    
+    .nav-logo-text {
+        font-size: 2rem;
+    }
+    
+    .nav-link {
+        font-size: 1.1rem;
+        padding: 1rem 2rem;
+    }
+    
+    header {
+        padding-top: 160px;
+        padding-bottom: 60px;
+    }
+    
+    header .text-xs.text-gray-300 {
+        font-size: 14px;
+    }
+    
+    .fixed.top-20.right-4 {
+        padding: 20px;
+        gap: 15px;
+    }
+    
+    .fixed.top-20.right-4 button {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+    
+    .saved-predictions-panel {
+        width: 400px;
+        padding: 24px;
+    }
+}
+
+/* Landscape Mobile (max-width: 768px and orientation: landscape) */
+@media (max-width: 768px) and (orientation: landscape) {
+    .bracket-table {
+        transform: scale(0.7);
+        margin-left: -30px;
+        margin-top: -30px;
+    }
+    
+    .trophy-glow {
+        height: 40vh;
+        max-height: 180px;
+    }
+    
+    header {
+        padding-top: 70px;
+        padding-bottom: 5px;
+    }
+    
+    .fixed.top-20.right-4 {
+        bottom: 5px;
+        padding: 8px;
+        gap: 5px;
+    }
+    
+    .fixed.top-20.right-4 button {
+        min-width: auto;
+        flex: 1;
+    }
+    
+    .saved-predictions-panel {
+        max-height: 80vh;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .nav-container,
+    .fixed.top-20.right-4,
+    .fixed.top-16,
+    .saved-predictions-toggle,
+    .saved-predictions-panel,
+    footer,
+    #screenshotModal,
+    #loadingOverlay {
+        display: none !important;
+    }
+    
+    .bracket-table {
+        min-width: 100% !important;
+        transform: none !important;
+        margin: 0 !important;
+        zoom: 0.9;
+    }
+    
+    body {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    .team-box {
+        background-color: white !important;
+        border: 2px solid black !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+    
+    .team-box.selected {
+        background-color: #f0f0f0 !important;
+        border: 3px solid #333 !important;
+    }
+    
+    .trophy-glow {
+        filter: grayscale(100%) !important;
+        animation: none !important;
+    }
+    
+    header {
+        padding-top: 20px !important;
+    }
+    
+    .bg-morocco {
+        background: white !important;
+    }
+}
+
+/* High DPI Screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .flag-icon {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+    
+    .trophy-glow {
+        image-rendering: -webkit-optimize-contrast;
+    }
+}
     </style>
 </head>
 <body class="bg-morocco">
@@ -640,12 +1230,12 @@
                 <!-- Match 1: Mali vs Tunisia -->
                 <div class="match-container">
                     <div data-match="m1" data-team="MLI" class="team-box">
-                        <img alt="Mali Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4CHdOGFVRiWhQNa53MC-tDdLGFzvesipqdhfezBGSZwTGTTREvuoC40qSK2Oc3SHBiDbFlPWigObmmSuNihlXHjAErLbYBwHG31m-dSHHvn5PksaeW0L6mvYD6Ir5in49nHUA69A7hxKcp6nvYVV7QDUzXPOUhY_oaORoHblR0lSxa2BYh4w5Y50zKjP7iZ5Mlzk90ZjY7pvT_oiBcUSmNOhSZ-uLwIpYeUuKpWSsDk09dAImASd0aJwQPau-7fhFoKwL_xesgPzz"/>
+                        <img alt="Mali Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/ml-flag.gif"/>
                         <span class="font-bold">MLI</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
                     <div data-match="m1" data-team="TUN" class="team-box">
-                        <img alt="Tunisia Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-zF51CL-0EsymMCataYoqVKzPd9UTrJoecYSuor_7RhYcdMt99v8FpcqlyTJEuAGxTRJDJMMGXXqeAORz7ZlOC9lTmtKYVfJ8wGeXZlZxxIq19TAON7PSKXmS1r5FkxpFMSGMCoqulGE3LLgqv9W1v6EY2Jkpgbf7x842lOaXeVVuh5iRuZ1YU7FqAoiLVoSNrb6r-MzYQIfAUqKZvdu8eOQr2aeVAgEijQxy-NXkSzxgjZpHwY8aeLVahiXkaDyZDpCoktByHW3_"/>
+                        <img alt="Tunisia Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/ts-flag.gif"/>
                         <span class="font-bold">TUN</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
@@ -657,12 +1247,12 @@
                 <!-- Match 2: Senegal vs Sudan -->
                 <div class="match-container">
                     <div data-match="m2" data-team="SEN" class="team-box">
-                        <img alt="Senegal Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVsBSgNnoR7MSvkzh7X-i6rtJrTt5Ec7jmPt9AVswga4ludqMYWTwLdOrM5IwbIUcWVrZwB4F2L715ku5GXe2BI0QqKwQL1EAF_h6kxuASaYnSwfZRt1UFDOLGRgwKhQWYX8sFRDM2s5iy7WZg_JqN703fYM02Kmh6IFk2dEGpYPUmQuP8vh3pSaS02A815oRUzSq_tYjS3nwxRTyyDpMjHp1vCWbFJe1fXXf8tTeLq07F4e-RODnItlVM4OLLAkLJFuO2bCc-M7pA"/>
+                        <img alt="Senegal Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/sg-flag.gif"/>
                         <span class="font-bold">SEN</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
                     <div data-match="m2" data-team="SDN" class="team-box">
-                        <img alt="Sudan Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAP3RQlbill-zrhAiq1jmITmpWABiHxCraxJvxWBE7lpQfIoSzWFszlmIwwZfo1-M7YKicXrzuFy2eCJED4vh09_SpnPQS89YJ3S_T1R57S1JE4kwYg_vA0u7UXpI1rqvRpm2ecFEK0WFQfarxboxreYmy0jM8xUCWGp-3KNFBKvagTCDu8h-E8DtjuRtkXPULU3F3L0o-l8JhMkOZxl6BlqKpq_W75CJx7hktgsj-bA7T7NlPD2aOWW0-VT6VHwQccqcFP30c5y-rD"/>
+                        <img alt="Sudan Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/su-flag.gif"/>
                         <span class="font-bold">SDN</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
@@ -674,12 +1264,12 @@
                 <!-- Match 3: Egypt vs Benin -->
                 <div class="match-container">
                     <div data-match="m3" data-team="EGY" class="team-box">
-                        <img alt="Egypt Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-UeN93MCDXx1uf6EJNlO9MeD2bcVHltkbZSbcN9qzf5kwHSSB-fG1MExK-EKee7M-MkqxlonFIIGa2iKQNfVLhRxcYR9dff0OgzuUrl7FOXcFCASOqUX9-ENVdfrE4D_ZDL8AlO_Wyp1bMuOqOWuc-1lDsHjpL4qwqShqhTlWmm2H-1R9PN-0CCJD2B1WLkhCMMz4j9Qr48DMDAy5mf7ABTab5L609Fq44-NLS3mEwAwm1FZaSyHyjiZ8Ys50Z_v1XyEawhQRcFrq"/>
+                        <img alt="Egypt Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/eg-flag.gif"/>
                         <span class="font-bold">EGY</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
                     <div data-match="m3" data-team="BEN" class="team-box">
-                        <img alt="Benin Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjDsYSx1WaRcedoksJwkRc9tzYFSe3sYjPMyvfk4HBtXnSgnPjtqKOg7QgZzt3e6MXMSivh7Yh17FkgBg31G8i33F_K9y3gc8rmKcZyCZvoDFmvNGv1dCQ0PKkKrcmw9QgOfqz9w-aFFXxXH-rTVBpeky-uBIpUrcpIA1qmJHOsZdbFwgdOId_IsgXpGQwr03pa8BDhd4w_X7H6AJYwpUSgF90-9IhrBec8t-BEtQIBJ-hsByIrlvkbsR_ZBz3KzaN-uQQg-Mx5yOt"/>
+                        <img alt="Benin Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/bn-flag.gif"/>
                         <span class="font-bold">BEN</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
@@ -691,12 +1281,12 @@
                 <!-- Match 4: Ivory Coast vs Burkina Faso -->
                 <div class="match-container">
                     <div data-match="m4" data-team="CIV" class="team-box">
-                        <img alt="Ivory Coast Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqdQuEmbh76tUI0mNMlhTRQLtUxISRwrEIaSiUmWAk0whzgVcYn9gLNaFRN_9BxICO_Qi-oGef4weF0DjC1WGBK-Zxo0kfy1sRd3uyooDbiZ9bsdfxQ_2_R6o68fWz0dtabbgbDbU5ul0SWiasmhKK6F60P0I9XzuBQickYCL3KTeXmTgBcpn7eK0DZBrrfSJthYyXTl5-HpvtlIpoD8JjrHu56EzOJhktinbFKQPehQ7yhY_7g73SPlWbuUX3A_TPED-VbF8YriZU"/>
+                        <img alt="Ivory Coast Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/iv-flag.gif"/>
                         <span class="font-bold">CIV</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
                     <div data-match="m4" data-team="BFA" class="team-box">
-                        <img alt="Burkina Faso Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXT1I55PhnU9xb-89sKo7IXc3YlLhwuNhkhLAXfsgliY4ElXJrg1YS42GER4fQgUoruRespziNlJl7jJj1oRxJw8pYum2Y6zUMXORROqVKUJucBfL5jdtQRlW_ZifWU8JQPFIMwEIs8Stf8JgJPJy5FgmOgR1GrAxcdrUbjOhZx4Wjd5mG1OKFRlmzIhDaOiEHk4JwyEGX6bqjrWCIv6Sg1Uv1VZHgnDGwfju2UFYLeZoUmLRFUkwiM6lQisgU5B4L8gdT1uNAt1gk"/>
+                        <img alt="Burkina Faso Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/uv-flag.gif"/>
                         <span class="font-bold">BFA</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
@@ -886,12 +1476,12 @@
                 <!-- Match 5: Algeria vs DR Congo -->
                 <div class="match-container">
                     <div data-match="m5" data-team="ALG" class="team-box">
-                        <img alt="Algeria Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzdw9SIlq8_JDUOmdOkKubuyrq7revC__2CHcpguLSjBbxxp6Ra-Jr6Cc66vWISl0zsflROqf4nfJosmFYL7YB3ANaSk3e76a7kMY4C9YpRuiECiHBHqDPxOB2J46MDj2U1wJ8jQvUTuW4eVZWwSAOlWSxV3Nxpff7W06uw9lK0qnPOz2a5g4_FH4vFdZmkIZJKEGbLpOkZ1tOfQBckYROxcaFekqLe1J2c2W0K2CiVoD9ue4IFGd_qgMSUKZNVGdSi_ftokF8hOId"/>
+                        <img alt="Algeria Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/ag-flag.gif"/>
                         <span class="font-bold">ALG</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
                     <div data-match="m5" data-team="COD" class="team-box">
-                        <img alt="DR Congo Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBze61qqTwylBe3vZeEhcOsopHM3JPCw0EyqnXgEvVB_m0w439rBCUXWGzoj8JzFW35tni0AIxdxlg5Ile6PSq-_cJhkeQF4Zq4t_VVsgH_TOIFudbTtn5oDy7lKdvpjArYvvbVU1z6eXj0WtLhMIiM2JEUiKeWE3BCTjnjs04-nGR2GahkkC1BnoRWrwVG3dzGa8wMzu6hgQFc8dGYLRcBRRvb6gA87_0p9TpAUY0QTmmEGjmQMJv2jlGkXD4nG6G8VlOYbcbcJvWE"/>
+                        <img alt="DR Congo Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/congo-flag.gif"/>
                         <span class="font-bold">COD</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
@@ -903,12 +1493,12 @@
                 <!-- Match 6: Nigeria vs Mozambique -->
                 <div class="match-container">
                     <div data-match="m6" data-team="NGA" class="team-box">
-                        <img alt="Nigeria Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-KIMVTVH2_DaaFbR7dlSicHvpuB67XmPqANrfAdncGZv9rbltonBzrJPTOM5-Z8uHhG_ruMioBakDXZP1mrcYZcFCZEv42kNR3vWyDuKQADeWmk1UOxJTsHvrV1L-7WSnP4j7-w8nhvmGgdIzUgPkDUqZ-H-ZlFgnocKsJn7SiOETNru_HN5SuOS8wpWyoT1AjWlz4EnuJN_A2qbOWA9pDs0lhYWFH1jFWzHCE4cIzxPYQu_JysjuzLkeJDFqNqJdJaBs5rkpKyvF"/>
+                        <img alt="Nigeria Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/ni-flag.gif"/>
                         <span class="font-bold">NGA</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
                     <div data-match="m6" data-team="MOZ" class="team-box">
-                        <img alt="Mozambique Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7isQ-z-MyUPn4c0l5XIP6zGuylaYMKDsGN6DLCN3rMtDQzPzvew-3Y5dAzeaWruSm_5lTbgSfHBIcwQmYwk5xZUKgQfArGWOc3njRZOemTKHIeAQXz8312-bSQs48ZT9SmFs1VC7M-M5ZwX7j0CaV30fsIw6FPaWzIYnY0AhWUXPqu6HHQ-HQLQQ3cseNG5CROGt6xTN6XkKSdQEVeSzHY9pFkFLfoLs_Wkf2Et79pjMFqLubh6qbRpXZnX-h-KH6WY86Ra5RsXVY"/>
+                        <img alt="Mozambique Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/mz-flag.gif"/>
                         <span class="font-bold">MOZ</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
@@ -920,12 +1510,12 @@
                 <!-- Match 7: South Africa vs Cameroon -->
                 <div class="match-container">
                     <div data-match="m7" data-team="RSA" class="team-box">
-                        <img alt="South Africa Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3ZDoi7umSYfWjpi5WGPSsCIfWbie0HCIm7KBdWJD23bEnE9ZRuPG26YEBRUtiscWdyu798LZAy22qIp_gvJ9KFlD3u1HnuhBhZAYa6LOwv8c_eFItuy4YRlD5KC2y_0R2ub549n48Dn3SyF5Ig_daXz4XzZSV_uZS7uyc1Cl6ajYCKihqF3Q4qVAOduJW_We46Zaip2pzvvRFrIjLJUqMCIJYEDhtfOzUR55jTszDqnx_aSgCUupWdKVIoTIHDvCuMSaqr_uS2-I7"/>
+                        <img alt="South Africa Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/small/tn_sf-flag.gif    "/>
                         <span class="font-bold">RSA</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
                     <div data-match="m7" data-team="CMR" class="team-box">
-                        <img alt="Cameroon Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKm6FqE_dz6L6lV_Nylqt3WVvy8p154VRfkRvNBG92HG4HnhFdBNE86GhH5FJc5DsX6FYx844mU61GXdPpAuRNP815c980ikPlUepk5uBP0HkJH6g_VpEfiLyVcaKdjc5fA-csSNQsY-TYSmGc6Zbly9K5_4g23IjU2FT4-XPCyJ9qmMmID-L8dlNemshxOW16rFmTW7B8jTRPjUXj1O5jlcSZtBweMJLPYp0y4Ib5R76tGjCZPFQk8guwBuEEVzSgfi7gis3UDOnU"/>
+                        <img alt="Cameroon Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/small/tn_cm-flag.gif"/>
                         <span class="font-bold">CMR</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
@@ -937,12 +1527,12 @@
                 <!-- Match 8: Morocco vs Tanzania -->
                 <div class="match-container">
                     <div data-match="m8" data-team="MAR" class="team-box">
-                        <img alt="Morocco Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQbsID6JdLTdIdXSd0AUABj_QHRwfI6a5bsffKjDs1zjEbNFL2wxZhYeZO_a514qEWaVfSZ3dTQPHuYwBVbkjdwaZd6WZoEBpc45rk6zd6g7bkGNhxFa6iYd781TTQzTi1y0WJ2diszansdRrj8VXjQDZPeUOBcksuWwp2b-3iDg7IvuEaUxehZWUjmPFRebnrURIh7mDbkYHw9GHpkzwQ1I1bQcSNrBkpPzPt-xB9yLyr83YjiCTmUB2tt9cmtx2w4_6BFAqygan7"/>
+                        <img alt="Morocco Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/mo-flag.gif"/>
                         <span class="font-bold">MAR</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
                     <div data-match="m8" data-team="TAN" class="team-box">
-                        <img alt="Tanzania Flag" class="flag-icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJJvmKhcHq1kSljHNHd9SnSR2QLXjPN1Qd66_zIa9bfxrYrf1W0eBT2lKR1nV3MswPp8HauL5K3XBlPWO0snjcbDbGRumCY7jG__AHXZiGfN21l30l3qHZVedkeabNFLMNdUkFKE_KVCKZf1DkxpAJiISyUj0QsSMIWlFzZX4Ve_Qgh1KvBEiXjWrUrG8GojxfvhtqOiI5BCzHw04K8aUV8zTJKZCS4YDk-fIO7hqslBAAn-o71TDziRYvOH2JVH3KU31oV95hZOAm"/>
+                        <img alt="Tanzania Flag" class="flag-icon" src="https://www.worldometers.info/img/flags/small/tn_tz-flag.gif"/>
                         <span class="font-bold">TAN</span>
                         <span class="ml-auto text-xs text-[#00CC66] hidden prediction-check">✓</span>
                     </div>
@@ -964,22 +1554,22 @@
     <script>
         // ALL AFCON 2025 TEAMS
         const allTeams = [
-            { code: 'MLI', name: 'Mali', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB4CHdOGFVRiWhQNa53MC-tDdLGFzvesipqdhfezBGSZwTGTTREvuoC40qSK2Oc3SHBiDbFlPWigObmmSuNihlXHjAErLbYBwHG31m-dSHHvn5PksaeW0L6mvYD6Ir5in49nHUA69A7hxKcp6nvYVV7QDUzXPOUhY_oaORoHblR0lSxa2BYh4w5Y50zKjP7iZ5Mlzk90ZjY7pvT_oiBcUSmNOhSZ-uLwIpYeUuKpWSsDk09dAImASd0aJwQPau-7fhFoKwL_xesgPzz' },
-            { code: 'TUN', name: 'Tunisia', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB-zF51CL-0EsymMCataYoqVKzPd9UTrJoecYSuor_7RhYcdMt99v8FpcqlyTJEuAGxTRJDJMMGXXqeAORz7ZlOC9lTmtKYVfJ8wGeXZlZxxIq19TAON7PSKXmS1r5FkxpFMSGMCoqulGE3LLgqv9W1v6EY2Jkpgbf7x842lOaXeVVuh5iRuZ1YU7FqAoiLVoSNrb6r-MzYQIfAUqKZvdu8eOQr2aeVAgEijQxy-NXkSzxgjZpHwY8aeLVahiXkaDyZDpCoktByHW3_' },
-            { code: 'SEN', name: 'Senegal', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAVsBSgNnoR7MSvkzh7X-i6rtJrTt5Ec7jmPt9AVswga4ludqMYWTwLdOrM5IwbIUcWVrZwB4F2L715ku5GXe2BI0QqKwQL1EAF_h6kxuASaYnSwfZRt1UFDOLGRgwKhQWYX8sFRDM2s5iy7WZg_JqN703fYM02Kmh6IFk2dEGpYPUmQuP8vh3pSaS02A815oRUzSq_tYjS3nwxRTyyDpMjHp1vCWbFJe1fXXf8tTeLq07F4e-RODnItlVM4OLLAkLJFuO2bCc-M7pA' },
-            { code: 'SDN', name: 'Sudan', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAP3RQlbill-zrhAiq1jmITmpWABiHxCraxJvxWBE7lpQfIoSzWFszlmIwwZfo1-M7YKicXrzuFy2eCJED4vh09_SpnPQS89YJ3S_T1R57S1JE4kwYg_vA0u7UXpI1rqvRpm2ecFEK0WFQfarxboxreYmy0jM8xUCWGp-3KNFBKvagTCDu8h-E8DtjuRtkXPULU3F3L0o-l8JhMkOZxl6BlqKpq_W75CJx7hktgsj-bA7T7NlPD2aOWW0-VT6VHwQccqcFP30c5y-rD' },
-            { code: 'EGY', name: 'Egypt', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC-UeN93MCDXx1uf6EJNlO9MeD2bcVHltkbZSbcN9qzf5kwHSSB-fG1MExK-EKee7M-MkqxlonFIIGa2iKQNfVLhRxcYR9dff0OgzuUrl7FOXcFCASOqUX9-ENVdfrE4D_ZDL8AlO_Wyp1bMuOqOWuc-1lDsHjpL4qwqShqhTlWmm2H-1R9PN-0CCJD2B1WLkhCMMz4j9Qr48DMDAy5mf7ABTab5L609Fq44-NLS3mEwAwm1FZaSyHyjiZ8Ys50Z_v1XyEawhQRcFrq' },
-            { code: 'BEN', name: 'Benin', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAjDsYSx1WaRcedoksJwkRc9tzYFSe3sYjPMyvfk4HBtXnSgnPjtqKOg7QgZzt3e6MXMSivh7Yh17FkgBg31G8i33F_K9y3gc8rmKcZyCZvoDFmvNGv1dCQ0PKkKrcmw9QgOfqz9w-aFFXxXH-rTVBpeky-uBIpUrcpIA1qmJHOsZdbFwgdOId_IsgXpGQwr03pa8BDhd4w_X7H6AJYwpUSgF90-9IhrBec8t-BEtQIBJ-hsByIrlvkbsR_ZBz3KzaN-uQQg-Mx5yOt' },
-            { code: 'CIV', name: 'Ivory Coast', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqdQuEmbh76tUI0mNMlhTRQLtUxISRwrEIaSiUmWAk0whzgVcYn9gLNaFRN_9BxICO_Qi-oGef4weF0DjC1WGBK-Zxo0kfy1sRd3uyooDbiZ9bsdfxQ_2_R6o68fWz0dtabbgbDbU5ul0SWiasmhKK6F60P0I9XzuBQickYCL3KTeXmTgBcpn7eK0DZBrrfSJthYyXTl5-HpvtlIpoD8JjrHu56EzOJhktinbFKQPehQ7yhY_7g73SPlWbuUX3A_TPED-VbF8YriZU' },
-            { code: 'BFA', name: 'Burkina Faso', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBXT1I55PhnU9xb-89sKo7IXc3YlLhwuNhkhLAXfsgliY4ElXJrg1YS42GER4fQgUoruRespziNlJl7jJj1oRxJw8pYum2Y6zUMXORROqVKUJucBfL5jdtQRlW_ZifWU8JQPFIMwEIs8Stf8JgJPJy5FgmOgR1GrAxcdrUbjOhZx4Wjd5mG1OKFRlmzIhDaOiEHk4JwyEGX6bqjrWCIv6Sg1Uv1VZHgnDGwfju2UFYLeZoUmLRFUkwiM6lQisgU5B4L8gdT1uNAt1gk' },
-            { code: 'ALG', name: 'Algeria', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDzdw9SIlq8_JDUOmdOkKubuyrq7revC__2CHcpguLSjBbxxp6Ra-Jr6Cc66vWISl0zsflROqf4nfJosmFYL7YB3ANaSk3e76a7kMY4C9YpRuiECiHBHqDPxOB2J46MDj2U1wJ8jQvUTuW4eVZWwSAOlWSxV3Nxpff7W06uw9lK0qnPOz2a5g4_FH4vFdZmkIZJKEGbLpOkZ1tOfQBckYROxcaFekqLe1J2c2W0K2CiVoD9ue4IFGd_qgMSUKZNVGdSi_ftokF8hOId' },
-            { code: 'COD', name: 'DR Congo', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBze61qqTwylBe3vZeEhcOsopHM3JPCw0EyqnXgEvVB_m0w439rBCUXWGzoj8JzFW35tni0AIxdxlg5Ile6PSq-_cJhkeQF4Zq4t_VVsgH_TOIFudbTtn5oDy7lKdvpjArYvvbVU1z6eXj0WtLhMIiM2JEUiKeWE3BCTjnjs04-nGR2GahkkC1BnoRWrwVG3dzGa8wMzu6hgQFc8dGYLRcBRRvb6gA87_0p9TpAUY0QTmmEGjmQMJv2jlGkXD4nG6G8VlOYbcbcJvWE' },
-            { code: 'NGA', name: 'Nigeria', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD-KIMVTVH2_DaaFbR7dlSicHvpuB67XmPqANrfAdncGZv9rbltonBzrJPTOM5-Z8uHhG_ruMioBakDXZP1mrcYZcFCZEv42kNR3vWyDuKQADeWmk1UOxJTsHvrV1L-7WSnP4j7-w8nhvmGgdIzUgPkDUqZ-H-ZlFgnocKsJn7SiOETNru_HN5SuOS8wpWyoT1AjWlz4EnuJN_A2qbOWA9pDs0lhYWFH1jFWzHCE4cIzxPYQu_JysjuzLkeJDFqNqJdJaBs5rkpKyvF' },
-            { code: 'MOZ', name: 'Mozambique', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB7isQ-z-MyUPn4c0l5XIP6zGuylaYMKDsGN6DLCN3rMtDQzPzvew-3Y5dAzeaWruSm_5lTbgSfHBIcwQmYwk5xZUKgQfArGWOc3njRZOemTKHIeAQXz8312-bSQs48ZT9SmFs1VC7M-M5ZwX7j0CaV30fsIw6FPaWzIYnY0AhWUXPqu6HHQ-HQLQQ3cseNG5CROGt6xTN6XkKSdQEVeSzHY9pFkFLfoLs_Wkf2Et79pjMFqLubh6qbRpXZnX-h-KH6WY86Ra5RsXVY' },
-            { code: 'RSA', name: 'South Africa', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuA3ZDoi7umSYfWjpi5WGPSsCIfWbie0HCIm7KBdWJD23bEnE9ZRuPG26YEBRUtiscWdyu798LZAy22qIp_gvJ9KFlD3u1HnuhBhZAYa6LOwv8c_eFItuy4YRlD5KC2y_0R2ub549n48Dn3SyF5Ig_daXz4XzZSV_uZS7uyc1Cl6ajYCKihqF3Q4qVAOduJW_We46Zaip2pzvvRFrIjLJUqMCIJYEDhtfOzUR55jTszDqnx_aSgCUupWdKVIoTIHDvCuMSaqr_uS2-I7' },
-            { code: 'CMR', name: 'Cameroon', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCKm6FqE_dz6L6lV_Nylqt3WVvy8p154VRfkRvNBG92HG4HnhFdBNE86GhH5FJc5DsX6FYx844mU61GXdPpAuRNP815c980ikPlUepk5uBP0HkJH6g_VpEfiLyVcaKdjc5fA-csSNQsY-TYSmGc6Zbly9K5_4g23IjU2FT4-XPCyJ9qmMmID-L8dlNemshxOW16rFmTW7B8jTRPjUXj1O5jlcSZtBweMJLPYp0y4Ib5R76tGjCZPFQk8guwBuEEVzSgfi7gis3UDOnU' },
-            { code: 'MAR', name: 'Morocco', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAQbsID6JdLTdIdXSd0AUABj_QHRwfI6a5bsffKjDs1zjEbNFL2wxZhYeZO_a514qEWaVfSZ3dTQPHuYwBVbkjdwaZd6WZoEBpc45rk6zd6g7bkGNhxFa6iYd781TTQzTi1y0WJ2diszansdRrj8VXjQDZPeUOBcksuWwp2b-3iDg7IvuEaUxehZWUjmPFRebnrURIh7mDbkYHw9GHpkzwQ1I1bQcSNrBkpPzPt-xB9yLyr83YjiCTmUB2tt9cmtx2w4_6BFAqygan7' },
-            { code: 'TAN', name: 'Tanzania', flag: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCJJvmKhcHq1kSljHNHd9SnSR2QLXjPN1Qd66_zIa9bfxrYrf1W0eBT2lKR1nV3MswPp8HauL5K3XBlPWO0snjcbDbGRumCY7jG__AHXZiGfN21l30l3qHZVedkeabNFLMNdUkFKE_KVCKZf1DkxpAJiISyUj0QsSMIWlFzZX4Ve_Qgh1KvBEiXjWrUrG8GojxfvhtqOiI5BCzHw04K8aUV8zTJKZCS4YDk-fIO7hqslBAAn-o71TDziRYvOH2JVH3KU31oV95hZOAm' }
+            { code: 'MLI', name: 'Mali', flag: 'https://www.worldometers.info/img/flags/ml-flag.gif' },
+            { code: 'TUN', name: 'Tunisia', flag: 'https://www.worldometers.info/img/flags/ts-flag.gif' },
+            { code: 'SEN', name: 'Senegal', flag: 'https://www.worldometers.info/img/flags/sg-flag.gif' },
+            { code: 'SDN', name: 'Sudan', flag: 'https://www.worldometers.info/img/flags/su-flag.gif' },
+            { code: 'EGY', name: 'Egypt', flag: 'https://www.worldometers.info/img/flags/eg-flag.gif' },
+            { code: 'BEN', name: 'Benin', flag: 'https://www.worldometers.info/img/flags/bn-flag.gif' },
+            { code: 'CIV', name: 'Ivory Coast', flag: 'https://www.worldometers.info/img/flags/iv-flag.gif' },
+            { code: 'BFA', name: 'Burkina Faso', flag: 'https://www.worldometers.info/img/flags/uv-flag.gif' },
+            { code: 'ALG', name: 'Algeria', flag: 'https://www.worldometers.info/img/flags/ag-flag.gif' },
+            { code: 'COD', name: 'DR Congo', flag: 'https://www.worldometers.info/img/flags/congo-flag.gif' },
+            { code: 'NGA', name: 'Nigeria', flag: 'https://www.worldometers.info/img/flags/ni-flag.gif' },
+            { code: 'MOZ', name: 'Mozambique', flag: 'https://www.worldometers.info/img/flags/mz-flag.gif' },
+            { code: 'RSA', name: 'South Africa', flag: 'https://www.worldometers.info/img/flags/small/tn_sf-flag.gif' },
+            { code: 'CMR', name: 'Cameroon', flag: 'https://www.worldometers.info/img/flags/small/tn_cm-flag.gif' },
+            { code: 'MAR', name: 'Morocco', flag: 'https://www.worldometers.info/img/flags/mo-flag.gif' },
+            { code: 'TAN', name: 'Tanzania', flag: 'https://www.worldometers.info/img/flags/small/tn_tz-flag.gif' }
         ];
 
         // Store predictions

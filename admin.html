@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AFCON 2025 - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <style>
+        /* نفس الـ styles السابقة */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a0f0f;
+            color: #ffffff;
+            margin: 0;
+        }
+        
+        .admin-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(26, 15, 15, 0.9) 100%);
+            border: 1px solid rgba(0, 204, 102, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 204, 102, 0.2);
+        }
+        
+        .visitor-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #00CC66;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .visitor-item.guest {
+            border-left-color: #D4AF37;
+        }
+    </style>
+</head>
+<body class="bg-morocco">
+    <!-- Admin Login Protection -->
+    <div id="adminLogin" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center" style="display: flex;">
+        <div class="bg-[#1a0f0f] p-8 rounded-lg border-2 border-[#00CC66] max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold text-[#00CC66] mb-6 text-center">Admin Login</h2>
+            <input type="password" id="adminPassword" 
+                   class="w-full bg-black/50 border border-white/20 rounded-lg px-4 py-3 text-white mb-4" 
+                   placeholder="Enter admin password">
+            <button onclick="checkAdminPassword()" 
+                    class="w-full bg-[#00CC66] hover:bg-[#00b359] text-white py-3 rounded-lg font-bold">
+                Access Dashboard
+            </button>
+            <p class="text-sm text-gray-400 mt-4 text-center">
+                Default password: afcon2025admin
+            </p>
+        </div>
+    </div>
+    
+    <!-- Admin Dashboard (hidden by default) -->
+    <div id="adminDashboard" style="display: none;">
+        <nav class="bg-black/80 p-4 border-b border-[#00CC66]">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-xl font-bold text-[#00CC66]">
+                    <i class="fas fa-shield-alt mr-2"></i>Admin Dashboard
+                </h1>
+                <button onclick="logoutAdmin()" class="px-4 py-2 bg-[#c1272d] hover:bg-[#a02025] text-white rounded">
+                    Logout
+                </button>
+            </div>
+        </nav>
+        
+        <main class="container mx-auto p-4">
+            <!-- Stats Overview -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="admin-card text-center">
+                    <div class="text-4xl text-[#00CC66] mb-3">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Total Page Views</h3>
+                    <p id="totalViews" class="text-3xl font-bold">0</p>
+                </div>
+                
+                <div class="admin-card text-center">
+                    <div class="text-4xl text-[#D4AF37] mb-3">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Unique Visitors</h3>
+                    <p id="uniqueVisitors" class="text-3xl font-bold">0</p>
+                </div>
+                
+                <div class="admin-card text-center">
+                    <div class="text-4xl text-[#007bff] mb-3">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Registered Users</h3>
+                    <p id="registeredUsers" class="text-3xl font-bold">0</p>
+                </div>
+                
+                <div class="admin-card text-center">
+                    <div class="text-4xl text-[#ff6b9d] mb-3">
+                        <i class="fas fa-user-clock"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Guest Visitors</h3>
+                    <p id="guestUsers" class="text-3xl font-bold">0</p>
+                </div>
+            </div>
+            
+            <!-- Visitors Timeline -->
+            <div class="admin-card mb-8">
+                <h3 class="text-xl font-bold mb-4 text-white flex items-center gap-2">
+                    <i class="fas fa-history text-[#00CC66]"></i>
+                    Recent Activity (Last 24 Hours)
+                </h3>
+                <div id="recentActivity" class="space-y-3 max-h-96 overflow-y-auto">
+                    <!-- Activity items will appear here -->
+                </div>
+            </div>
+            
+            <!-- Pages Statistics -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="admin-card">
+                    <h3 class="text-xl font-bold mb-4 text-white">Most Visited Pages</h3>
+                    <div id="pagesStats" class="space-y-2">
+                        <!-- Pages stats will appear here -->
+                    </div>
+                </div>
+                
+                <div class="admin-card">
+                    <h3 class="text-xl font-bold mb-4 text-white">User Countries</h3>
+                    <div id="countriesStats" class="space-y-2">
+                        <!-- Countries stats will appear here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Export Section -->
+            <div class="admin-card mt-8">
+                <h3 class="text-xl font-bold mb-4 text-white">Data Management</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <button onclick="exportAllData()" class="p-4 bg-[#00CC66] hover:bg-[#00b359] text-white rounded-lg">
+                        <i class="fas fa-download mr-2"></i>Export All Data
+                    </button>
+                    <button onclick="clearOldData()" class="p-4 bg-[#D4AF37] hover:bg-[#b8942a] text-white rounded-lg">
+                        <i class="fas fa-trash mr-2"></i>Clear Old Data
+                    </button>
+                    <button onclick="refreshStats()" class="p-4 bg-[#007bff] hover:bg-[#0056b3] text-white rounded-lg">
+                        <i class="fas fa-sync mr-2"></i>Refresh Stats
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Admin password (يمكن تغييرها)
+        const ADMIN_PASSWORD = 'afcon2025admin';
+        
+        // Check admin password
+        function checkAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            
+            if (password === ADMIN_PASSWORD) {
+                // Save admin session
+                localStorage.setItem('afcon2025_admin_logged', 'true');
+                showDashboard();
+            } else {
+                alert('Incorrect password!');
+            }
+        }
+        
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            loadAdminStats();
+        }
+        
+        // Logout admin
+        function logoutAdmin() {
+            localStorage.removeItem('afcon2025_admin_logged');
+            location.reload();
+        }
+        
+        // Load admin statistics
+        function loadAdminStats() {
+            // Collect data from all pages
+            const visitors = JSON.parse(localStorage.getItem('afcon2025_visitors')) || [];
+            const users = JSON.parse(localStorage.getItem('afcon2025_all_users')) || [];
+            
+            // Update stats
+            document.getElementById('totalViews').textContent = visitors.length;
+            document.getElementById('uniqueVisitors').textContent = calculateUniqueVisitors(visitors);
+            document.getElementById('registeredUsers').textContent = users.length;
+            document.getElementById('guestUsers').textContent = visitors.filter(v => !v.isLoggedIn).length;
+            
+            // Show recent activity
+            showRecentActivity(visitors);
+            
+            // Show pages stats
+            showPagesStats(visitors);
+            
+            // Show countries stats
+            showCountriesStats(users);
+        }
+        
+        // Calculate unique visitors
+        function calculateUniqueVisitors(visitors) {
+            const uniqueIds = new Set();
+            visitors.forEach(v => {
+                if (v.userId) {
+                    uniqueIds.add(v.userId);
+                } else {
+                    // For guests, use IP approximation (simplified)
+                    uniqueIds.add(v.timestamp.split('T')[0] + v.userAgent?.substring(0, 20));
+                }
+            });
+            return uniqueIds.size;
+        }
+        
+        // Show recent activity
+        function showRecentActivity(visitors) {
+            const container = document.getElementById('recentActivity');
+            const last24Hours = visitors.filter(v => {
+                const visitTime = new Date(v.timestamp);
+                const now = new Date();
+                return (now - visitTime) < 24 * 60 * 60 * 1000; // Last 24 hours
+            });
+            
+            if (last24Hours.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center">No recent activity</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            last24Hours.forEach(visit => {
+                const time = new Date(visit.timestamp);
+                const item = document.createElement('div');
+                item.className = `visitor-item ${visit.isLoggedIn ? '' : 'guest'}`;
+                item.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <span class="font-bold">${visit.isLoggedIn ? visit.userName : 'Guest Visitor'}</span>
+                            <span class="text-sm text-gray-400 ml-2">${visit.page}</span>
+                        </div>
+                        <div class="text-sm text-gray-300">
+                            ${time.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">
+                        ${visit.screenSize} • ${visit.isLoggedIn ? 'Registered' : 'Guest'}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+        
+        // Show pages statistics
+        function showPagesStats(visitors) {
+            const container = document.getElementById('pagesStats');
+            const pageCounts = {};
+            
+            visitors.forEach(v => {
+                const page = v.page || 'Unknown';
+                pageCounts[page] = (pageCounts[page] || 0) + 1;
+            });
+            
+            container.innerHTML = '';
+            Object.entries(pageCounts)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([page, count]) => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center py-2 border-b border-white/10';
+                    div.innerHTML = `
+                        <span>${page}</span>
+                        <span class="bg-[#00CC66] text-white px-3 py-1 rounded-full text-sm">
+                            ${count} views
+                        </span>
+                    `;
+                    container.appendChild(div);
+                });
+        }
+        
+        // Show countries statistics
+        function showCountriesStats(users) {
+            const container = document.getElementById('countriesStats');
+            const countryCounts = {};
+            
+            users.forEach(u => {
+                countryCounts[u.country] = (countryCounts[u.country] || 0) + 1;
+            });
+            
+            container.innerHTML = '';
+            Object.entries(countryCounts)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([country, count]) => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center py-2 border-b border-white/10';
+                    div.innerHTML = `
+                        <span>${country}</span>
+                        <span class="bg-[#D4AF37] text-white px-3 py-1 rounded-full text-sm">
+                            ${count} users
+                        </span>
+                    `;
+                    container.appendChild(div);
+                });
+        }
+        
+        // Export all data
+        function exportAllData() {
+            const data = {
+                visitors: JSON.parse(localStorage.getItem('afcon2025_visitors')) || [],
+                users: JSON.parse(localStorage.getItem('afcon2025_all_users')) || [],
+                predictions: JSON.parse(localStorage.getItem('afcon2025_saved_predictions')) || [],
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const link = document.createElement('a');
+            link.setAttribute('href', dataUri);
+            link.setAttribute('download', `afcon-admin-data-${new Date().toISOString().split('T')[0]}.json`);
+            link.click();
+        }
+        
+        // Clear old data
+        function clearOldData() {
+            if (confirm('Clear all visitor data older than 30 days?')) {
+                const visitors = JSON.parse(localStorage.getItem('afcon2025_visitors')) || [];
+                const thirtyDaysAgo = new Date();
+                thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+                
+                const newVisitors = visitors.filter(v => {
+                    return new Date(v.timestamp) > thirtyDaysAgo;
+                });
+                
+                localStorage.setItem('afcon2025_visitors', JSON.stringify(newVisitors));
+                alert(`Cleared ${visitors.length - newVisitors.length} old records`);
+                loadAdminStats();
+            }
+        }
+        
+        // Refresh stats
+        function refreshStats() {
+            loadAdminStats();
+            alert('Statistics refreshed!');
+        }
+        
+        // Check if admin is already logged in
+        if (localStorage.getItem('afcon2025_admin_logged') === 'true') {
+            showDashboard();
+        }
+    </script>
+    
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+</body>
+</html>

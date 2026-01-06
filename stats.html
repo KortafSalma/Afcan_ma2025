@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>AFCON 2025 - User Statistics</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&amp;family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a0f0f;
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        .bg-morocco {
+            background-color: #1a0f0f;
+            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+            background-attachment: fixed;
+        }
+        
+        /* Navigation Styles - نفس التنسيقات السابقة */
+        .nav-container {
+            background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 204, 102, 0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0.5rem 1rem;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .nav-logo-text {
+            font-family: 'Teko', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 1px;
+        }
+        
+        .nav-logo-text span {
+            color: #00CC66;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: white;
+            background: rgba(0, 204, 102, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            color: #00CC66;
+            background: rgba(0, 204, 102, 0.1);
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: #00CC66;
+            border-radius: 50%;
+        }
+        
+        /* Stats Cards */
+        .stats-card {
+            background: linear-gradient(135deg, rgba(0, 204, 102, 0.1) 0%, rgba(26, 15, 15, 0.9) 100%);
+            border: 1px solid rgba(0, 204, 102, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 204, 102, 0.2);
+        }
+        
+        /* User List */
+        .user-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .user-card:hover {
+            background: rgba(0, 204, 102, 0.1);
+            transform: translateX(5px);
+        }
+        
+        /* Chart Container */
+        .chart-container {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        /* Section Headers */
+        .section-header {
+            font-family: 'Teko', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #00CC66;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #00CC66, #D4AF37);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-morocco">
+    <!-- Navigation Header -->
+    <nav class="nav-container">
+        <div class="nav-content">
+            <a href="index.html" class="nav-logo">
+                <div class="w-24 h-8 flex items-center justify-center bg-[#00CC66] rounded-full">
+                    <img src="logo1.png" alt="AFCON-Logo.ma">
+                </div>
+                <div class="nav-logo-text">
+                    AFCON <span>2025</span>
+                </div>
+            </a>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="predictor.html" class="nav-link">
+                    <i class="fas fa-predict mr-2"></i>Predictions
+                </a>
+                <a href="stats.html" class="nav-link active">
+                    <i class="fas fa-chart-bar mr-2"></i>Statistics
+                </a>
+                <a href="index.html#portfolio" class="nav-link">
+                    <i class="fas fa-users mr-2"></i>Our Team
+                </a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="relative z-10 flex-grow w-full px-4 py-8 md:py-8 overflow-x-auto pt-24">
+        <div class="container mx-auto max-w-6xl">
+            <!-- Header -->
+            <header class="text-center mb-12">
+                <h1 class="section-header">USER STATISTICS</h1>
+                <p class="text-gray-300">Track registered users and their preferences</p>
+            </header>
+            
+            <!-- Stats Overview -->
+            <section class="mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="stats-card text-center">
+                        <div class="text-4xl text-[#00CC66] mb-3">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Total Users</h3>
+                        <p id="totalUsers" class="text-3xl font-bold">0</p>
+                        <p class="text-sm text-gray-400 mt-2">Registered on this device</p>
+                    </div>
+                    
+                    <div class="stats-card text-center">
+                        <div class="text-4xl text-[#D4AF37] mb-3">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Top Country</h3>
+                        <p id="topCountry" class="text-2xl font-bold">N/A</p>
+                        <p class="text-sm text-gray-400 mt-2">Most popular origin</p>
+                    </div>
+                    
+                    <div class="stats-card text-center">
+                        <div class="text-4xl text-[#00CC66] mb-3">
+                            <i class="fas fa-futbol"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Favorite Team</h3>
+                        <p id="topTeam" class="text-2xl font-bold">N/A</p>
+                        <p class="text-sm text-gray-400 mt-2">Most supported team</p>
+                    </div>
+                    
+                    <div class="stats-card text-center">
+                        <div class="text-4xl text-[#D4AF37] mb-3">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Last Login</h3>
+                        <p id="lastLogin" class="text-lg font-bold">N/A</p>
+                        <p class="text-sm text-gray-400 mt-2">Most recent activity</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Users List -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="fas fa-list text-[#00CC66]"></i>
+                    Registered Users
+                </h2>
+                
+                <div class="chart-container">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-white/20">
+                                    <th class="text-left py-3 px-4 text-[#00CC66]">User</th>
+                                    <th class="text-left py-3 px-4 text-[#00CC66]">Country</th>
+                                    <th class="text-left py-3 px-4 text-[#00CC66]">Favorite Team</th>
+                                    <th class="text-left py-3 px-4 text-[#00CC66]">Last Login</th>
+                                    <th class="text-left py-3 px-4 text-[#00CC66]">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="5" class="py-8 text-center text-gray-500">
+                                        No users found. Users will appear here after they register.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Charts Section -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="fas fa-chart-pie text-[#D4AF37]"></i>
+                    Statistics Charts
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Countries Chart -->
+                    <div class="chart-container">
+                        <h3 class="text-xl font-bold mb-4 text-white">Users by Country</h3>
+                        <div class="h-64 flex items-center justify-center">
+                            <canvas id="countriesChart"></canvas>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-4 text-center">
+                            Distribution of users based on their selected country
+                        </p>
+                    </div>
+                    
+                    <!-- Teams Chart -->
+                    <div class="chart-container">
+                        <h3 class="text-xl font-bold mb-4 text-white">Favorite Teams</h3>
+                        <div class="h-64 flex items-center justify-center">
+                            <canvas id="teamsChart"></canvas>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-4 text-center">
+                            Most popular teams among registered users
+                        </p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Data Management -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                    <i class="fas fa-database text-[#00CC66]"></i>
+                    Data Management
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="chart-container">
+                        <h3 class="text-xl font-bold mb-4 text-white">Export Data</h3>
+                        <p class="text-gray-300 mb-4">
+                            Export all user statistics to a JSON file for backup or analysis.
+                        </p>
+                        <button id="exportBtn" class="w-full bg-[#00CC66] hover:bg-[#00b359] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2">
+                            <i class="fas fa-download"></i>
+                            Export User Data (JSON)
+                        </button>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3 class="text-xl font-bold mb-4 text-white">Clear Data</h3>
+                        <p class="text-gray-300 mb-4">
+                            Warning: This will delete all user statistics from this device. This action cannot be undone.
+                        </p>
+                        <button id="clearBtn" class="w-full bg-[#c1272d] hover:bg-[#a02025] text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2">
+                            <i class="fas fa-trash"></i>
+                            Clear All Statistics
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Info Section -->
+            <section class="mb-12">
+                <div class="bg-gradient-to-r from-[#00CC66]/10 to-[#D4AF37]/10 p-6 rounded-lg border border-[#00CC66]/20">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-[#00CC66]"></i>
+                        Important Information
+                    </h3>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-[#00CC66] mt-1"></i>
+                            <span>User data is stored locally in your browser using localStorage</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-[#00CC66] mt-1"></i>
+                            <span>Each browser/device has its own separate user database</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-[#00CC66] mt-1"></i>
+                            <span>Statistics are updated automatically when users register or login</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fas fa-check text-[#00CC66] mt-1"></i>
+                            <span>You can export data to save it permanently</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <footer class="relative z-10 w-full py-8 bg-black/30 backdrop-blur-sm border-t border-white/10">
+        <div class="container mx-auto max-w-6xl px-4 text-center">
+            <p class="text-sm text-gray-400">
+                © 2025 AFCON Predictor Hub | User Statistics Dashboard | 
+                Data is stored locally in your browser
+            </p>
+        </div>
+    </footer>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Font Awesome for Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        // Data structure to store all users
+        let allUsers = JSON.parse(localStorage.getItem('afcon2025_all_users')) || [];
+        let charts = {};
+        
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStatistics();
+            updateDashboard();
+            initializeCharts();
+            
+            // Button event listeners
+            document.getElementById('exportBtn').addEventListener('click', exportData);
+            document.getElementById('clearBtn').addEventListener('click', clearAllData);
+        });
+        
+        // Load statistics from localStorage
+        function loadStatistics() {
+            // Check if current user exists
+            const currentUser = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+            
+            if (currentUser) {
+                // Check if user already exists in allUsers
+                const existingUserIndex = allUsers.findIndex(user => 
+                    user.name === currentUser.name && user.country === currentUser.country
+                );
+                
+                if (existingUserIndex === -1) {
+                    // Add new user with timestamp
+                    const newUser = {
+                        ...currentUser,
+                        registrationDate: new Date().toISOString(),
+                        lastLogin: new Date().toISOString(),
+                        loginCount: 1
+                    };
+                    allUsers.push(newUser);
+                } else {
+                    // Update existing user
+                    allUsers[existingUserIndex].lastLogin = new Date().toISOString();
+                    allUsers[existingUserIndex].loginCount = (allUsers[existingUserIndex].loginCount || 0) + 1;
+                }
+                
+                // Save updated users list
+                localStorage.setItem('afcon2025_all_users', JSON.stringify(allUsers));
+            }
+        }
+        
+        // Update dashboard with statistics
+        function updateDashboard() {
+            // Update total users
+            document.getElementById('totalUsers').textContent = allUsers.length;
+            
+            // Find top country
+            if (allUsers.length > 0) {
+                const countryCounts = {};
+                allUsers.forEach(user => {
+                    countryCounts[user.country] = (countryCounts[user.country] || 0) + 1;
+                });
+                
+                const topCountry = Object.keys(countryCounts).reduce((a, b) => 
+                    countryCounts[a] > countryCounts[b] ? a : b
+                );
+                document.getElementById('topCountry').textContent = topCountry;
+                
+                // Find top team
+                const teamCounts = {};
+                allUsers.forEach(user => {
+                    if (user.favoriteTeam) {
+                        teamCounts[user.favoriteTeam] = (teamCounts[user.favoriteTeam] || 0) + 1;
+                    }
+                });
+                
+                if (Object.keys(teamCounts).length > 0) {
+                    const topTeam = Object.keys(teamCounts).reduce((a, b) => 
+                        teamCounts[a] > teamCounts[b] ? a : b
+                    );
+                    document.getElementById('topTeam').textContent = topTeam;
+                }
+                
+                // Find last login
+                const lastLogin = allUsers.reduce((latest, user) => 
+                    new Date(user.lastLogin) > new Date(latest.lastLogin) ? user : latest
+                );
+                const lastLoginDate = new Date(lastLogin.lastLogin);
+                document.getElementById('lastLogin').textContent = 
+                    lastLoginDate.toLocaleDateString() + ' ' + 
+                    lastLoginDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            }
+            
+            // Update users table
+            updateUsersTable();
+        }
+        
+        // Update users table
+        function updateUsersTable() {
+            const tableBody = document.getElementById('usersTableBody');
+            
+            if (allUsers.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-gray-500">
+                            No users found. Users will appear here after they register.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = '';
+            
+            allUsers.forEach((user, index) => {
+                const loginDate = new Date(user.lastLogin);
+                const formattedDate = loginDate.toLocaleDateString() + ' ' + 
+                                     loginDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                const row = document.createElement('tr');
+                row.className = 'border-b border-white/10 hover:bg-white/5';
+                row.innerHTML = `
+                    <td class="py-3 px-4">
+                        <div class="flex items-center gap-3">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}" 
+                                 alt="Avatar" class="w-8 h-8 rounded-full">
+                            <div>
+                                <div class="font-bold">${user.name}</div>
+                                <div class="text-xs text-gray-400">${user.loginCount || 1} login(s)</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <span class="px-3 py-1 bg-[#00CC66]/20 text-[#00CC66] rounded-full text-sm">
+                            ${user.country}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4">
+                        ${user.favoriteTeam ? 
+                            `<span class="px-3 py-1 bg-[#D4AF37]/20 text-[#D4AF37] rounded-full text-sm">
+                                ${user.favoriteTeam}
+                            </span>` : 
+                            '<span class="text-gray-500">Not set</span>'
+                        }
+                    </td>
+                    <td class="py-3 px-4 text-sm text-gray-300">
+                        ${formattedDate}
+                    </td>
+                    <td class="py-3 px-4">
+                        <button onclick="deleteUser(${index})" 
+                                class="px-3 py-1 bg-[#c1272d]/20 text-[#c1272d] hover:bg-[#c1272d]/30 rounded text-sm">
+                            <i class="fas fa-trash mr-1"></i> Remove
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Delete a user
+        function deleteUser(index) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                allUsers.splice(index, 1);
+                localStorage.setItem('afcon2025_all_users', JSON.stringify(allUsers));
+                updateDashboard();
+                updateCharts();
+            }
+        }
+        
+        // Initialize charts
+        function initializeCharts() {
+            // Destroy existing charts if they exist
+            if (charts.countries) charts.countries.destroy();
+            if (charts.teams) charts.teams.destroy();
+            
+            // Prepare data for charts
+            const countriesData = prepareCountriesData();
+            const teamsData = prepareTeamsData();
+            
+            // Countries Chart
+            const countriesCtx = document.getElementById('countriesChart').getContext('2d');
+            charts.countries = new Chart(countriesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: countriesData.labels,
+                    datasets: [{
+                        data: countriesData.values,
+                        backgroundColor: [
+                            '#00CC66', '#D4AF37', '#007bff', '#ff6b9d', 
+                            '#9c27b0', '#ff4081', '#4CAF50', '#2196F3'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#1a0f0f'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#fff',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Teams Chart
+            const teamsCtx = document.getElementById('teamsChart').getContext('2d');
+            charts.teams = new Chart(teamsCtx, {
+                type: 'bar',
+                data: {
+                    labels: teamsData.labels,
+                    datasets: [{
+                        label: 'Number of Users',
+                        data: teamsData.values,
+                        backgroundColor: '#00CC66',
+                        borderColor: '#00b359',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#fff',
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#fff'
+                            },
+                            grid: {
+                                color: 'rgba(255,255,255,0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#fff'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Prepare countries data for chart
+        function prepareCountriesData() {
+            const countryCounts = {};
+            allUsers.forEach(user => {
+                countryCounts[user.country] = (countryCounts[user.country] || 0) + 1;
+            });
+            
+            const labels = Object.keys(countryCounts);
+            const values = Object.values(countryCounts);
+            
+            return { labels, values };
+        }
+        
+        // Prepare teams data for chart
+        function prepareTeamsData() {
+            const teamCounts = {};
+            allUsers.forEach(user => {
+                if (user.favoriteTeam) {
+                    teamCounts[user.favoriteTeam] = (teamCounts[user.favoriteTeam] || 0) + 1;
+                }
+            });
+            
+            const labels = Object.keys(teamCounts);
+            const values = Object.values(teamCounts);
+            
+            return { labels, values };
+        }
+        
+        // Update charts with new data
+        function updateCharts() {
+            if (charts.countries && charts.teams) {
+                const countriesData = prepareCountriesData();
+                const teamsData = prepareTeamsData();
+                
+                charts.countries.data.labels = countriesData.labels;
+                charts.countries.data.datasets[0].data = countriesData.values;
+                charts.countries.update();
+                
+                charts.teams.data.labels = teamsData.labels;
+                charts.teams.data.datasets[0].data = teamsData.values;
+                charts.teams.update();
+            }
+        }
+        
+        // Export data to JSON file
+        function exportData() {
+            if (allUsers.length === 0) {
+                alert('No data to export.');
+                return;
+            }
+            
+            const dataStr = JSON.stringify(allUsers, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `afcon-users-${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            alert(`Data exported successfully! File: ${exportFileDefaultName}`);
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            if (allUsers.length === 0) {
+                alert('No data to clear.');
+                return;
+            }
+            
+            if (confirm('WARNING: This will delete ALL user statistics from this device. This action cannot be undone. Are you sure?')) {
+                allUsers = [];
+                localStorage.removeItem('afcon2025_all_users');
+                updateDashboard();
+                updateCharts();
+                alert('All user statistics have been cleared.');
+            }
+        }
+        
+        // Also need to update the login function in index.html to track users
+        // Add this code to the login form submission in index.html:
+        /*
+        // After saving userProfile in index.html, add:
+        const allUsers = JSON.parse(localStorage.getItem('afcon2025_all_users')) || [];
+        const existingUserIndex = allUsers.findIndex(user => 
+            user.name === userName && user.country === userCountry
+        );
+        
+        if (existingUserIndex === -1) {
+            allUsers.push({
+                name: userName,
+                country: userCountry,
+                favoriteTeam: favoriteTeam,
+                avatarSeed: userName.toLowerCase().replace(/\s/g, ''),
+                registrationDate: new Date().toISOString(),
+                lastLogin: new Date().toISOString(),
+                loginCount: 1
+            });
+        } else {
+            allUsers[existingUserIndex].lastLogin = new Date().toISOString();
+            allUsers[existingUserIndex].loginCount = (allUsers[existingUserIndex].loginCount || 0) + 1;
+        }
+        
+        localStorage.setItem('afcon2025_all_users', JSON.stringify(allUsers));
+        */
+    </script>
+</body>
+</html>

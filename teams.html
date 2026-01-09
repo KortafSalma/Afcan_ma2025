@@ -54,6 +54,58 @@
             justify-content: space-between;
             align-items: center;
         }
+        /* Hero Section Styles */
+.hero-section {
+    background: linear-gradient(180deg, 
+        rgba(26, 15, 15, 0.9) 0%, 
+        rgba(26, 15, 15, 0.7) 50%,
+        rgba(26, 15, 15, 0.4) 100%),
+        url('Assad.png');
+    background-size: cover;
+    background-position: center;
+    border-bottom: 2px solid rgba(0, 204, 102, 0.3);
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 0 1rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: 1;
+}
+
+.hero-section > div {
+    position: relative;
+    z-index: 2;
+}
+
+/* Adjustments for responsive design */
+@media (max-width: 768px) {
+    .hero-section {
+        margin: 0 0.5rem;
+        border-radius: 8px;
+    }
+    
+    .hero-section > div {
+        padding: 1.5rem 1rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-section {
+        margin: 0 2rem;
+    }
+}
 
         .nav-logo {
             display: flex;
@@ -122,6 +174,52 @@
             font-size: 1.5rem;
             cursor: pointer;
         }
+        .profile-section {
+        background: linear-gradient(135deg, rgba(0, 204, 102, 0.1) 0%, rgba(26, 15, 15, 0.9) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 204, 102, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 30px;
+        margin-top: 20px;
+    }
+    
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 3px solid #00CC66;
+        object-fit: cover;
+    }
+    
+    /* Login Modal Styles - نفس الأنماط من index.html */
+    .login-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 2000;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+    
+    .login-modal.active {
+        display: flex;
+    }
+    
+    .login-container {
+        background: rgba(26, 15, 15, 0.95);
+        backdrop-filter: blur(10px);
+        border: 2px solid #00CC66;
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 400px;
+        width: 100%;
+    }
         
         @media (max-width: 768px) {
             .nav-mobile-toggle {
@@ -946,7 +1044,7 @@
                     <i class="fas fa-home mr-2"></i>Home
                 </a>
                 <a href="predictor.html" class="nav-link">
-                    <i class="fas fa-predict mr-2"></i>Predictions
+                    <i class="fas fa-trophy mr-2"></i>Predictions
                 </a>
                 <a href="#history" class="nav-link">
                     <i class="fas fa-history mr-2"></i>Your History
@@ -954,6 +1052,7 @@
                 <a href="teams.html" class="nav-link active">
                     <i class="fas fa-users mr-2"></i>Teams
                 </a>
+                
                 <a href="teams-details.html" class="nav-link">
                     <i class="fas fa-flag mr-2"></i>Team Details (Host)
                 </a>
@@ -962,14 +1061,17 @@
                 </a>
             </div>
         </div>
+        
     </nav>
 
     <div class="absolute inset-0 bg-moroccan-pattern opacity-10 pointer-events-none z-0"></div>
     
     <!-- Header Section -->
-    <header class="relative z-10 w-full text-center pt-24 pb-8">
-        <div class="flex flex-col items-center justify-center gap-2">
-            <div class="flex items-center gap-4 mb-2">
+    <!-- Header Section -->
+<header class="relative z-10 w-full text-center pt-24 pb-8">
+    <div class="flex flex-col items-center justify-center gap-2">
+        <div class="assud hero-section w-full">
+            <div class="flex items-center gap-4 mb-2 justify-center py-8 px-4">
                 <div class="bg-white px-2 py-1 rounded shadow-md">
                     <span class="text-[#1a0f0f] font-bold text-xl font-['Teko'] tracking-wide">CAF</span>
                 </div>
@@ -980,22 +1082,24 @@
                     <span class="block text-[#00CC66]">Morocco 25</span>
                 </div>
             </div>
-            <div class="mt-2">
-                <p class="text-xs text-gray-300">24 National Teams • Knockout Stage • January 2025</p>
-                <div class="flex flex-wrap justify-center gap-4 mt-3">
-                    <div class="bg-green-500/20 text-green-500 px-4 py-2 rounded-lg text-sm">
-                        <span class="font-bold">16</span> Teams in Round of 16
-                    </div>
-                    <div class="bg-red-500/20 text-red-500 px-4 py-2 rounded-lg text-sm">
-                        <span class="font-bold">8</span> Teams Eliminated
-                    </div>
-                    <div class="bg-yellow-500/20 text-yellow-500 px-4 py-2 rounded-lg text-sm">
-                        <span class="font-bold">6</span> Groups
-                    </div>
+        </div>
+        <div class="mt-2">
+            <p class="text-xs text-gray-300">24 National Teams • Knockout Stage • January 2025</p>
+            <div class="flex flex-wrap justify-center gap-4 mt-3">
+                <div class="bg-green-500/20 text-green-500 px-4 py-2 rounded-lg text-sm">
+                    <span class="font-bold">16</span> Teams in Round of 16
+                </div>
+                <div class="bg-red-500/20 text-red-500 px-4 py-2 rounded-lg text-sm">
+                    <span class="font-bold">8</span> Teams Eliminated
+                </div>
+                <div class="bg-yellow-500/20 text-yellow-500 px-4 py-2 rounded-lg text-sm">
+                    <span class="font-bold">6</span> Groups
                 </div>
             </div>
         </div>
-    </header>
+    </div>
+</header>
+
 
     <!-- Main Content -->
     <main class="relative z-10 flex-grow w-full px-4 py-8 max-w-7xl mx-auto">

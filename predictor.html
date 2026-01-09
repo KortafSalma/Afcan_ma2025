@@ -1067,47 +1067,779 @@ body {
         image-rendering: -webkit-optimize-contrast;
     }
 }
+/* ========== HEADER STYLES FOR PREDICTOR ========== */
+.nav-container {
+    background: linear-gradient(135deg, rgba(26, 15, 15, 0.98) 0%, rgba(0, 0, 0, 0.98) 100%);
+    backdrop-filter: blur(10px);
+    border-bottom: 2px solid rgba(0, 204, 102, 0.4);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.nav-content {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo Section */
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+}
+
+.logo-box {
+    width: 90px;
+    height: 45px;
+    background: linear-gradient(135deg, #00CC66, #00994d);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.logo-box img {
+    width: 100%;
+    height: auto;
+    max-height: 35px;
+    object-fit: contain;
+}
+
+.logo-text {
+    font-family: 'Teko', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+.logo-text span {
+    color: #00CC66;
+    display: block;
+    font-size: 22px;
+}
+
+/* Navigation Links */
+.nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-link:hover {
+    color: white;
+    background: rgba(0, 204, 102, 0.15);
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    color: #00CC66;
+    background: rgba(0, 204, 102, 0.1);
+    font-weight: 600;
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background: #00CC66;
+    border-radius: 50%;
+}
+
+/* Profile Section */
+.profile-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info {
+    text-align: right;
+    display: none;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 2px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+.user-name:hover {
+    color: #00CC66;
+}
+
+.user-country {
+    font-size: 12px;
+    color: #00CC66;
+    font-weight: 500;
+}
+
+.profile-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid #00CC66;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.3s ease box-shadow 0.3s ease;
+}
+
+.profile-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px rgba(0, 204, 102, 0.5);
+}
+
+.auth-btn {
+    background: linear-gradient(135deg, #00CC66, #00994d);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.auth-btn:hover {
+    background: linear-gradient(135deg, #00b359, #008040);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 204, 102, 0.3);
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* ========== RESPONSIVE STYLES ========== */
+@media (min-width: 1200px) {
+    .user-info {
+        display: block;
+    }
+}
+
+@media (max-width: 1100px) {
+    .nav-links {
+        gap: 15px;
+    }
+    
+    .nav-link {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 992px) {
+    .nav-container {
+        height: 70px;
+        padding: 0 15px;
+    }
+    
+    .logo-text {
+        font-size: 24px;
+    }
+    
+    .logo-text span {
+        font-size: 20px;
+    }
+    
+    .logo-box {
+        width: 80px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: rgba(26, 15, 15, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 20px;
+        gap: 10px;
+        border-bottom: 2px solid #00CC66;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 999;
+    }
+    
+    .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-item {
+        width: 100%;
+    }
+    
+    .nav-link {
+        width: 100%;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 16px;
+        justify-content: center;
+    }
+    
+    .user-info {
+        display: block;
+        margin-right: 10px;
+    }
+    
+    .profile-section {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 0 10px;
+        height: 65px;
+    }
+    
+    .logo-text {
+        font-size: 20px;
+    }
+    
+    .logo-text span {
+        font-size: 18px;
+    }
+    
+    .logo-box {
+        width: 70px;
+        height: 35px;
+    }
+    
+    .auth-btn {
+        padding: 6px 15px;
+        font-size: 13px;
+    }
+    
+    .profile-avatar {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Login Modal Styles */
+.login-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-modal.active {
+    display: flex;
+}
+
+.login-container {
+    background: rgba(26, 15, 15, 0.95);
+    backdrop-filter: blur(20px);
+    border: 2px solid #00CC66;
+    border-radius: 15px;
+    padding: 40px;
+    max-width: 450px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+/* ========== PROFILE HISTORY POPUP ========== */
+.profile-history-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.profile-history-popup {
+    background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
+    border: 2px solid rgba(0, 204, 102, 0.4);
+    border-radius: 15px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.profile-history-header {
+    background: linear-gradient(135deg, rgba(0, 204, 102, 0.2) 0%, rgba(26, 15, 15, 0.9) 100%);
+    padding: 25px 30px;
+    border-bottom: 1px solid rgba(0, 204, 102, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-history-header h2 {
+    font-family: 'Teko', sans-serif;
+    font-size: 32px;
+    color: #00CC66;
+    margin: 0;
+}
+
+.close-history-popup {
+    background: rgba(0, 204, 102, 0.2);
+    border: 1px solid rgba(0, 204, 102, 0.4);
+    color: #00CC66;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.close-history-popup:hover {
+    background: rgba(0, 204, 102, 0.4);
+    transform: rotate(90deg);
+}
+
+.profile-history-content {
+    padding: 30px;
+    overflow-y: auto;
+    max-height: calc(90vh - 150px);
+}
+
+.user-profile-summary {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(0, 204, 102, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 204, 102, 0.2);
+}
+
+.profile-history-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 3px solid #00CC66;
+    object-fit: cover;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h3 {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.profile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+}
+
+.meta-item i {
+    color: #00CC66;
+}
+
+.history-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.stat-card-history {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 204, 102, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.stat-card-history:hover {
+    background: rgba(0, 204, 102, 0.1);
+    transform: translateY(-5px);
+}
+
+.stat-value-history {
+    font-size: 32px;
+    font-weight: bold;
+    color: #00CC66;
+    margin-bottom: 5px;
+}
+
+.stat-label-history {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.history-section-title {
+    font-family: 'Teko', sans-serif;
+    font-size: 24px;
+    color: #D4AF37;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.history-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+.history-item:hover {
+    background: rgba(0, 204, 102, 0.05);
+    border-color: rgba(0, 204, 102, 0.3);
+    transform: translateX(5px);
+}
+
+.history-item-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    background: rgba(0, 204, 102, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00CC66;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.history-item-content {
+    flex: 1;
+}
+
+.history-item-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.history-item-desc {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 8px;
+}
+
+.history-item-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.history-item-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.history-item-points {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #00CC66;
+}
+/* Add these styles to existing CSS */
+.history-item.registration-item {
+    border-left: 4px solid #00CC66;
+    background: rgba(0, 204, 102, 0.05);
+}
+
+.history-item.login-item {
+    border-left: 4px solid #D4AF37;
+    background: rgba(212, 175, 55, 0.05);
+}
+
+.history-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: bold;
+    margin-left: 10px;
+    text-transform: uppercase;
+}
+
+.badge-registration {
+    background: rgba(0, 204, 102, 0.2);
+    color: #00CC66;
+}
+
+.badge-login {
+    background: rgba(212, 175, 55, 0.2);
+    color: #D4AF37;
+}
+
+.session-duration {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 5px;
+}
+
+.no-history {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.no-history i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: rgba(0, 204, 102, 0.3);
+}
+
+.no-history h4 {
+    font-size: 20px;
+    color: white;
+    margin-bottom: 10px;
+}
+
+/* Custom scrollbar for history */
+.profile-history-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.profile-history-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.profile-history-content::-webkit-scrollbar-thumb {
+    background: #00CC66;
+    border-radius: 4px;
+}
+
+.profile-history-content::-webkit-scrollbar-thumb:hover {
+    background: #00b359;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-history-popup {
+        max-height: 95vh;
+    }
+    
+    .profile-history-content {
+        padding: 20px;
+        max-height: calc(95vh - 140px);
+    }
+    
+    .user-profile-summary {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-meta {
+        justify-content: center;
+    }
+    
+    .history-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .history-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .history-item-meta {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .history-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-history-header h2 {
+        font-size: 24px;
+    }
+}
     </style>
 </head>
 <body class="bg-morocco">
     <!-- Navigation Header -->
-    <nav class="nav-container">
-        <div class="nav-content">
-            <a href="index.html" class="nav-logo">
-                <div class="w-24 h-8 flex items-center justify-center bg-[#00CC66] rounded-full">
-                    <img src="logo1.png" alt="afcon-2025.ma" >
-                </div>
-                <div class="nav-logo-text">
-                    AFCON <span>2025</span>
-                </div>
-            </a>
-            
-            <button class="nav-mobile-toggle" id="mobileToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-            
-            <div class="nav-links" id="navLinks">
-                <a href="index.html" class="nav-link ">
-                    <i class="fas fa-home mr-2"></i>Home
-                </a>
-                <a href="predictor.html" class="nav-link active">
-                    <i class="fas fa-predict mr-2"></i>Predictions
-                </a>
-                <a href="#history" class="nav-link">
-                    <i class="fas fa-history mr-2"></i>Your History
-                </a>
-                <a href="teams.html" class="nav-link">
-                    <i class="fas fa-users mr-2"></i>Teams
-                </a>
-                <a href="teams-details.html" class="nav-link">
-                    <i class="fas fa-flag mr-2"></i>Team Details (Host)
-                </a>
-                <a href="index.html#portfolio" class="nav-link">
-                    <i class="fas fa-star mr-2"></i>Our Team
-                </a>
+<!-- Navigation Header -->
+<nav class="nav-container">
+    <div class="nav-content">
+        <!-- Logo -->
+        <a href="index.html" class="logo-section">
+            <div class="w-24 h-8 flex items-center justify-center bg-[#00CC66] rounded-full">
+                <img src="logo1.png" alt="AFCON Logo">
             </div>
+            <div class="logo-text">
+                AFCON <span>2025</span>
+            </div>
+        </a>
+        
+        <!-- Navigation Links -->
+        <ul class="nav-links" id="navLinks">
+            <li class="nav-item">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="predictor.html" class="nav-link active">
+                    <i class="fas fa-trophy"></i> Predictions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teams.html" class="nav-link">
+                    <i class="fas fa-users"></i> Teams
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="teams-details.html" class="nav-link">
+                    <i class="fas fa-flag"></i> Team Details
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#portfolio" class="nav-link">
+                    <i class="fas fa-star"></i> Our Team
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <div class="user-info" id="userInfo">
+                <div id="profileMiniName" class="user-name">Guest</div>
+                <div id="profileMiniCountry" class="user-country">Sign in</div>
+            </div>
+            <img id="profileMiniAvatar" 
+                 src="https://api.dicebear.com/7.x/avataaars/svg?seed=guest&backgroundColor=00CC66" 
+                 alt="Profile" 
+                 class="profile-avatar">
+            <button id="profileMiniBtn" class="auth-btn">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
         </div>
-    </nav>
+        
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" id="mobileToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</nav>
     
     <!-- Saved Predictions Toggle -->
     <button class="saved-predictions-toggle" id="savedPredictionsToggle">
@@ -1545,9 +2277,110 @@ body {
         </div>
     </main>
     
+    <!-- Login Modal -->
+<div class="login-modal" id="loginModal">
+    <div class="login-container">
+        <div class="flex justify-between items-center mb-8">
+            <h3 class="text-2xl font-bold text-[#00CC66]">Sign In / Register</h3>
+            <button id="closeLoginModal" class="text-white/60 hover:text-white text-2xl transition">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-3">Your Name</label>
+                <input type="text" id="userName" class="w-full bg-black/50 border border-white/20 rounded-lg px-5 py-4 text-white focus:border-[#00CC66] focus:outline-none transition" placeholder="Enter your name" required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-3">Your Country</label>
+                <select id="userCountrySelect" class="w-full bg-black/50 border border-white/20 rounded-lg px-5 py-4 text-white focus:border-[#00CC66] focus:outline-none transition" required>
+                    <option value="">Select your country</option>
+                    <option value="Morocco">Morocco</option>
+                    <option value="Algeria">Algeria</option>
+                    <option value="Egypt">Egypt</option>
+                    <option value="Senegal">Senegal</option>
+                    <option value="Nigeria">Nigeria</option>
+                    <option value="Ivory Coast">Ivory Coast</option>
+                    <option value="South Africa">South Africa</option>
+                    <option value="Ghana">Ghana</option>
+                    <option value="Tunisia">Tunisia</option>
+                    <option value="Cameroon">Cameroon</option>
+                    <option value="Other">Other African Country</option>
+                    <option value="International">International Fan</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-3">Password</label>
+                <input type="password" id="userPassword" class="w-full bg-black/50 border border-white/20 rounded-lg px-5 py-4 text-white focus:border-[#00CC66] focus:outline-none transition" placeholder="Enter password (optional)">
+                <p class="text-xs text-gray-400 mt-2">
+                    If you're admin, enter: admin / afcon2025admin
+                </p>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-300 mb-3">Favorite Team (Optional)</label>
+                <select id="userFavoriteTeam" class="w-full bg-black/50 border border-white/20 rounded-lg px-5 py-4 text-white focus:border-[#00CC66] focus:outline-none transition">
+                    <option value="">Select your favorite team</option>
+                    <option value="MAR">Morocco</option>
+                    <option value="ALG">Algeria</option>
+                    <option value="EGY">Egypt</option>
+                    <option value="SEN">Senegal</option>
+                    <option value="NGA">Nigeria</option>
+                    <option value="CIV">Ivory Coast</option>
+                    <option value="RSA">South Africa</option>
+                    <option value="GHA">Ghana</option>
+                    <option value="TUN">Tunisia</option>
+                    <option value="CMR">Cameroon</option>
+                </select>
+            </div>
+            
+            <div class="pt-6">
+                <button type="submit" class="w-full bg-gradient-to-r from-[#00CC66] to-[#00994d] hover:from-[#00b359] hover:to-[#008040] text-white py-4 rounded-lg font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+                    Save Profile
+                </button>
+            </div>
+            
+            <p class="text-center text-gray-400 text-sm mt-6">
+                Your data is stored locally in your browser. No account required!
+            </p>
+        </form>
+    </div>
+</div>
+
+<!-- Admin Indicator (Shows when admin is logged in) -->
+<div id="adminIndicator" style="position: fixed; top: 100px; right: 20px; z-index: 9999; display: none;">
+    <div style="background: #D4AF37; color: black; padding: 10px 15px; border-radius: 5px; font-weight: bold; font-size: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+        <i class="fas fa-shield-alt"></i> Admin Mode
+        <button onclick="window.location.href='admin.html'" style="margin-left: 10px; background: black; color: white; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">
+            Dashboard
+        </button>
+        <button onclick="logoutUser()" style="margin-left: 5px; background: #c1272d; color: white; border: none; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-size: 11px;">
+            Logout
+        </button>
+    </div>
+</div>
+
     <footer class="relative z-10 w-full text-center py-6 bg-black/30 backdrop-blur-sm border-t border-white/10 mt-auto">
         <p class="text-sm font-bold tracking-widest text-white/80 uppercase">All kick-off times are in the local time of Morocco</p>
     </footer>
+    <!-- Profile History Popup -->
+<div class="profile-history-overlay" id="profileHistoryOverlay">
+    <div class="profile-history-popup">
+        <div class="profile-history-header">
+            <h2>Profile History</h2>
+            <button class="close-history-popup" id="closeHistoryPopup">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="profile-history-content" id="profileHistoryContent">
+            <!-- Content will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
 
     <!-- Font Awesome for Icons -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
@@ -1602,6 +2435,8 @@ body {
             initializeRoundOf16();
             updateProgress();
             loadSavedPredictions();
+        initProfileHistory();
+
             
             // Add event listeners for control buttons
             document.getElementById('saveBtn').addEventListener('click', savePredictions);
@@ -1680,46 +2515,63 @@ body {
         }
 
         // Load saved predictions
-        function loadSavedPredictions() {
-            const savedList = document.getElementById('savedPredictionsList');
-            
-            if (savedPredictions.length === 0) {
-                savedList.innerHTML = '<p class="text-center text-white/60 py-4">No saved predictions yet</p>';
-                return;
-            }
-            
-            savedList.innerHTML = '';
-            
-            savedPredictions.forEach((prediction, index) => {
-                const championTeam = allTeams.find(t => t.code === prediction.predictions['final-winner']);
-                const date = new Date(prediction.timestamp);
-                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                
-                const predictionItem = document.createElement('div');
-                predictionItem.className = 'prediction-item';
-                predictionItem.innerHTML = `
-                    <div class="prediction-item-header">
-                        <span class="text-sm font-bold">Prediction #${index + 1}</span>
-                        <span class="text-xs text-white/60">${formattedDate}</span>
-                    </div>
-                    <div class="prediction-champion">
-                        <img src="${championTeam.flag}" alt="${championTeam.name} Flag" class="flag-icon" style="width: 20px; height: 15px;">
-                        <span class="font-bold text-[#D4AF37]">${championTeam.name}</span>
-                        <span class="ml-auto text-xs">🏆 Champion</span>
-                    </div>
-                    <div class="flex gap-2 mt-2">
-                        <button class="text-xs bg-[#00CC66] hover:bg-[#00b359] text-white px-3 py-1 rounded flex-1" onclick="loadPrediction(${index})">
-                            <i class="fas fa-eye mr-1"></i> View
-                        </button>
-                        <button class="text-xs bg-[#c1272d] hover:bg-[#a02025] text-white px-3 py-1 rounded" onclick="deletePrediction(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                `;
-                
-                savedList.appendChild(predictionItem);
-            });
-        }
+        // Load saved predictions for current user
+function loadSavedPredictions() {
+    const savedList = document.getElementById('savedPredictionsList');
+    
+    // Get current user
+    const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+    const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+    
+    // Determine user ID
+    let userId = 'guest';
+    if (userProfile) {
+        userId = userProfile.avatarSeed; // Use avatarSeed as unique ID
+    } else if (adminSession && adminSession.loggedIn) {
+        userId = adminSession.username.toLowerCase();
+    }
+    
+    // Get user's saved predictions
+    const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
+    const userPredictions = allPredictions[userId] || [];
+    
+    if (userPredictions.length === 0) {
+        savedList.innerHTML = '<p class="text-center text-white/60 py-4">No saved predictions yet</p>';
+        return;
+    }
+    
+    savedList.innerHTML = '';
+    
+    userPredictions.forEach((prediction, index) => {
+        const championTeam = allTeams.find(t => t.code === prediction.predictions['final-winner']);
+        const date = new Date(prediction.timestamp);
+        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const predictionItem = document.createElement('div');
+        predictionItem.className = 'prediction-item';
+        predictionItem.innerHTML = `
+            <div class="prediction-item-header">
+                <span class="text-sm font-bold">Prediction #${index + 1}</span>
+                <span class="text-xs text-white/60">${formattedDate}</span>
+            </div>
+            <div class="prediction-champion">
+                <img src="${championTeam.flag}" alt="${championTeam.name} Flag" class="flag-icon" style="width: 20px; height: 15px;">
+                <span class="font-bold text-[#D4AF37]">${championTeam.name}</span>
+                <span class="ml-auto text-xs">🏆 Champion</span>
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button class="text-xs bg-[#00CC66] hover:bg-[#00b359] text-white px-3 py-1 rounded flex-1" onclick="loadPrediction(${index}, '${userId}')">
+                    <i class="fas fa-eye mr-1"></i> View
+                </button>
+                <button class="text-xs bg-[#c1272d] hover:bg-[#a02025] text-white px-3 py-1 rounded" onclick="deletePrediction(${index}, '${userId}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        
+        savedList.appendChild(predictionItem);
+    });
+}
 
         // Load a saved prediction
         function loadPrediction(index) {
@@ -2139,37 +2991,66 @@ body {
         }
 
         // Save predictions
-        function savePredictions() {
-            const completed = Object.values(predictions).filter(p => p !== null).length;
-            if (completed < 15) {
-                alert(`Please complete all predictions before saving (${completed}/15 completed).`);
-                return;
-            }
-            
-            const data = {
-                predictions: predictions,
-                timestamp: new Date().toISOString(),
-                champion: predictions['final-winner'] ? 
-                    allTeams.find(t => t.code === predictions['final-winner']).name : 'Not selected'
-            };
-            
-            // Save to saved predictions
-            savedPredictions.unshift(data); // Add to beginning
-            if (savedPredictions.length > 10) {
-                savedPredictions = savedPredictions.slice(0, 10); // Keep only last 10
-            }
-            
-            localStorage.setItem('afcon2025_saved_predictions', JSON.stringify(savedPredictions));
-            
-            // Update saved predictions list
-            loadSavedPredictions();
-            
-            alert('Predictions saved successfully!');
-            
-            const saveBtn = document.getElementById('saveBtn');
-            saveBtn.classList.add('save-animation');
-            setTimeout(() => saveBtn.classList.remove('save-animation'), 500);
+        // Save predictions
+function savePredictions() {
+    const completed = Object.values(predictions).filter(p => p !== null).length;
+    if (completed < 15) {
+        alert(`Please complete all predictions before saving (${completed}/15 completed).`);
+        return;
+    }
+    
+    const data = {
+        predictions: predictions,
+        timestamp: new Date().toISOString(),
+        champion: predictions['final-winner'] ? 
+            allTeams.find(t => t.code === predictions['final-winner']).name : 'Not selected'
+    };
+    
+    // Get current user
+    const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+    const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+    
+    // Determine user ID
+    let userId = 'guest';
+    if (userProfile) {
+        userId = userProfile.avatarSeed;
+    } else if (adminSession && adminSession.loggedIn) {
+        userId = adminSession.username.toLowerCase();
+    } else {
+        // Guest users need to sign in
+        if (confirm('Please sign in to save your predictions! Would you like to sign in now?')) {
+            document.getElementById('loginModal').classList.add('active');
         }
+        return;
+    }
+    
+    // Get all predictions
+    const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
+    
+    // Get user's predictions
+    const userPredictions = allPredictions[userId] || [];
+    
+    // Add new prediction
+    userPredictions.unshift(data);
+    
+    // Keep only last 10 predictions
+    if (userPredictions.length > 10) {
+        userPredictions.length = 10;
+    }
+    
+    // Save back to all predictions
+    allPredictions[userId] = userPredictions;
+    localStorage.setItem('afcon2025_all_predictions', JSON.stringify(allPredictions));
+    
+    // Update saved predictions list
+    loadSavedPredictions();
+    
+    alert('Predictions saved successfully!');
+    
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.classList.add('save-animation');
+    setTimeout(() => saveBtn.classList.remove('save-animation'), 500);
+}
 
         // Reset all predictions UI (without confirmation)
         function resetAllPredictionsUI() {
@@ -2396,6 +3277,911 @@ body {
                 }
             }, 'image/png');
         }
+    // ========================================
+// USER PROFILE MANAGEMENT FOR PREDICTOR.HTML
+// ========================================
+
+let userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile')) || null;
+
+// Update profile display function
+function updateProfileDisplay() {
+    const profileMiniAvatar = document.getElementById('profileMiniAvatar');
+    const profileMiniName = document.getElementById('profileMiniName');
+    const profileMiniCountry = document.getElementById('profileMiniCountry');
+    const profileMiniBtn = document.getElementById('profileMiniBtn');
+    
+    const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+    const adminIndicator = document.getElementById('adminIndicator');
+    
+    if (adminSession && adminSession.loggedIn) {
+        // Admin is logged in
+        const displayName = adminSession.username;
+        const avatarSeed = displayName.toLowerCase().replace(/\s/g, '');
+        
+        // Update mini profile
+        profileMiniAvatar.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}&backgroundColor=D4AF37`;
+        profileMiniName.textContent = `${displayName} (Admin)`;
+        profileMiniCountry.textContent = "Administrator";
+        profileMiniBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Admin Logout';
+        profileMiniBtn.className = 'auth-btn bg-gradient-to-r from-[#D4AF37] to-[#b8942a]';
+        
+        // Show admin indicator
+        if (adminIndicator) {
+            adminIndicator.style.display = 'block';
+        }
+        
+    } else if (userProfile) {
+        // Regular user is logged in
+        const avatarSeed = userProfile.avatarSeed;
+        
+        // Update mini profile
+        profileMiniAvatar.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}&backgroundColor=00CC66`;
+        profileMiniName.textContent = userProfile.name;
+        profileMiniCountry.textContent = userProfile.country;
+        profileMiniBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Sign Out';
+        profileMiniBtn.className = 'auth-btn';
+        
+        // Hide admin indicator
+        if (adminIndicator) {
+            adminIndicator.style.display = 'none';
+        }
+        
+    } else {
+        // No one is logged in
+        profileMiniAvatar.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest&backgroundColor=00CC66';
+        profileMiniName.textContent = 'Guest';
+        profileMiniCountry.textContent = 'Sign in';
+        profileMiniBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+        profileMiniBtn.className = 'auth-btn';
+        
+        // Hide admin indicator
+        if (adminIndicator) {
+            adminIndicator.style.display = 'none';
+        }
+    }
+    if (profileMiniAvatar) {
+    profileMiniAvatar.style.cursor = 'pointer';
+}
+if (profileMiniName) {
+    profileMiniName.style.cursor = 'pointer';
+}
+}
+// ========================================
+// PROFILE HISTORY POPUP MANAGEMENT
+// ========================================
+
+// Function to open profile history popup
+// ========================================
+// PROFILE HISTORY POPUP MANAGEMENT
+// ========================================
+
+// Function to open profile history popup
+function openProfileHistory() {
+    const profileHistoryOverlay = document.getElementById('profileHistoryOverlay');
+    const profileHistoryContent = document.getElementById('profileHistoryContent');
+    
+    if (!profileHistoryOverlay || !profileHistoryContent) return;
+    
+    // Get user data
+    const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+    const allUsers = JSON.parse(localStorage.getItem('afcon2025_all_users')) || [];
+    
+    // Find current user in all users
+    let currentUserData = null;
+    if (userProfile) {
+        currentUserData = allUsers.find(user => 
+            user.name === userProfile.name && user.country === userProfile.country
+        );
+    }
+    
+    // Prepare history items
+    const historyItems = [];
+    
+    // 1. Get user's actual history from storage (including registrations and logins)
+    const userHistory = JSON.parse(localStorage.getItem(`afcon2025_user_history_${userProfile ? userProfile.avatarSeed : 'guest'}`)) || [];
+    
+    // If no history exists, create it from current data
+    if (userHistory.length === 0 && currentUserData) {
+        // Add initial registration
+        historyItems.push({
+            type: 'registration',
+            title: 'Account Created',
+            description: `Welcome to AFCON 2025 Hub, ${currentUserData.name}!`,
+            date: new Date(currentUserData.registrationDate),
+            icon: 'fa-user-plus',
+            points: 0,
+            action: 'signup'
+        });
+        
+        // Add recent logins
+        if (currentUserData.loginCount > 1) {
+            for (let i = 1; i <= Math.min(currentUserData.loginCount, 5); i++) {
+                const loginDate = new Date(currentUserData.registrationDate);
+                loginDate.setDate(loginDate.getDate() + i);
+                
+                historyItems.push({
+                    type: 'login',
+                    title: 'Login Session',
+                    description: 'Signed in to your account',
+                    date: loginDate,
+                    icon: 'fa-sign-in-alt',
+                    points: 0,
+                    action: 'login'
+                });
+            }
+        }
+    } else {
+        // Use existing history
+        historyItems.push(...userHistory);
+    }
+    
+    // 2. Add current login if not already in history
+    const today = new Date().toDateString();
+    const hasTodayLogin = historyItems.some(item => 
+        new Date(item.date).toDateString() === today && item.action === 'login'
+    );
+    
+    if (!hasTodayLogin && userProfile) {
+        historyItems.push({
+            type: 'login',
+            title: 'Current Session',
+            description: 'Currently signed in',
+            date: new Date(),
+            icon: 'fa-user-check',
+            points: 0,
+            action: 'login'
+        });
+    }
+    
+    // Sort history by date (newest first)
+    historyItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Calculate stats
+    const registrations = historyItems.filter(item => item.action === 'signup').length;
+    const logins = historyItems.filter(item => item.action === 'login').length;
+    const totalSessions = registrations + logins;
+    
+    // Build popup content
+    let contentHTML = '';
+    
+    // User profile summary
+    contentHTML += `
+        <div class="user-profile-summary">
+            <img src="${userProfile ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.avatarSeed}&backgroundColor=00CC66` : 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest&backgroundColor=00CC66'}" 
+                 alt="Profile" 
+                 class="profile-history-avatar">
+            <div class="profile-info">
+                <h3>${userProfile ? userProfile.name : 'Guest User'}</h3>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 10px;">
+                    ${userProfile ? `From ${userProfile.country}` : 'Sign in to track your history'}
+                    ${userProfile && userProfile.favoriteTeam ? ` | Supports ${userProfile.favoriteTeam}` : ''}
+                </p>
+                <div class="profile-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>Joined: ${userProfile ? new Date(userProfile.loginDate).toLocaleDateString() : 'N/A'}</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Sessions: ${totalSessions}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Stats section
+    contentHTML += `
+        <div class="history-stats">
+            <div class="stat-card-history">
+                <div class="stat-value-history">${registrations}</div>
+                <div class="stat-label-history">Registrations</div>
+            </div>
+            <div class="stat-card-history">
+                <div class="stat-value-history">${logins}</div>
+                <div class="stat-label-history">Login Sessions</div>
+            </div>
+            <div class="stat-card-history">
+                <div class="stat-value-history">${totalSessions}</div>
+                <div class="stat-label-history">Total Sessions</div>
+            </div>
+            <div class="stat-card-history">
+                <div class="stat-value-history">${userProfile ? 'Active' : 'Guest'}</div>
+                <div class="stat-label-history">Account Status</div>
+            </div>
+        </div>
+    `;
+    
+    // History section
+    contentHTML += `
+        <div class="history-section-title">
+            <i class="fas fa-history"></i> Connection History
+        </div>
+    `;
+    
+    if (historyItems.length > 0) {
+        contentHTML += `<div class="history-list">`;
+        
+        // Show only registration and login history (no predictions)
+        const connectionHistory = historyItems.filter(item => 
+            item.action === 'signup' || item.action === 'login'
+        );
+        
+        if (connectionHistory.length > 0) {
+            connectionHistory.forEach((item, index) => {
+                const isRegistration = item.action === 'signup';
+                
+                contentHTML += `
+                    <div class="history-item" style="border-left: 4px solid ${isRegistration ? '#00CC66' : '#D4AF37'}">
+                        <div class="history-item-icon" style="background: ${isRegistration ? 'rgba(0, 204, 102, 0.2)' : 'rgba(212, 175, 55, 0.2)'}; color: ${isRegistration ? '#00CC66' : '#D4AF37'}">
+                            <i class="fas ${item.icon}"></i>
+                        </div>
+                        <div class="history-item-content">
+                            <div class="history-item-title">${item.title}</div>
+                            <div class="history-item-desc">${item.description}</div>
+                            <div class="history-item-meta">
+                                <div class="history-item-date">
+                                    <i class="far fa-clock"></i>
+                                    ${new Date(item.date).toLocaleDateString('en-US', { 
+                                        weekday: 'long',
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </div>
+                                <div class="history-item-points" style="color: ${isRegistration ? '#00CC66' : '#D4AF37'}">
+                                    <i class="fas ${isRegistration ? 'fa-user-plus' : 'fa-sign-in-alt'}"></i>
+                                    ${isRegistration ? 'Registration' : 'Login'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            contentHTML += `
+                <div class="no-history">
+                    <i class="fas fa-user-clock"></i>
+                    <h4>No Connection History</h4>
+                    <p>Sign in or register to start tracking your sessions</p>
+                </div>
+            `;
+        }
+        
+        contentHTML += `</div>`;
+    } else {
+        contentHTML += `
+            <div class="no-history">
+                <i class="fas fa-history"></i>
+                <h4>No Connection History</h4>
+                <p>Your registration and login history will appear here</p>
+                ${!userProfile ? `
+                    <a href="javascript:void(0)" onclick="document.getElementById('loginModal').classList.add('active'); closeProfileHistory();" 
+                       class="bg-gradient-to-r from-[#00CC66] to-[#00994d] hover:from-[#00b359] hover:to-[#008040] text-white px-6 py-3 rounded-lg font-bold mt-4 inline-block">
+                        <i class="fas fa-user-plus"></i> Register Now
+                    </a>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    // Update content
+    profileHistoryContent.innerHTML = contentHTML;
+    
+    // Show popup
+    profileHistoryOverlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+// Function to save user history when they register or login
+function saveUserHistory(action, userName, userCountry) {
+    if (!userName || !userCountry) return;
+    
+    const avatarSeed = userName.toLowerCase().replace(/\s/g, '');
+    const userHistoryKey = `afcon2025_user_history_${avatarSeed}`;
+    const userHistory = JSON.parse(localStorage.getItem(userHistoryKey)) || [];
+    
+    const historyEntry = {
+        type: action === 'signup' ? 'registration' : 'login',
+        title: action === 'signup' ? 'Account Created' : 'Login Session',
+        description: action === 'signup' 
+            ? `Welcome to AFCON 2025 Hub, ${userName}!` 
+            : 'Signed in to your account',
+        date: new Date().toISOString(),
+        icon: action === 'signup' ? 'fa-user-plus' : 'fa-sign-in-alt',
+        points: 0,
+        action: action
+    };
+    
+    // Check if this registration already exists
+    if (action === 'signup') {
+        const existingRegistration = userHistory.find(item => 
+            item.action === 'signup' && 
+            item.title === 'Account Created'
+        );
+        
+        if (!existingRegistration) {
+            userHistory.push(historyEntry);
+        }
+    } else {
+        // For logins, only add if not already logged in today
+        const today = new Date().toDateString();
+        const todayLogin = userHistory.find(item => 
+            item.action === 'login' && 
+            new Date(item.date).toDateString() === today
+        );
+        
+        if (!todayLogin) {
+            userHistory.push(historyEntry);
+        }
+    }
+    
+    // Keep only last 20 entries
+    const sortedHistory = userHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const limitedHistory = sortedHistory.slice(0, 20);
+    
+    localStorage.setItem(userHistoryKey, JSON.stringify(limitedHistory));
+}
+
+// Function to close profile history popup
+function closeProfileHistory() {
+    const profileHistoryOverlay = document.getElementById('profileHistoryOverlay');
+    if (profileHistoryOverlay) {
+        profileHistoryOverlay.style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Initialize profile history functionality
+function initProfileHistory() {
+    // Add event listener to profile avatar and name
+    const profileAvatar = document.getElementById('profileMiniAvatar');
+    const profileName = document.getElementById('profileMiniName');
+    const closeBtn = document.getElementById('closeHistoryPopup');
+    
+    // Open popup when clicking on profile avatar
+    if (profileAvatar) {
+        profileAvatar.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openProfileHistory();
+        });
+    }
+    
+    // Open popup when clicking on profile name
+    if (profileName) {
+        profileName.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            openProfileHistory();
+        });
+    }
+    
+    // Close popup when clicking close button
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeProfileHistory);
+    }
+    
+    // Close popup when clicking outside
+    const overlay = document.getElementById('profileHistoryOverlay');
+    if (overlay) {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeProfileHistory();
+            }
+        });
+    }
+    
+    // Close with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeProfileHistory();
+        }
+    });
+}
+
+function logoutUser() {
+    if (confirm('Are you sure you want to sign out?')) {
+        // Check if it's admin
+        const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+        
+        if (adminSession && adminSession.loggedIn) {
+            localStorage.removeItem('afcon2025_admin_session');
+            alert('Admin logged out successfully.');
+        } else {
+            localStorage.removeItem('afcon2025_user_profile');
+            userProfile = null;
+            alert('You have been signed out successfully.');
+        }
+        
+        updateProfileDisplay();
+        loadSavedPredictions(); // Reload predictions (will show empty for guest)
+    }
+}
+
+// ========================================
+// ADMIN MANAGEMENT SYSTEM
+// ========================================
+
+// Admin credentials
+const ADMIN_CREDENTIALS = {
+    username: "admin",
+    password: "afcon2025admin"
+};
+
+let adminLoginAttempts = 0;
+const MAX_ADMIN_ATTEMPTS = 3;
+
+// Check admin session
+function checkAdminSession() {
+    const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+    return adminSession && adminSession.loggedIn;
+}
+
+// Handle admin login from main form
+function handleAdminLogin(username, password) {
+    // Check login attempts
+    if (adminLoginAttempts >= MAX_ADMIN_ATTEMPTS) {
+        alert('Too many failed attempts. Admin access is temporarily locked.');
+        return false;
+    }
+    
+    // Validate credentials
+    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        // Successful login
+        adminLoginAttempts = 0;
+        
+        // Create admin session
+        const adminSession = {
+            loggedIn: true,
+            username: username,
+            loginTime: new Date().toISOString(),
+            sessionId: 'afcon_admin_' + Date.now()
+        };
+        
+        localStorage.setItem('afcon2025_admin_session', JSON.stringify(adminSession));
+        
+        // Hide any open modal
+        const loginModal = document.getElementById('loginModal');
+        if (loginModal) {
+            loginModal.classList.remove('active');
+        }
+        
+        alert('Admin login successful!');
+        
+        // Update profile display
+        updateProfileDisplay();
+        
+        return true;
+    } else {
+        // Failed login
+        adminLoginAttempts++;
+        
+        const remaining = MAX_ADMIN_ATTEMPTS - adminLoginAttempts;
+        alert(`Invalid admin credentials! ${remaining} attempt(s) remaining.`);
+        
+        // Lock if max attempts reached
+        if (adminLoginAttempts >= MAX_ADMIN_ATTEMPTS) {
+            alert('Admin access locked for 5 minutes due to too many failed attempts.');
+            setTimeout(() => {
+                adminLoginAttempts = 0;
+                alert('Admin login is now unlocked. You can try again.');
+            }, 5 * 60 * 1000);
+        }
+        
+        return false;
+    }
+}
+
+// Function to track user in statistics
+// Update the trackUserInStatistics function to save history
+function trackUserInStatistics(userName, userCountry, favoriteTeam) {
+    const allUsers = JSON.parse(localStorage.getItem('afcon2025_all_users')) || [];
+    
+    // Check if user already exists
+    const existingUserIndex = allUsers.findIndex(user => 
+        user.name.toLowerCase() === userName.toLowerCase() && 
+        user.country === userCountry
+    );
+    
+    if (existingUserIndex === -1) {
+        // Add new user (registration)
+        const newUser = {
+            name: userName,
+            country: userCountry,
+            favoriteTeam: favoriteTeam,
+            avatarSeed: userName.toLowerCase().replace(/\s/g, ''),
+            registrationDate: new Date().toISOString(),
+            lastLogin: new Date().toISOString(),
+            loginCount: 1,
+            isAdmin: false
+        };
+        allUsers.push(newUser);
+        
+        // Save registration history
+        saveUserHistory('signup', userName, userCountry);
+        
+    } else {
+        // Update existing user (login)
+        allUsers[existingUserIndex].lastLogin = new Date().toISOString();
+        allUsers[existingUserIndex].loginCount = (allUsers[existingUserIndex].loginCount || 0) + 1;
+        
+        // Save login history
+        saveUserHistory('login', userName, userCountry);
+    }
+    
+    localStorage.setItem('afcon2025_all_users', JSON.stringify(allUsers));
+}
+
+// ========================================
+// INITIALIZATION FOR PREDICTOR.HTML
+// ========================================
+
+// Initialize profile display
+document.addEventListener('DOMContentLoaded', function() {
+    // Update profile display
+    updateProfileDisplay();
+    
+    // Mobile menu toggle
+    const mobileToggle = document.getElementById('mobileToggle');
+    const navLinks = document.getElementById('navLinks');
+    
+    if (mobileToggle && navLinks) {
+        mobileToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+        });
+    }
+    
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768 && navLinks) {
+                navLinks.classList.remove('active');
+            }
+        });
+    });
+    
+    // Attach click events to login buttons
+    const profileMiniBtn = document.getElementById('profileMiniBtn');
+    const loginModal = document.getElementById('loginModal');
+    
+    // Profile button
+    if (profileMiniBtn) {
+        profileMiniBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (userProfile || checkAdminSession()) {
+                // User or Admin is logged in, log them out
+                logoutUser();
+            } else {
+                // User is not logged in, show login modal
+                if (loginModal) {
+                    loginModal.classList.add('active');
+                }
+            }
+        });
+    }
+    
+    // Profile avatar click
+    const profileMiniAvatar = document.getElementById('profileMiniAvatar');
+    if (profileMiniAvatar) {
+        profileMiniAvatar.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            if (loginModal) {
+                loginModal.classList.add('active');
+            }
+        });
+    }
+    
+    // Close modal button
+    const closeLoginModal = document.getElementById('closeLoginModal');
+    if (closeLoginModal) {
+        closeLoginModal.addEventListener('click', function() {
+            if (loginModal) {
+                loginModal.classList.remove('active');
+            }
+        });
+    }
+    
+    // Close modal when clicking outside
+    if (loginModal) {
+        loginModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    }
+    
+    // Login form submission
+    const loginForm = document.getElementById('loginForm');
+    // In the login form submit handler, after saving profile:
+if (loginForm) {
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Login form submitted');
+        
+        const userName = document.getElementById('userName').value;
+        const userCountry = document.getElementById('userCountrySelect').value;
+        const userPassword = document.getElementById('userPassword').value;
+        const favoriteTeam = document.getElementById('userFavoriteTeam').value;
+        
+        if (!userName || !userCountry) {
+            alert('Please enter your name and select your country.');
+            return;
+        }
+        
+        // Check if this is admin login attempt
+        if (userName.toLowerCase() === ADMIN_CREDENTIALS.username.toLowerCase() && 
+            userPassword === ADMIN_CREDENTIALS.password) {
+            
+            // Handle admin login
+            handleAdminLogin(userName, userPassword);
+            this.reset();
+            return;
+        }
+        
+        // Check if this is a registration or login
+        const existingProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+        const isNewUser = !existingProfile || 
+                         (existingProfile.name !== userName || 
+                          existingProfile.country !== userCountry);
+        
+        // Regular user registration/login
+        userProfile = {
+            name: userName,
+            country: userCountry,
+            password: userPassword,
+            favoriteTeam: favoriteTeam,
+            avatarSeed: userName.toLowerCase().replace(/\s/g, ''),
+            loginDate: new Date().toISOString()
+        };
+        
+        localStorage.setItem('afcon2025_user_profile', JSON.stringify(userProfile));
+        
+        // Update display
+        updateProfileDisplay();
+        
+        // Close modal
+        if (loginModal) {
+            loginModal.classList.remove('active');
+        }
+        
+        // Reset form
+        this.reset();
+        
+        // Show appropriate message
+        if (isNewUser) {
+            alert(`Welcome to AFCON 2025 Hub, ${userName}! Your account has been created.`);
+        } else {
+            alert(`Welcome back, ${userName}! You're now signed in.`);
+        }
+        
+        // Track user in statistics (this will save history)
+        trackUserInStatistics(userName, userCountry, favoriteTeam);
+    });
+}
+});
+
+// ========================================
+// UPDATED PREDICTION FUNCTIONS
+// ========================================
+
+// Load saved predictions for current user
+function loadSavedPredictions() {
+    const savedList = document.getElementById('savedPredictionsList');
+    
+    // Get current user
+    const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+    const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+    
+    // Determine user ID
+    let userId = 'guest';
+    if (userProfile) {
+        userId = userProfile.avatarSeed; // Use avatarSeed as unique ID
+    } else if (adminSession && adminSession.loggedIn) {
+        userId = adminSession.username.toLowerCase();
+    }
+    
+    // Get user's saved predictions
+    const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
+    const userPredictions = allPredictions[userId] || [];
+    
+    if (userPredictions.length === 0) {
+        savedList.innerHTML = '<p class="text-center text-white/60 py-4">No saved predictions yet</p>';
+        return;
+    }
+    
+    savedList.innerHTML = '';
+    
+    userPredictions.forEach((prediction, index) => {
+        const championTeam = allTeams.find(t => t.code === prediction.predictions['final-winner']);
+        const date = new Date(prediction.timestamp);
+        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const predictionItem = document.createElement('div');
+        predictionItem.className = 'prediction-item';
+        predictionItem.innerHTML = `
+            <div class="prediction-item-header">
+                <span class="text-sm font-bold">Prediction #${index + 1}</span>
+                <span class="text-xs text-white/60">${formattedDate}</span>
+            </div>
+            <div class="prediction-champion">
+                <img src="${championTeam.flag}" alt="${championTeam.name} Flag" class="flag-icon" style="width: 20px; height: 15px;">
+                <span class="font-bold text-[#D4AF37]">${championTeam.name}</span>
+                <span class="ml-auto text-xs">🏆 Champion</span>
+            </div>
+            <div class="flex gap-2 mt-2">
+                <button class="text-xs bg-[#00CC66] hover:bg-[#00b359] text-white px-3 py-1 rounded flex-1" onclick="loadUserPrediction(${index})">
+                    <i class="fas fa-eye mr-1"></i> View
+                </button>
+                <button class="text-xs bg-[#c1272d] hover:bg-[#a02025] text-white px-3 py-1 rounded" onclick="deleteUserPrediction(${index})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        
+        savedList.appendChild(predictionItem);
+    });
+}
+
+// Load user prediction
+function loadUserPrediction(index) {
+    // Get current user
+    const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+    const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+    
+    // Determine user ID
+    let userId = 'guest';
+    if (userProfile) {
+        userId = userProfile.avatarSeed;
+    } else if (adminSession && adminSession.loggedIn) {
+        userId = adminSession.username.toLowerCase();
+    }
+    
+    // Get user's saved predictions
+    const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
+    const userPredictions = allPredictions[userId] || [];
+    
+    if (index >= 0 && index < userPredictions.length) {
+        const savedPrediction = userPredictions[index];
+        predictions = {...savedPrediction.predictions};
+        
+        // Update UI with loaded prediction
+        resetAllPredictionsUI();
+        applyPredictionsToUI();
+        updateProgress();
+        
+        // Close panel
+        toggleSavedPredictionsPanel();
+        
+        alert('Prediction loaded successfully!');
+    }
+}
+
+// Delete user prediction
+function deleteUserPrediction(index) {
+    // Get current user
+    const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+    const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+    
+    // Determine user ID
+    let userId = 'guest';
+    if (userProfile) {
+        userId = userProfile.avatarSeed;
+    } else if (adminSession && adminSession.loggedIn) {
+        userId = adminSession.username.toLowerCase();
+    }
+    
+    if (confirm('Are you sure you want to delete this prediction?')) {
+        const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
+        const userPredictions = allPredictions[userId] || [];
+        
+        userPredictions.splice(index, 1);
+        allPredictions[userId] = userPredictions;
+        
+        localStorage.setItem('afcon2025_all_predictions', JSON.stringify(allPredictions));
+        loadSavedPredictions();
+    }
+}
+
+// Clear all saved predictions for current user
+function clearAllSavedPredictions() {
+    // Get current user
+    const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+    const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+    
+    // Determine user ID
+    let userId = 'guest';
+    if (userProfile) {
+        userId = userProfile.avatarSeed;
+    } else if (adminSession && adminSession.loggedIn) {
+        userId = adminSession.username.toLowerCase();
+    }
+    
+    const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
+    const userPredictions = allPredictions[userId] || [];
+    
+    if (userPredictions.length === 0) {
+        alert('No saved predictions to clear.');
+        return;
+    }
+    
+    if (confirm('Are you sure you want to clear ALL your saved predictions? This action cannot be undone.')) {
+        allPredictions[userId] = [];
+        localStorage.setItem('afcon2025_all_predictions', JSON.stringify(allPredictions));
+        loadSavedPredictions();
+        alert('All your saved predictions have been cleared.');
+    }
+}
+
+// Update save predictions function
+function savePredictions() {
+    const completed = Object.values(predictions).filter(p => p !== null).length;
+    if (completed < 15) {
+        alert(`Please complete all predictions before saving (${completed}/15 completed).`);
+        return;
+    }
+    
+    const data = {
+        predictions: predictions,
+        timestamp: new Date().toISOString(),
+        champion: predictions['final-winner'] ? 
+            allTeams.find(t => t.code === predictions['final-winner']).name : 'Not selected'
+    };
+    
+    // Get current user
+    const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
+    const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
+    
+    // Determine user ID
+    let userId = 'guest';
+    if (userProfile) {
+        userId = userProfile.avatarSeed;
+    } else if (adminSession && adminSession.loggedIn) {
+        userId = adminSession.username.toLowerCase();
+    } else {
+        // Guest users need to sign in
+        if (confirm('Please sign in to save your predictions! Would you like to sign in now?')) {
+            document.getElementById('loginModal').classList.add('active');
+        }
+        return;
+    }
+    
+    // Get all predictions
+    const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
+    
+    // Get user's predictions
+    const userPredictions = allPredictions[userId] || [];
+    
+    // Add new prediction
+    userPredictions.unshift(data);
+    
+    // Keep only last 10 predictions
+    if (userPredictions.length > 10) {
+        userPredictions.length = 10;
+    }
+    
+    // Save back to all predictions
+    allPredictions[userId] = userPredictions;
+    localStorage.setItem('afcon2025_all_predictions', JSON.stringify(allPredictions));
+    
+    // Update saved predictions list
+    loadSavedPredictions();
+    
+    alert('Predictions saved successfully!');
+    
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.classList.add('save-animation');
+    setTimeout(() => saveBtn.classList.remove('save-animation'), 500);
+}
+
+// Initialize saved predictions on page load
+loadSavedPredictions();
     </script>
 </body>
 </html>

@@ -6,6 +6,7 @@
     <title>Team Details - AFCON Predictor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
     <style>
         :root {
             --primary-red: #C1272D;
@@ -30,6 +31,197 @@
             position: relative;
             overflow: hidden;
         }
+        /* Hero Section Styles for teams-details */
+.hero-section {
+    background: linear-gradient(180deg, 
+        rgba(26, 15, 15, 0.9) 0%, 
+        rgba(26, 15, 15, 0.7) 50%,
+        rgba(26, 15, 15, 0.4) 100%),
+        url('Assad.png');
+    background-size: cover;
+    background-position: center;
+    border-bottom: 2px solid rgba(0, 204, 102, 0.3);
+    position: relative;
+    overflow: hidden;
+    border-radius: 12px;
+    margin: 0 1rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: 1;
+}
+
+.hero-section > div {
+    position: relative;
+    z-index: 2;
+}
+
+/* Navigation styles from teams.html */
+.nav-container {
+    background: linear-gradient(135deg, rgba(26, 15, 15, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 204, 102, 0.3);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    padding: 0.5rem 1rem;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo-text {
+    font-family: 'Teko', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 1px;
+}
+
+.nav-logo-text span {
+    color: #00CC66;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link:hover {
+    color: white;
+    background: rgba(0, 204, 102, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    color: #00CC66;
+    background: rgba(0, 204, 102, 0.1);
+}
+
+.nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: #00CC66;
+    border-radius: 50%;
+}
+
+.nav-mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Morocco image styling */
+.team-header-bg .relative img {
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(193, 39, 45, 0.3);
+}
+
+.team-header-bg .relative img:hover {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 12px 40px rgba(193, 39, 45, 0.5);
+}
+
+@media (max-width: 768px) {
+    .nav-mobile-toggle {
+        display: block;
+    }
+    
+    .nav-links {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: rgba(26, 15, 15, 0.98);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        padding: 1rem;
+        gap: 0.5rem;
+        border-bottom: 2px solid #00CC66;
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-links.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-link {
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem 1rem;
+    }
+    
+    .hero-section {
+        margin: 0 0.5rem;
+        border-radius: 8px;
+    }
+    
+    .hero-section > div {
+        padding: 1.5rem 1rem !important;
+    }
+    
+    .team-header-bg .flex.flex-col {
+        text-align: center;
+    }
+    
+    .team-header-bg .flex.items-center.space-x-6 {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .team-header-bg .relative.w-24 {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .hero-section {
+        margin: 0 2rem;
+    }
+}
         
         .team-header-bg::before {
             content: '';
@@ -154,78 +346,128 @@
 </head>
 <body>
     <!-- Navigation (Same as above, can be included separately) -->
-    <nav class="navbar sticky top-0 z-50 bg-gray-900/90 backdrop-blur-sm border-b border-gray-800">
-        <div class="container mx-auto px-4 py-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4" >
-                    <a href="index.html" class="nav-logo">
-                    <div class="w-24 h-10 bg-red-600 rounded-full flex items-center justify-center">
-                        <img src="logo1.png" alt="AFCON-Logo.ma">
-                    </div>
-                    <div class="text-xl font-bold font-teko">
-                        AFCON <span class="text-red-500">2025</span>
-                    </div>
-                    </a>
-                </div>
-                
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="index.html" class="text-gray-300 hover:text-white transition">Home</a>
-                    <a href="predictor.html" class="text-gray-300 hover:text-white transition">Predictor</a>
-                    <a href="teams.html" class="text-gray-300 hover:text-white transition">Teams</a>
-                    <a href="teams-details.html" class="text-green-500 font-semibold">Team Details (Host)</a>
-                    <a href="index.html#portfolio" class="text-gray-300 hover:text-white transition">Our Team</a>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-yellow-500 rounded-full"></div>
-                </div>
+    <!-- Navigation -->
+<nav class="nav-container">
+    <div class="nav-content">
+        <a href="index.html" class="nav-logo">
+            <div class="w-24 h-8 flex items-center justify-center bg-[#00CC66] rounded-full">
+                <img src="logo1.png" alt="afcon-2025.ma">
             </div>
+            <div class="nav-logo-text">
+                AFCON <span>2025</span>
+            </div>
+        </a>
+        
+        <button class="nav-mobile-toggle" id="mobileToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-home mr-2"></i>Home
+            </a>
+            <a href="predictor.html" class="nav-link">
+                <i class="fas fa-trophy mr-2"></i>Predictions
+            </a>
+            <a href="teams.html" class="nav-link">
+                <i class="fas fa-users mr-2"></i>Teams
+            </a>
+            <a href="teams-details.html" class="nav-link active">
+                <i class="fas fa-flag mr-2"></i>Team Details (Host)
+            </a>
+            <a href="index.html#portfolio" class="nav-link">
+                <i class="fas fa-star mr-2"></i>Our Team
+            </a>
         </div>
-    </nav>
-
+    </div>
+</nav>
     <!-- Team Details Content -->
-    <div class="container mx-auto px-4 py-8 mt-4">
-        <!-- Team Header -->
-        <div class="team-header-bg rounded-2xl p-8 mb-8">
-            <div class="relative z-10">
-                <div class="flex flex-col md:flex-row items-center justify-between">
-                    <div class="flex items-center space-x-6 mb-6 md:mb-0">
-                        <div class="text-6xl">🇲🇦</div>
-                        <div>
-                            <h1 class="text-4xl md:text-5xl font-bold mb-2">Morocco</h1>
-                            <div class="flex items-center space-x-4">
-                                <span class="px-3 py-1 bg-gray-800 rounded-full text-sm">Group A</span>
-                                <span class="px-3 py-1 bg-gray-800 rounded-full text-sm">FIFA #12</span>
-                                <span class="px-3 py-1 bg-red-500/20 text-red-500 rounded-full text-sm">MAR</span>
-                                <span class="px-3 py-1 bg-yellow-500/20 text-yellow-500 rounded-full text-sm">Captain: Romain Saïss</span>
-                            </div>
+    <!-- Hero Section with Morocco Image -->
+<div class="relative z-10 w-full text-center pt-24 pb-8">
+    <div class="flex flex-col items-center justify-center gap-2">
+        <div class="assud hero-section w-full">
+            <div class="flex items-center gap-4 mb-2 justify-center py-8 px-4">
+                <div class="bg-white px-2 py-1 rounded shadow-md">
+                    <span class="text-[#1a0f0f] font-bold text-xl font-['Teko'] tracking-wide">CAF</span>
+                </div>
+                <div class="h-8 w-[1px] bg-white/50"></div>
+                <div class="text-left leading-tight uppercase font-['Teko'] font-bold text-xl md:text-2xl tracking-wider drop-shadow-md">
+                    <span class="block text-white">Africa Cup</span>
+                    <span class="block text-white">Of Nations</span>
+                    <span class="block text-[#00CC66]">Morocco 25</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Team Details Content -->
+<div class="container mx-auto px-4 py-8 mt-4">
+    <!-- Team Header -->
+    <div class="team-header-bg rounded-2xl p-8 mb-8">
+        <div class="relative z-10">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center space-x-6 mb-6 md:mb-0">
+                    <!-- Morocco Symbol/Image instead of emoji -->
+                    <div class="relative w-24 h-24 md:w-32 md:h-32">
+                        <img src="Morroco symbol team.jfif" alt="Morocco National Team" 
+                             class="w-full h-full object-contain rounded-lg border-2 border-red-500 shadow-lg">
+                        <div class="absolute -bottom-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                            🇲🇦
                         </div>
                     </div>
-                    
-                    <div class="custom-card p-6 min-w-[300px]">
-                        <h3 class="text-lg font-bold mb-4">AFCON 2025 Group Stage Stats</h3>
-                        <div class="grid grid-cols-4 gap-4">
-                            <div class="text-center">
-                                <div class="text-2xl font-bold">7</div>
-                                <div class="text-sm text-gray-400">Points</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-2xl font-bold">2</div>
-                                <div class="text-sm text-gray-400">Wins</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-2xl font-bold">5</div>
-                                <div class="text-sm text-gray-400">GF</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-2xl font-bold">1</div>
-                                <div class="text-sm text-gray-400">GA</div>
-                            </div>
+                    <div>
+                        <h1 class="text-4xl md:text-5xl font-bold mb-2 flex items-center gap-3">
+                            Morocco
+                            <span class="text-2xl">🏠</span>
+                        </h1>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="px-3 py-1 bg-green-500/20 text-green-500 rounded-full text-sm">Group A</span>
+                            <span class="px-3 py-1 bg-blue-500/20 text-blue-500 rounded-full text-sm">FIFA #12</span>
+                            <span class="px-3 py-1 bg-red-500/20 text-red-500 rounded-full text-sm font-bold">MAR</span>
+                            <span class="px-3 py-1 bg-yellow-500/20 text-yellow-500 rounded-full text-sm">Captain: Romain Saïss</span>
+                            <span class="px-3 py-1 bg-purple-500/20 text-purple-500 rounded-full text-sm">Host Nation</span>
+                        </div>
+                        <p class="text-gray-400 mt-2 text-sm">
+                            <i class="fas fa-trophy text-yellow-500 mr-1"></i>
+                            AFCON Champions 1976 • World Cup 2022 Semi-Finalists
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="custom-card p-6 min-w-[300px]">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-green-500"></i>
+                        AFCON 2025 Group Stage Stats
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="text-center p-2 hover:bg-gray-800/50 rounded-lg transition">
+                            <div class="text-2xl font-bold text-green-500">7</div>
+                            <div class="text-sm text-gray-400">Points</div>
+                        </div>
+                        <div class="text-center p-2 hover:bg-gray-800/50 rounded-lg transition">
+                            <div class="text-2xl font-bold text-green-500">2</div>
+                            <div class="text-sm text-gray-400">Wins</div>
+                        </div>
+                        <div class="text-center p-2 hover:bg-gray-800/50 rounded-lg transition">
+                            <div class="text-2xl font-bold text-green-500">5</div>
+                            <div class="text-sm text-gray-400">GF</div>
+                        </div>
+                        <div class="text-center p-2 hover:bg-gray-800/50 rounded-lg transition">
+                            <div class="text-2xl font-bold text-green-500">1</div>
+                            <div class="text-sm text-gray-400">GA</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-800">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-400">Round of 16</span>
+                            <span class="px-2 py-1 bg-green-500/20 text-green-500 text-xs rounded">Qualified ✓</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Left Column -->
@@ -783,6 +1025,17 @@
             this.classList.add('animate-pulse');
             setTimeout(() => this.classList.remove('animate-pulse'), 500);
         });
+        // Mobile navigation toggle
+document.getElementById('mobileToggle').addEventListener('click', function() {
+    document.getElementById('navLinks').classList.toggle('active');
+});
+
+// Close mobile menu when clicking a link
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        document.getElementById('navLinks').classList.remove('active');
+    });
+});
     </script>
 </body>
 </html>

@@ -1,5 +1,4 @@
 // ALL AFCON 2025 TEAMS
-// Update Flags//
 const allTeams = [
     { code: 'MLI', name: 'Mali', flag: 'https://www.worldometers.info/img/flags/ml-flag.gif' },
     { code: 'TUN', name: 'Tunisia', flag: 'https://www.worldometers.info/img/flags/ts-flag.gif' },
@@ -18,7 +17,6 @@ const allTeams = [
     { code: 'MAR', name: 'Morocco', flag: 'https://www.worldometers.info/img/flags/mo-flag.gif' },
     { code: 'TAN', name: 'Tanzania', flag: 'https://www.worldometers.info/img/flags/small/tn_tz-flag.gif' }
 ];
-//Update Flags Can2025.ma
 
 // Store predictions
 let predictions = {
@@ -51,6 +49,10 @@ const ADMIN_CREDENTIALS = {
 let adminLoginAttempts = 0;
 const MAX_ADMIN_ATTEMPTS = 3;
 
+// Variable pour suivre la sélection en cours
+let currentSelection = null;
+let isReadOnlyMode = false;
+
 // ========================================
 // CORE PREDICTION FUNCTIONS
 // ========================================
@@ -71,19 +73,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add event listeners for control buttons
     document.getElementById('saveBtn').addEventListener('click', savePredictions);
-    document.getElementById('screenshotBtn').addEventListener('click', takeScreenshot);
     document.getElementById('resetBtn').addEventListener('click', resetAllPredictions);
     document.getElementById('shareBtn').addEventListener('click', sharePredictions);
+    document.getElementById('cancelBtn').addEventListener('click', cancelSelection);
     
     // Navigation functionality
     initializeNavigation();
-    
-    // Screenshot modal events
-    document.getElementById('downloadScreenshot').addEventListener('click', downloadScreenshot);
-    document.getElementById('shareScreenshot').addEventListener('click', shareScreenshot);
-    document.getElementById('closeScreenshot').addEventListener('click', () => {
-        document.getElementById('screenshotModal').classList.remove('active');
-    });
     
     // Saved predictions panel events
     document.getElementById('savedPredictionsToggle').addEventListener('click', toggleSavedPredictionsPanel);
@@ -93,6 +88,80 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Predictor initialized successfully');
 });
 
+// Fonction pour annuler la sélection
+function cancelSelection() {
+    if (currentSelection) {
+        const { match, teamCode, element } = currentSelection;
+        
+        // Annuler la sélection
+        predictions[match] = null;
+        element.classList.remove('selected');
+        element.querySelector('.prediction-check')?.classList.add('hidden');
+        
+        // Réinitialiser les rounds suivants
+        resetSubsequentRounds(match);
+        
+        // Mettre à jour les statuts
+        updateTeamStatuses();
+        updateProgress();
+        
+        // Cacher le bouton Annuler
+        document.getElementById('cancelBtn').style.display = 'none';
+        currentSelection = null;
+        
+        console.log(`Selection cancelled for ${teamCode} in ${match}`);
+    }
+}
+
+// Réinitialiser les rounds suivants
+function resetSubsequentRounds(matchId) {
+    console.log(`Resetting rounds after ${matchId}`);
+    
+    if (matchId.startsWith('m')) {
+        // Si c'est un match R16, réinitialiser TOUT ce qui suit
+        const matchNum = matchId.replace('m', '');
+        let qfMatch = null;
+        
+        // Trouver le QF correspondant
+        if (matchNum === '1' || matchNum === '2') qfMatch = 'qf1';
+        else if (matchNum === '3' || matchNum === '4') qfMatch = 'qf2';
+        else if (matchNum === '5' || matchNum === '6') qfMatch = 'qf3';
+        else if (matchNum === '7' || matchNum === '8') qfMatch = 'qf4';
+        
+        if (qfMatch) {
+            predictions[qfMatch] = null;
+            
+            // Réinitialiser aussi les SF et Final qui dépendent
+            if (qfMatch === 'qf1' || qfMatch === 'qf2') {
+                predictions['sf1'] = null;
+            }
+            if (qfMatch === 'qf3' || qfMatch === 'qf4') {
+                predictions['sf2'] = null;
+            }
+            predictions['final-winner'] = null;
+        }
+    } else if (matchId.startsWith('qf')) {
+        // Si c'est un QF, réinitialiser SF et Final
+        const qfNum = matchId.replace('qf', '');
+        
+        if (qfNum === '1' || qfNum === '2') {
+            predictions['sf1'] = null;
+        } else if (qfNum === '3' || qfNum === '4') {
+            predictions['sf2'] = null;
+        }
+        predictions['final-winner'] = null;
+    } else if (matchId.startsWith('sf')) {
+        // Si c'est un SF, réinitialiser Final seulement
+        predictions['final-winner'] = null;
+    }
+    
+    // Forcer la mise à jour de l'interface
+    updateQuarterFinals();
+    updateSemiFinals();
+    updateFinals();
+    updateTeamStatuses();
+}
+
 // Initialize navigation
 function initializeNavigation() {
     const mobileToggle = document.getElementById('mobileToggle');
@@ -101,10 +170,9 @@ function initializeNavigation() {
     // Mobile menu toggle
     if (mobileToggle && navLinks) {
         mobileToggle.addEventListener('click', function(e) {
-            e.stopPropagation(); // Prevent event bubbling
+            e.stopPropagation();
             navLinks.classList.toggle('active');
             
-            // Change icon
             const icon = mobileToggle.querySelector('i');
             if (navLinks.classList.contains('active')) {
                 icon.classList.remove('fa-bars');
@@ -119,20 +187,16 @@ function initializeNavigation() {
     // Update active link on click
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', function(e) {
-            // Update active class
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             this.classList.add('active');
             
-            // Close mobile menu if open
             if (navLinks && window.innerWidth <= 768 && navLinks.classList.contains('active')) {
                 navLinks.classList.remove('active');
-                // Reset icon
                 const icon = mobileToggle.querySelector('i');
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             }
             
-            // Get the target section
             const targetId = this.getAttribute('href');
             if (targetId.startsWith('#')) {
                 const targetElement = document.querySelector(targetId);
@@ -147,14 +211,12 @@ function initializeNavigation() {
         });
     });
     
-    // Close mobile menu when clicking outside
     document.addEventListener('click', function(event) {
         const isClickInsideNav = navLinks.contains(event.target) || 
                                 mobileToggle.contains(event.target);
         
         if (!isClickInsideNav && navLinks && navLinks.classList.contains('active')) {
             navLinks.classList.remove('active');
-            // Reset icon
             if (mobileToggle) {
                 const icon = mobileToggle.querySelector('i');
                 icon.classList.remove('fa-times');
@@ -163,11 +225,9 @@ function initializeNavigation() {
         }
     });
     
-    // Close mobile menu on window resize (if resized to desktop)
     window.addEventListener('resize', function() {
         if (window.innerWidth > 768 && navLinks && navLinks.classList.contains('active')) {
             navLinks.classList.remove('active');
-            // Reset icon
             if (mobileToggle) {
                 const icon = mobileToggle.querySelector('i');
                 icon.classList.remove('fa-times');
@@ -188,11 +248,9 @@ function loadSavedPredictions() {
     console.log('Loading saved predictions');
     const savedList = document.getElementById('savedPredictionsList');
     
-    // Get current user
     const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
     const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
     
-    // Determine user ID
     let userId = 'guest';
     if (userProfile) {
         userId = userProfile.avatarSeed;
@@ -202,7 +260,6 @@ function loadSavedPredictions() {
     
     console.log('Current user ID:', userId);
     
-    // Get user's saved predictions
     const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
     const userPredictions = allPredictions[userId] || [];
     
@@ -246,15 +303,13 @@ function loadSavedPredictions() {
     });
 }
 
-// Load a saved prediction
+// Modifier loadUserPrediction pour visualisation seulement
 function loadUserPrediction(index) {
     console.log('Loading user prediction at index:', index);
     
-    // Get current user
     const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
     const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
     
-    // Determine user ID
     let userId = 'guest';
     if (userProfile) {
         userId = userProfile.avatarSeed;
@@ -262,25 +317,175 @@ function loadUserPrediction(index) {
         userId = adminSession.username.toLowerCase();
     }
     
-    // Get user's saved predictions
     const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
     const userPredictions = allPredictions[userId] || [];
     
     if (index >= 0 && index < userPredictions.length) {
         const savedPrediction = userPredictions[index];
-        predictions = {...savedPrediction.predictions};
         
-        // Update UI with loaded prediction
-        resetAllPredictionsUI();
-        applyPredictionsToUI();
-        updateProgress();
+        // Passer en mode lecture seule
+        enableReadOnlyMode(savedPrediction.predictions);
         
-        // Close panel
         toggleSavedPredictionsPanel();
         
-        alert('Prediction loaded successfully!');
+        alert('Prediction loaded in view-only mode. Click "Reset" to make new predictions.');
     } else {
         console.error('Invalid prediction index:', index);
+    }
+}
+
+// Activer le mode lecture seule
+function enableReadOnlyMode(savedPredictions) {
+    isReadOnlyMode = true;
+    
+    // Désactiver tous les clics
+    document.querySelectorAll('.team-box').forEach(box => {
+        box.classList.add('locked');
+        box.style.cursor = 'default';
+        box.style.pointerEvents = 'none';
+    });
+    
+    // Afficher les prédictions sauvegardées
+    displaySavedPrediction(savedPredictions);
+    
+    // Désactiver les boutons de contrôle (sauf Reset)
+    document.getElementById('saveBtn').disabled = true;
+    document.getElementById('saveBtn').style.opacity = '0.5';
+    document.getElementById('saveBtn').style.cursor = 'not-allowed';
+    
+    document.getElementById('shareBtn').disabled = true;
+    document.getElementById('shareBtn').style.opacity = '0.5';
+    document.getElementById('shareBtn').style.cursor = 'not-allowed';
+    
+    document.getElementById('cancelBtn').style.display = 'none';
+    
+    // Activer seulement le bouton Reset
+    document.getElementById('resetBtn').disabled = false;
+    document.getElementById('resetBtn').style.opacity = '1';
+    document.getElementById('resetBtn').style.cursor = 'pointer';
+    
+    // Mettre à jour la progression
+    const completed = Object.values(savedPredictions).filter(p => p !== null).length;
+    updateProgressDisplay(completed);
+}
+
+// Afficher une prédiction sauvegardée
+function displaySavedPrediction(savedPredictions) {
+    // Réinitialiser l'affichage
+    resetAllPredictionsUI();
+    
+    // Appliquer les prédictions
+    applySavedPredictionsToUI(savedPredictions);
+    
+    // Mettre à jour les statuts
+    updateTeamStatuses();
+}
+
+// Appliquer les prédictions sauvegardées à l'UI
+function applySavedPredictionsToUI(savedPredictions) {
+    // 1. Round of 16
+    for (let i = 1; i <= 8; i++) {
+        const match = `m${i}`;
+        const winner = savedPredictions[match];
+        
+        if (winner) {
+            const winnerBox = document.querySelector(`[data-match="${match}"][data-team="${winner}"]`);
+            if (winnerBox) {
+                winnerBox.classList.add('selected', 'qualified');
+                winnerBox.querySelector('.prediction-check')?.classList.remove('hidden');
+            }
+        }
+    }
+    
+    // 2. Quarter Finals
+    for (let i = 1; i <= 4; i++) {
+        const qfMatch = `qf${i}`;
+        const winner = savedPredictions[qfMatch];
+        
+        if (winner) {
+            const [match1, match2] = matchMappings[qfMatch];
+            const team1Code = savedPredictions[match1];
+            const team2Code = savedPredictions[match2];
+            
+            if (team1Code && team2Code) {
+                updateMatchDisplay(qfMatch, team1Code, team2Code);
+                
+                const winnerBox = document.querySelector(`[id^="${qfMatch}-team"][data-team="${winner}"]`);
+                if (winnerBox) {
+                    winnerBox.classList.add('selected', 'qualified');
+                }
+            }
+        }
+    }
+    
+    // 3. Semi Finals
+    for (let i = 1; i <= 2; i++) {
+        const sfMatch = `sf${i}`;
+        const winner = savedPredictions[sfMatch];
+        
+        if (winner) {
+            const [qf1, qf2] = matchMappings[sfMatch];
+            const team1Code = savedPredictions[qf1];
+            const team2Code = savedPredictions[qf2];
+            
+            if (team1Code && team2Code) {
+                updateMatchDisplay(sfMatch, team1Code, team2Code);
+                
+                const winnerBox = document.querySelector(`[id^="${sfMatch}-team"][data-team="${winner}"]`);
+                if (winnerBox) {
+                    winnerBox.classList.add('selected', 'qualified');
+                }
+            }
+        }
+    }
+    
+    // 4. Final et Champion
+    const champion = savedPredictions['final-winner'];
+    if (champion) {
+        const sf1Winner = savedPredictions['sf1'];
+        const sf2Winner = savedPredictions['sf2'];
+        
+        if (sf1Winner && sf2Winner) {
+            updateMatchDisplay('final-team1', sf1Winner, null);
+            updateMatchDisplay('final-team2', sf2Winner, null);
+            
+            const championBox = document.getElementById('final-winner-box');
+            if (championBox) {
+                const team = allTeams.find(t => t.code === champion);
+                championBox.innerHTML = `
+                    <img src="${team.flag}" alt="${team.name} Flag" class="flag-icon">
+                    <span class="font-bold text-xl">${team.code}</span>
+                    <span class="ml-auto text-sm text-[#D4AF37]">✓</span>
+                `;
+                championBox.classList.add('selected', 'qualified');
+                championBox.dataset.team = champion;
+                
+                // Afficher le texte champion
+                const championText = document.getElementById('championText');
+                const championName = document.getElementById('championName');
+                if (championText && championName) {
+                    championName.textContent = team.name;
+                    championText.classList.remove('hidden');
+                }
+            }
+        }
+    }
+}
+
+// Mettre à jour l'affichage de la progression
+function updateProgressDisplay(completed) {
+    const totalPredictions = 15;
+    
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    
+    if (progressFill) {
+        const percentage = (completed / totalPredictions) * 100;
+        progressFill.style.width = `${percentage}%`;
+    }
+    
+    if (progressText) {
+        progressText.textContent = `${completed}/${totalPredictions}`;
     }
 }
 
@@ -292,11 +497,9 @@ function deleteUserPrediction(index) {
         return;
     }
     
-    // Get current user
     const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
     const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
     
-    // Determine user ID
     let userId = 'guest';
     if (userProfile) {
         userId = userProfile.avatarSeed;
@@ -321,11 +524,9 @@ function deleteUserPrediction(index) {
 function clearAllSavedPredictions() {
     console.log('Clearing all saved predictions');
     
-    // Get current user
     const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
     const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
     
-    // Determine user ID
     let userId = 'guest';
     if (userProfile) {
         userId = userProfile.avatarSeed;
@@ -349,77 +550,203 @@ function clearAllSavedPredictions() {
     }
 }
 
-// Apply predictions to UI
-function applyPredictionsToUI() {
-    console.log('Applying predictions to UI');
-    
-    // Apply R16 predictions
-    Object.keys(predictions).forEach(key => {
-        if (key.startsWith('m')) {
-            const teamCode = predictions[key];
-            if (teamCode) {
-                const teamBox = document.querySelector(`[data-match="${key}"][data-team="${teamCode}"]`);
-                if (teamBox) {
-                    selectRoundOf16Winner(key, teamCode, teamBox);
-                }
-            }
-        }
-    });
-    
-    // Apply QF predictions
-    ['qf1', 'qf2', 'qf3', 'qf4'].forEach(qfMatch => {
-        const winnerCode = predictions[qfMatch];
-        if (winnerCode) {
-            const winnerBox = document.querySelector(`[id^="${qfMatch}-team"][data-team="${winnerCode}"]`);
-            if (winnerBox) {
-                selectQuarterFinalWinner(qfMatch, winnerCode, winnerBox);
-            }
-        }
-    });
-    
-    // Apply SF predictions
-    ['sf1', 'sf2'].forEach(sfMatch => {
-        const winnerCode = predictions[sfMatch];
-        if (winnerCode) {
-            const winnerBox = document.querySelector(`[id^="${sfMatch}-team"][data-team="${winnerCode}"]`);
-            if (winnerBox) {
-                selectSemiFinalWinner(sfMatch, winnerCode, winnerBox);
-            }
-        }
-    });
-    
-    // Apply final champion
-    const championCode = predictions['final-winner'];
-    if (championCode) {
-        const championBox = document.querySelector(`[data-team="${championCode}"]`);
-        if (championBox) {
-            selectChampion(championBox);
-        }
-    }
-}
-
 // Initialize Round of 16 selections
 function initializeRoundOf16() {
     console.log('Initializing Round of 16 selections');
     
     document.querySelectorAll('.team-box[data-match]').forEach(element => {
         element.addEventListener('click', function() {
-            if (this.classList.contains('locked')) return;
+            if (this.classList.contains('locked') || isReadOnlyMode) return;
             
             const match = this.getAttribute('data-match');
             const team = this.getAttribute('data-team');
+            
+            // Stocker la sélection en cours
+            currentSelection = { match, teamCode: team, element: this };
+            
+            // Afficher le bouton Annuler
+            document.getElementById('cancelBtn').style.display = 'flex';
+            
             selectRoundOf16Winner(match, team, this);
         });
     });
     
-    // Initialize final winner selection
     const finalWinnerBox = document.getElementById('final-winner-box');
     if (finalWinnerBox) {
         finalWinnerBox.addEventListener('click', function() {
-            if (!this.classList.contains('locked')) {
+            if (!this.classList.contains('locked') && !isReadOnlyMode) {
+                currentSelection = { match: 'final-winner', teamCode: this.dataset.team, element: this };
+                document.getElementById('cancelBtn').style.display = 'flex';
                 selectChampion(this);
             }
         });
+    }
+    initializeThirdPlaceSelection();
+}
+
+// Fonction pour mettre à jour le statut des équipes
+function updateTeamStatuses() {
+    // Réinitialiser tous les statuts
+    document.querySelectorAll('.team-box').forEach(box => {
+        box.classList.remove('qualified', 'eliminated', 'selected-champion');
+    });
+    
+    // Supprimer les anciens messages
+    document.querySelectorAll('.qualified-status').forEach(el => {
+        el.remove();
+    });
+    
+    // 1. Round of 16
+    for (let i = 1; i <= 8; i++) {
+        const match = `m${i}`;
+        const winner = predictions[match];
+        
+        if (winner) {
+            // Marquer le gagnant (vert)
+            const winnerBox = document.querySelector(`[data-match="${match}"][data-team="${winner}"]`);
+            if (winnerBox) {
+                winnerBox.classList.add('qualified');
+                
+                // Ajouter message "→ Qualified to QF"
+                if (!isReadOnlyMode) {
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'qualified-status text-xs text-center text-[#00CC66] font-bold mb-1 mt-1';
+                    statusEl.textContent = "→ Qualified to QF";
+                    winnerBox.parentNode.insertBefore(statusEl, winnerBox);
+                }
+            }
+            
+            // Marquer le perdant (rouge)
+            document.querySelectorAll(`[data-match="${match}"]`).forEach(box => {
+                const teamCode = box.getAttribute('data-team');
+                if (teamCode && teamCode !== winner) {
+                    box.classList.add('eliminated');
+                }
+            });
+        }
+    }
+    
+    // 2. Quarter Finals
+    for (let i = 1; i <= 4; i++) {
+        const qfMatch = `qf${i}`;
+        const winner = predictions[qfMatch];
+        
+        if (winner) {
+            // Marquer le gagnant du QF (vert)
+            const winnerBox = document.querySelector(`[data-team="${winner}"]`);
+            if (winnerBox && winnerBox.id.startsWith('qf')) {
+                winnerBox.classList.add('qualified');
+                
+                // Ajouter message "→ Qualified to SF"
+                if (!isReadOnlyMode) {
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'qualified-status text-xs text-center text-[#00CC66] font-bold mb-1 mt-1';
+                    statusEl.textContent = "→ Qualified to SF";
+                    winnerBox.parentNode.insertBefore(statusEl, winnerBox);
+                }
+            }
+            
+            // Marquer le perdant du QF (rouge)
+            document.querySelectorAll(`[id^="${qfMatch}-team"]`).forEach(box => {
+                const teamCode = box.getAttribute('data-team');
+                if (teamCode && teamCode !== winner) {
+                    box.classList.add('eliminated');
+                }
+            });
+        }
+    }
+    
+    // 3. Semi Finals
+    for (let i = 1; i <= 2; i++) {
+        const sfMatch = `sf${i}`;
+        const winner = predictions[sfMatch];
+        
+        if (winner) {
+            // Marquer le gagnant du SF (vert)
+            const winnerBox = document.querySelector(`[data-team="${winner}"]`);
+            if (winnerBox && winnerBox.id.startsWith('sf')) {
+                winnerBox.classList.add('qualified');
+                
+                // Ajouter message "→ Qualified to Final"
+                if (!isReadOnlyMode) {
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'qualified-status text-xs text-center text-[#00CC66] font-bold mb-1 mt-1';
+                    statusEl.textContent = "→ Qualified to Final";
+                    winnerBox.parentNode.insertBefore(statusEl, winnerBox);
+                }
+            }
+            
+            // Marquer le perdant du SF (rouge)
+            document.querySelectorAll(`[id^="${sfMatch}-team"]`).forEach(box => {
+                const teamCode = box.getAttribute('data-team');
+                if (teamCode && teamCode !== winner) {
+                    box.classList.add('eliminated');
+                }
+            });
+        }
+    }
+    
+    // 4. Final et Champion
+    const champion = predictions['final-winner'];
+    const finalist1 = predictions['final-team1'];
+    const finalist2 = predictions['final-team2'];
+    
+    // D'abord, marquer les deux finalistes comme qualifiés (verts)
+    if (finalist1 && finalist2) {
+        const finalist1Box = document.getElementById('final-team1');
+        const finalist2Box = document.getElementById('final-team2');
+        
+        if (finalist1Box) {
+            finalist1Box.classList.add('qualified');
+        }
+        if (finalist2Box) {
+            finalist2Box.classList.add('qualified');
+        }
+        
+        // Ensuite, si un champion est sélectionné
+        if (champion) {
+            // Marquer le champion (vert spécial)
+            const championBox = document.getElementById('final-winner-box');
+            if (championBox) {
+                championBox.classList.add('qualified');
+                
+                // Ajouter message "🏆 CHAMPION"
+                if (!isReadOnlyMode) {
+                    const statusEl = document.createElement('div');
+                    statusEl.className = 'qualified-status text-xs text-center text-[#D4AF37] font-bold mb-1 mt-1';
+                    statusEl.textContent = "🏆 CHAMPION";
+                    championBox.parentNode.insertBefore(statusEl, championBox);
+                }
+            }
+            
+            // Marquer le champion comme sélectionné
+            const championElement = document.querySelector(`[data-team="${champion}"]`);
+            if (championElement && (championElement.id === 'final-team1' || championElement.id === 'final-team2')) {
+                championElement.classList.add('selected-champion');
+            }
+            
+            // Marquer l'autre finaliste comme perdant (rouge)
+            const loser = champion === finalist1 ? finalist2 : finalist1;
+            const loserBox = document.querySelector(`[data-team="${loser}"]`);
+            if (loserBox && (loserBox.id === 'final-team1' || loserBox.id === 'final-team2')) {
+                loserBox.classList.remove('qualified');
+                loserBox.classList.add('eliminated');
+            }
+        }
+    }
+    
+    // 5. Troisième place
+    const thirdTeam1 = document.getElementById('third-team1');
+    const thirdTeam2 = document.getElementById('third-team2');
+    
+    if (thirdTeam1 && !thirdTeam1.classList.contains('empty-team')) {
+        // C'est un perdant de SF, donc rouge
+        thirdTeam1.classList.add('eliminated');
+    }
+    
+    if (thirdTeam2 && !thirdTeam2.classList.contains('empty-team')) {
+        // C'est un perdant de SF, donc rouge
+        thirdTeam2.classList.add('eliminated');
     }
 }
 
@@ -442,25 +769,56 @@ function selectRoundOf16Winner(match, teamCode, element) {
     // Update quarter finals
     updateQuarterFinals();
     
+    // Mettre à jour les statuts
+    updateTeamStatuses();
+    
     updateProgress();
+    
+    // Cacher le bouton Annuler après sélection
+    document.getElementById('cancelBtn').style.display = 'none';
+    currentSelection = null;
 }
 
 // Update quarter finals based on R16 selections
 function updateQuarterFinals() {
     console.log('Updating quarter finals');
     
-    // Update each quarter final match
     Object.keys(matchMappings).forEach(qfMatch => {
         if (qfMatch.startsWith('qf')) {
             const [match1, match2] = matchMappings[qfMatch];
             const team1Code = predictions[match1];
             const team2Code = predictions[match2];
             
-            updateMatchDisplay(qfMatch, team1Code, team2Code);
-            
-            // If both teams are selected, make QF match clickable
+            // NE PAS remplir le QF si un des R16 n'est pas encore décidé
             if (team1Code && team2Code) {
+                // Les DEUX matches R16 sont terminés, on peut afficher le QF
+                updateMatchDisplay(qfMatch, team1Code, team2Code);
                 enableQuarterFinalSelection(qfMatch);
+            } else {
+                // Un des R16 n'est pas terminé, on affiche "Winner Mx"
+                const qfTeam1 = document.getElementById(`${qfMatch}-team1`);
+                const qfTeam2 = document.getElementById(`${qfMatch}-team2`);
+                
+                if (qfTeam1) {
+                    qfTeam1.innerHTML = `
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner ${match1.toUpperCase()}</span>
+                    `;
+                    qfTeam1.classList.add('locked', 'empty-team');
+                    qfTeam1.classList.remove('selected');
+                }
+                
+                if (qfTeam2) {
+                    qfTeam2.innerHTML = `
+                        <div class="flag-placeholder"></div>
+                        <span class="font-bold">Winner ${match2.toUpperCase()}</span>
+                    `;
+                    qfTeam2.classList.add('locked', 'empty-team');
+                    qfTeam2.classList.remove('selected');
+                }
+                
+                // Réinitialiser la prédiction QF si un R16 change
+                predictions[qfMatch] = null;
             }
         }
     });
@@ -490,9 +848,17 @@ function updateTeamBox(box, team) {
         <span class="font-bold">${team.code}</span>
     `;
     
-    // Store team data
     box.dataset.team = team.code;
-    box.dataset.match = box.id.split('-')[0];
+    
+    // S'assurer que l'ID est correct pour les finales
+    if (box.id === 'final-team1' || box.id === 'final-team2') {
+        box.dataset.match = 'final';
+        box.classList.add('finalist-ready');
+        // Remove locked class for final teams to make them clickable
+        box.classList.remove('locked');
+        box.style.cursor = 'pointer';
+        box.style.pointerEvents = 'auto';
+    }
 }
 
 // Enable quarter final selection (make boxes clickable)
@@ -501,16 +867,28 @@ function enableQuarterFinalSelection(qfMatch) {
     const team2Box = document.getElementById(`${qfMatch}-team2`);
     
     if (team1Box && team2Box) {
-        // Remove locked class
         team1Box.classList.remove('locked');
         team2Box.classList.remove('locked');
         
-        // Add click event listeners
-        team1Box.addEventListener('click', function() {
+        // Remove existing event listeners
+        const newTeam1Box = team1Box.cloneNode(true);
+        const newTeam2Box = team2Box.cloneNode(true);
+        
+        team1Box.parentNode.replaceChild(newTeam1Box, team1Box);
+        team2Box.parentNode.replaceChild(newTeam2Box, team2Box);
+        
+        // Add click event listeners to new elements
+        newTeam1Box.addEventListener('click', function() {
+            if (isReadOnlyMode) return;
+            currentSelection = { match: qfMatch, teamCode: this.dataset.team, element: this };
+            document.getElementById('cancelBtn').style.display = 'flex';
             selectQuarterFinalWinner(qfMatch, this.dataset.team, this);
         });
         
-        team2Box.addEventListener('click', function() {
+        newTeam2Box.addEventListener('click', function() {
+            if (isReadOnlyMode) return;
+            currentSelection = { match: qfMatch, teamCode: this.dataset.team, element: this };
+            document.getElementById('cancelBtn').style.display = 'flex';
             selectQuarterFinalWinner(qfMatch, this.dataset.team, this);
         });
     }
@@ -523,62 +901,189 @@ function selectQuarterFinalWinner(match, teamCode, element) {
     const team = allTeams.find(t => t.code === teamCode);
     predictions[match] = teamCode;
     
-    // Update UI for this match
     document.querySelectorAll(`[id^="${match}-team"]`).forEach(el => {
         el.classList.remove('selected');
     });
     
     element.classList.add('selected');
     
-    // Update semi finals
     updateSemiFinals();
     
+    updateTeamStatuses();
+    
     updateProgress();
+    
+    document.getElementById('cancelBtn').style.display = 'none';
+    currentSelection = null;
 }
 
 // Update semi finals based on QF selections
 function updateSemiFinals() {
     console.log('Updating semi finals');
     
-    // Update SF1
+    // SF1: Vérifier si QF1 et QF2 sont complétés
     const qf1Winner = predictions['qf1'];
     const qf2Winner = predictions['qf2'];
     
-    if (qf1Winner) {
-        const team = allTeams.find(t => t.code === qf1Winner);
-        updateTeamBox(document.getElementById('sf1-team1'), team);
+    if (qf1Winner && qf2Winner) {
+        // Les DEUX QF sont terminés
+        const team1 = allTeams.find(t => t.code === qf1Winner);
+        const team2 = allTeams.find(t => t.code === qf2Winner);
+        
+        if (team1) {
+            updateTeamBox(document.getElementById('sf1-team1'), team1);
+        }
+        
+        if (team2) {
+            updateTeamBox(document.getElementById('sf1-team2'), team2);
+        }
+        
+        // Activer la sélection seulement si pas déjà sélectionné
+        if (!predictions['sf1']) {
+            enableSemiFinalSelection('sf1');
+        }
+    } else {
+        // Un des QF n'est pas terminé
+        const sf1Team1 = document.getElementById('sf1-team1');
+        const sf1Team2 = document.getElementById('sf1-team2');
+        
+        if (sf1Team1) {
+            sf1Team1.innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold text-lg">Winner QF1</span>
+            `;
+            sf1Team1.classList.add('locked', 'empty-team');
+            sf1Team1.classList.remove('selected', 'qualified', 'eliminated');
+        }
+        
+        if (sf1Team2) {
+            sf1Team2.innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold text-lg">Winner QF2</span>
+            `;
+            sf1Team2.classList.add('locked', 'empty-team');
+            sf1Team2.classList.remove('selected', 'qualified', 'eliminated');
+        }
+        
+        // Réinitialiser la prédiction SF1 si un QF change
+        predictions['sf1'] = null;
     }
     
-    if (qf2Winner) {
-        const team = allTeams.find(t => t.code === qf2Winner);
-        updateTeamBox(document.getElementById('sf1-team2'), team);
-    }
-    
-    // Update SF2
+    // SF2: Vérifier si QF3 et QF4 sont complétés
     const qf3Winner = predictions['qf3'];
     const qf4Winner = predictions['qf4'];
     
-    if (qf3Winner) {
-        const team = allTeams.find(t => t.code === qf3Winner);
-        updateTeamBox(document.getElementById('sf2-team1'), team);
-    }
-    
-    if (qf4Winner) {
-        const team = allTeams.find(t => t.code === qf4Winner);
-        updateTeamBox(document.getElementById('sf2-team2'), team);
-    }
-    
-    // Enable SF selection if both teams are available
-    if (qf1Winner && qf2Winner) {
-        enableSemiFinalSelection('sf1');
-    }
-    
     if (qf3Winner && qf4Winner) {
-        enableSemiFinalSelection('sf2');
+        // Les DEUX QF sont terminés
+        const team1 = allTeams.find(t => t.code === qf3Winner);
+        const team2 = allTeams.find(t => t.code === qf4Winner);
+        
+        if (team1) {
+            updateTeamBox(document.getElementById('sf2-team1'), team1);
+        }
+        
+        if (team2) {
+            updateTeamBox(document.getElementById('sf2-team2'), team2);
+        }
+        
+        // Activer la sélection seulement si pas déjà sélectionné
+        if (!predictions['sf2']) {
+            enableSemiFinalSelection('sf2');
+        }
+    } else {
+        // Un des QF n'est pas terminé
+        const sf2Team1 = document.getElementById('sf2-team1');
+        const sf2Team2 = document.getElementById('sf2-team2');
+        
+        if (sf2Team1) {
+            sf2Team1.innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold text-lg">Winner QF3</span>
+            `;
+            sf2Team1.classList.add('locked', 'empty-team');
+            sf2Team1.classList.remove('selected', 'qualified', 'eliminated');
+        }
+        
+        if (sf2Team2) {
+            sf2Team2.innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold text-lg">Winner QF4</span>
+            `;
+            sf2Team2.classList.add('locked', 'empty-team');
+            sf2Team2.classList.remove('selected', 'qualified', 'eliminated');
+        }
+        
+        // Réinitialiser la prédiction SF2 si un QF change
+        predictions['sf2'] = null;
     }
     
-    // Update finals
+    // Mettre à jour la Finale
     updateFinals();
+}
+
+// Fonction pour mettre à jour la 3ème place
+function updateThirdPlace() {
+    console.log('Updating third place');
+    
+    const sf1Winner = predictions['sf1'];
+    const sf2Winner = predictions['sf2'];
+    
+    // Si les deux SF sont terminées
+    if (sf1Winner && sf2Winner) {
+        // Trouver le perdant de SF1
+        const sf1Teams = matchMappings['sf1'];
+        const sf1Team1 = predictions[sf1Teams[0]];
+        const sf1Team2 = predictions[sf1Teams[1]];
+        
+        let thirdTeam1 = null;
+        if (sf1Team1 && sf1Team2) {
+            thirdTeam1 = (sf1Winner === sf1Team1) ? sf1Team2 : sf1Team1;
+        }
+        
+        // Trouver le perdant de SF2
+        const sf2Teams = matchMappings['sf2'];
+        const sf2Team1 = predictions[sf2Teams[0]];
+        const sf2Team2 = predictions[sf2Teams[1]];
+        
+        let thirdTeam2 = null;
+        if (sf2Team1 && sf2Team2) {
+            thirdTeam2 = (sf2Winner === sf2Team1) ? sf2Team2 : sf2Team1;
+        }
+        
+        // Mettre à jour l'affichage de la 3ème place
+        const thirdTeam1Box = document.getElementById('third-team1');
+        const thirdTeam2Box = document.getElementById('third-team2');
+        
+        if (thirdTeam1 && thirdTeam1Box) {
+            const team = allTeams.find(t => t.code === thirdTeam1);
+            if (team) {
+                thirdTeam1Box.innerHTML = `
+                    <img src="${team.flag}" alt="${team.name} Flag" class="flag-icon">
+                    <span class="font-bold">${team.code}</span>
+                `;
+                thirdTeam1Box.classList.remove('locked', 'empty-team');
+                thirdTeam1Box.dataset.team = team.code;
+                thirdTeam1Box.classList.add('eliminated');
+                
+                predictions['third-team1'] = team.code;
+            }
+        }
+        
+        if (thirdTeam2 && thirdTeam2Box) {
+            const team = allTeams.find(t => t.code === thirdTeam2);
+            if (team) {
+                thirdTeam2Box.innerHTML = `
+                    <img src="${team.flag}" alt="${team.name} Flag" class="flag-icon">
+                    <span class="font-bold">${team.code}</span>
+                `;
+                thirdTeam2Box.classList.remove('locked', 'empty-team');
+                thirdTeam2Box.dataset.team = team.code;
+                thirdTeam2Box.classList.add('eliminated');
+                
+                predictions['third-team2'] = team.code;
+            }
+        }
+    }
 }
 
 // Enable semi final selection
@@ -590,11 +1095,23 @@ function enableSemiFinalSelection(sfMatch) {
         team1Box.classList.remove('locked');
         team2Box.classList.remove('locked');
         
-        team1Box.addEventListener('click', function() {
+        const newTeam1Box = team1Box.cloneNode(true);
+        const newTeam2Box = team2Box.cloneNode(true);
+        
+        team1Box.parentNode.replaceChild(newTeam1Box, team1Box);
+        team2Box.parentNode.replaceChild(newTeam2Box, team2Box);
+        
+        newTeam1Box.addEventListener('click', function() {
+            if (isReadOnlyMode) return;
+            currentSelection = { match: sfMatch, teamCode: this.dataset.team, element: this };
+            document.getElementById('cancelBtn').style.display = 'flex';
             selectSemiFinalWinner(sfMatch, this.dataset.team, this);
         });
         
-        team2Box.addEventListener('click', function() {
+        newTeam2Box.addEventListener('click', function() {
+            if (isReadOnlyMode) return;
+            currentSelection = { match: sfMatch, teamCode: this.dataset.team, element: this };
+            document.getElementById('cancelBtn').style.display = 'flex';
             selectSemiFinalWinner(sfMatch, this.dataset.team, this);
         });
     }
@@ -607,17 +1124,191 @@ function selectSemiFinalWinner(match, teamCode, element) {
     const team = allTeams.find(t => t.code === teamCode);
     predictions[match] = teamCode;
     
-    // Update UI for this match
     document.querySelectorAll(`[id^="${match}-team"]`).forEach(el => {
         el.classList.remove('selected');
     });
     
     element.classList.add('selected');
     
-    // Update finals
     updateFinals();
     
+    updateTeamStatuses();
+    
     updateProgress();
+    
+    document.getElementById('cancelBtn').style.display = 'none';
+    currentSelection = null;
+}
+
+// Version corrigée de makeFinalistsClickable
+// Version corrigée de makeFinalistsClickable
+function makeFinalistsClickable() {
+    console.log('Making finalists clickable...');
+    
+    const finalTeam1 = document.getElementById('final-team1');
+    const finalTeam2 = document.getElementById('final-team2');
+    
+    if (!finalTeam1 || !finalTeam2) {
+        console.error('Final team boxes not found!');
+        return;
+    }
+    
+    // S'assurer que les boîtes ne sont pas locked
+    finalTeam1.classList.remove('locked', 'empty-team');
+    finalTeam2.classList.remove('locked', 'empty-team');
+    
+    // FORCER le curseur et pointer-events
+    finalTeam1.style.cursor = 'pointer';
+    finalTeam2.style.cursor = 'pointer';
+    finalTeam1.style.pointerEvents = 'auto';
+    finalTeam2.style.pointerEvents = 'auto';
+    
+    // Ajouter des classes pour le style
+    finalTeam1.classList.add('champion-selectable', 'finalist-ready');
+    finalTeam2.classList.add('champion-selectable', 'finalist-ready');
+    
+    // Ajouter un effet visuel au survol
+    finalTeam1.addEventListener('mouseenter', function() {
+        if (!isReadOnlyMode) {
+            this.style.transform = 'scale(1.05)';
+            this.style.boxShadow = '0 0 20px rgba(212, 175, 55, 0.8)';
+            this.style.borderColor = '#D4AF37';
+            this.style.borderWidth = '3px';
+            this.style.zIndex = '100';
+        }
+    });
+    
+    finalTeam1.addEventListener('mouseleave', function() {
+        if (!isReadOnlyMode) {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+            this.style.borderColor = '';
+            this.style.borderWidth = '';
+            this.style.zIndex = '';
+        }
+    });
+    
+    finalTeam2.addEventListener('mouseenter', function() {
+        if (!isReadOnlyMode) {
+            this.style.transform = 'scale(1.05)';
+            this.style.boxShadow = '0 0 20px rgba(212, 175, 55, 0.8)';
+            this.style.borderColor = '#D4AF37';
+            this.style.borderWidth = '3px';
+            this.style.zIndex = '100';
+        }
+    });
+    
+    finalTeam2.addEventListener('mouseleave', function() {
+        if (!isReadOnlyMode) {
+            this.style.transform = '';
+            this.style.boxShadow = '';
+            this.style.borderColor = '';
+            this.style.borderWidth = '';
+            this.style.zIndex = '';
+        }
+    });
+    
+    // Supprimer les anciens écouteurs (s'il y en a)
+    finalTeam1.replaceWith(finalTeam1.cloneNode(true));
+    finalTeam2.replaceWith(finalTeam2.cloneNode(true));
+    
+    // Récupérer les nouveaux éléments
+    const newFinalTeam1 = document.getElementById('final-team1');
+    const newFinalTeam2 = document.getElementById('final-team2');
+    
+    // Réappliquer les styles
+    newFinalTeam1.style.cursor = 'pointer';
+    newFinalTeam2.style.cursor = 'pointer';
+    newFinalTeam1.style.pointerEvents = 'auto';
+    newFinalTeam2.style.pointerEvents = 'auto';
+    newFinalTeam1.classList.add('champion-selectable', 'finalist-ready');
+    newFinalTeam2.classList.add('champion-selectable', 'finalist-ready');
+    
+    // AJOUTER LES ÉCOUTEURS DE CLIC
+    newFinalTeam1.addEventListener('click', handleFinalistClick);
+    newFinalTeam2.addEventListener('click', handleFinalistClick);
+    
+    console.log('Finalists are now clickable - Cursor should be pointer');
+    
+    // Ajouter un message d'aide
+    showChampionHelpMessage();
+}
+
+// Fonction pour afficher un message d'aide
+function showChampionHelpMessage() {
+    const existingMessage = document.getElementById('champion-help-message');
+    if (existingMessage) existingMessage.remove();
+    
+    setTimeout(() => {
+        const helpMessage = document.createElement('div');
+        helpMessage.id = 'champion-help-message';
+        helpMessage.innerHTML = `
+            <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+                        background: rgba(0,0,0,0.95); border: 3px solid #D4AF37;
+                        border-radius: 10px; padding: 20px; z-index: 9999;
+                        color: white; max-width: 400px; text-align: center;
+                        box-shadow: 0 0 40px rgba(212, 175, 55, 0.5);">
+                <h3 style="color: #D4AF37; font-size: 24px; margin-bottom: 15px;">🏆 SÉLECTIONNE TON CHAMPION</h3>
+                <p style="margin-bottom: 10px;">Clique sur l'équipe que tu veux comme champion !</p>
+                <p style="margin-bottom: 15px;">Le curseur devrait être <span style="color: #D4AF37; font-weight: bold">👉</span> quand tu passes sur une équipe.</p>
+                <button onclick="document.getElementById('champion-help-message').remove()"
+                        style="background: #00CC66; color: white; border: none;
+                               padding: 10px 20px; border-radius: 5px; cursor: pointer;
+                               font-weight: bold; margin-top: 10px;">
+                    J'ai compris !
+                </button>
+            </div>
+        `;
+        document.body.appendChild(helpMessage);
+        
+        // Supprimer automatiquement après 5 secondes
+        setTimeout(() => {
+            const msg = document.getElementById('champion-help-message');
+            if (msg) msg.remove();
+        }, 5000);
+    }, 500);
+}
+
+// Nouvelle fonction pour gérer les clics sur les finalistes
+function handleFinalistClick(event) {
+    console.log('Finalist clicked!');
+    
+    if (isReadOnlyMode) {
+        console.log('Read-only mode, ignoring click');
+        return;
+    }
+    
+    const element = event.currentTarget;
+    const teamCode = element.dataset.team;
+    
+    if (!teamCode) {
+        console.error('No team code found on clicked element');
+        return;
+    }
+    
+    console.log(`Selecting ${teamCode} as champion`);
+    
+    // Vérifier que c'est bien un finaliste
+    const finalist1 = predictions['final-team1'];
+    const finalist2 = predictions['final-team2'];
+    
+    if (teamCode !== finalist1 && teamCode !== finalist2) {
+        console.error('Not a valid finalist:', teamCode);
+        return;
+    }
+    
+    // Stocker la sélection en cours
+    currentSelection = { 
+        match: 'final-winner', 
+        teamCode: teamCode, 
+        element: element 
+    };
+    
+    // Afficher le bouton Annuler
+    document.getElementById('cancelBtn').style.display = 'flex';
+    
+    // Sélectionner le champion
+    selectChampion(element);
 }
 
 // Update finals based on SF selections
@@ -627,91 +1318,211 @@ function updateFinals() {
     const sf1Winner = predictions['sf1'];
     const sf2Winner = predictions['sf2'];
     
-    // Update final teams
+    // Store who the finalists actually are
     if (sf1Winner) {
+        predictions['final-team1'] = sf1Winner;
         const team = allTeams.find(t => t.code === sf1Winner);
-        updateTeamBox(document.getElementById('final-team1'), team);
+        
+        // METTRE À JOUR ET DÉBLOQUER final-team1
+        const finalTeam1Box = document.getElementById('final-team1');
+        if (finalTeam1Box && team) {
+            updateTeamBox(finalTeam1Box, team);
+            finalTeam1Box.classList.remove('locked', 'empty-team'); // ← IMPORTANT !
+            finalTeam1Box.classList.add('finalist-ready');
+        }
     }
     
     if (sf2Winner) {
+        predictions['final-team2'] = sf2Winner;
         const team = allTeams.find(t => t.code === sf2Winner);
-        updateTeamBox(document.getElementById('final-team2'), team);
-    }
-    
-    // Update third place teams
-    if (sf1Winner) {
-        // Find loser of SF1
-        const sf1Teams = matchMappings['sf1'].map(qf => predictions[qf]);
-        const sf1Loser = sf1Teams.find(teamCode => teamCode && teamCode !== sf1Winner);
-        if (sf1Loser) {
-            const team = allTeams.find(t => t.code === sf1Loser);
-            updateTeamBox(document.getElementById('third-team1'), team);
+        
+        // METTRE À JOUR ET DÉBLOQUER final-team2
+        const finalTeam2Box = document.getElementById('final-team2');
+        if (finalTeam2Box && team) {
+            updateTeamBox(finalTeam2Box, team);
+            finalTeam2Box.classList.remove('locked', 'empty-team'); // ← IMPORTANT !
+            finalTeam2Box.classList.add('finalist-ready');
         }
     }
     
-    if (sf2Winner) {
-        // Find loser of SF2
-        const sf2Teams = matchMappings['sf2'].map(qf => predictions[qf]);
-        const sf2Loser = sf2Teams.find(teamCode => teamCode && teamCode !== sf2Winner);
-        if (sf2Loser) {
-            const team = allTeams.find(t => t.code === sf2Loser);
-            updateTeamBox(document.getElementById('third-team2'), team);
-        }
-    }
-    
-    // Enable final selection if both finalists are available
+    // Enable final selection only if BOTH SF are done
     if (sf1Winner && sf2Winner) {
-        enableFinalSelection();
+        // Mettre à jour la 3ème place
+        updateThirdPlace();
+        
+        // Activer la sélection finale
+        makeFinalistsClickable();
+        
+        // If champion already selected, make sure it's valid
+        const currentChampion = predictions['final-winner'];
+        if (currentChampion && currentChampion !== sf1Winner && currentChampion !== sf2Winner) {
+            // Champion n'est plus valide (a changé)
+            predictions['final-winner'] = null;
+            
+            // Reset champion box
+            const finalWinnerBox = document.getElementById('final-winner-box');
+            if (finalWinnerBox) {
+                finalWinnerBox.innerHTML = `
+                    <div class="flag-placeholder"></div>
+                    <span id="final-winner" class="font-bold text-xl">Clique sur une équipe</span>
+                    <span class="ml-auto text-lg text-[#D4AF37]">👑</span>
+                `;
+                finalWinnerBox.classList.remove('selected', 'champion');
+                finalWinnerBox.classList.add('empty-team');
+                finalWinnerBox.style.cursor = 'pointer';
+                finalWinnerBox.style.border = '3px dashed #D4AF37';
+                finalWinnerBox.style.animation = 'borderPulse 2s infinite';
+                
+                // Hide champion text
+                const championText = document.getElementById('championText');
+                if (championText) {
+                    championText.classList.add('hidden');
+                }
+            }
+        }
+    } else {
+        // Une des SF n'est pas terminée - REMETTRE locked et empty-team
+        const finalTeam1Box = document.getElementById('final-team1');
+        const finalTeam2Box = document.getElementById('final-team2');
+        
+        if (finalTeam1Box && !sf1Winner) {
+            finalTeam1Box.innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold text-xl">Winner SF1</span>
+            `;
+            finalTeam1Box.classList.add('locked', 'empty-team');
+            finalTeam1Box.classList.remove('selected', 'qualified', 'eliminated', 'finalist-ready');
+            finalTeam1Box.removeAttribute('data-team');
+        }
+        
+        if (finalTeam2Box && !sf2Winner) {
+            finalTeam2Box.innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold text-xl">Winner SF2</span>
+            `;
+            finalTeam2Box.classList.add('locked', 'empty-team');
+            finalTeam2Box.classList.remove('selected', 'qualified', 'eliminated', 'finalist-ready');
+            finalTeam2Box.removeAttribute('data-team');
+        }
+        
+        // Désactiver la sélection
+        disableFinalSelection();
+        
+        // Réinitialiser la 3ème place
+        const thirdTeam1 = document.getElementById('third-team1');
+        const thirdTeam2 = document.getElementById('third-team2');
+        
+        if (thirdTeam1) {
+            thirdTeam1.innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold">Loser SF1</span>
+            `;
+            thirdTeam1.classList.add('locked', 'empty-team');
+            thirdTeam1.classList.remove('eliminated', 'third-place-ready');
+        }
+        
+        if (thirdTeam2) {
+            thirdTeam2.innerHTML = `
+                <div class="flag-placeholder"></div>
+                <span class="font-bold">Loser SF2</span>
+            `;
+            thirdTeam2.classList.add('locked', 'empty-team');
+            thirdTeam2.classList.remove('eliminated', 'third-place-ready');
+        }
     }
 }
 
-// Enable final selection
-function enableFinalSelection() {
+// Désactiver la sélection finale
+function disableFinalSelection() {
     const finalTeam1 = document.getElementById('final-team1');
     const finalTeam2 = document.getElementById('final-team2');
     const finalWinnerBox = document.getElementById('final-winner-box');
     
-    if (finalTeam1 && finalTeam2) {
-        finalTeam1.classList.remove('locked');
-        finalTeam2.classList.remove('locked');
-        
-        // Make final teams clickable for champion selection
-        finalTeam1.addEventListener('click', function() {
-            selectChampion(this);
-        });
-        
-        finalTeam2.addEventListener('click', function() {
-            selectChampion(this);
-        });
-        
-        // Also make champion box clickable
-        if (finalWinnerBox) {
-            finalWinnerBox.classList.remove('locked');
-            finalWinnerBox.classList.remove('empty-team');
-        }
+    if (finalTeam1) {
+        finalTeam1.classList.add('locked');
+        finalTeam1.style.cursor = 'default';
+        finalTeam1.style.pointerEvents = 'none';
+    }
+    
+    if (finalTeam2) {
+        finalTeam2.classList.add('locked');
+        finalTeam2.style.cursor = 'default';
+        finalTeam2.style.pointerEvents = 'none';
+    }
+    
+    if (finalWinnerBox) {
+        finalWinnerBox.classList.add('locked', 'empty-team');
+        finalWinnerBox.innerHTML = `
+            <div class="flag-placeholder"></div>
+            <span id="final-winner" class="font-bold text-xl">Select Champion</span>
+        `;
+        finalWinnerBox.classList.remove('selected');
+        finalWinnerBox.removeAttribute('data-team');
+        finalWinnerBox.style.cursor = 'default';
+        finalWinnerBox.style.pointerEvents = 'none';
+    }
+    
+    // Cacher le texte champion
+    const championText = document.getElementById('championText');
+    if (championText) {
+        championText.classList.add('hidden');
     }
 }
 
-// Select champion
+// Select champion - VERSION CORRIGÉE ET SIMPLIFIÉE
 function selectChampion(element) {
-    const teamCode = element.dataset.team;
-    if (!teamCode) return;
+    if (!element || !element.dataset || isReadOnlyMode) {
+        console.error('Invalid element or read-only mode');
+        return;
+    }
     
+    const teamCode = element.dataset.team;
     console.log(`Selecting ${teamCode} as champion`);
     
     const team = allTeams.find(t => t.code === teamCode);
+    if (!team) {
+        console.error('Team not found:', teamCode);
+        return;
+    }
+    
+    // Vérifier que c'est un finaliste valide
+    const finalist1 = predictions['final-team1'];
+    const finalist2 = predictions['final-team2'];
+    
+    if (teamCode !== finalist1 && teamCode !== finalist2) {
+        alert('Vous ne pouvez sélectionner que les équipes finalistes !');
+        return;
+    }
+    
     predictions['final-winner'] = teamCode;
     
-    // Update champion box
+    // Mettre à jour la boîte champion
     const finalWinnerBox = document.getElementById('final-winner-box');
-    finalWinnerBox.innerHTML = `
-        <img src="${team.flag}" alt="${team.name} Flag" class="flag-icon">
-        <span class="font-bold text-xl">${team.code}</span>
-        <span class="ml-auto text-sm text-[#D4AF37]">✓</span>
-    `;
-    finalWinnerBox.classList.add('selected');
+    if (finalWinnerBox) {
+        finalWinnerBox.innerHTML = `
+            <img src="${team.flag}" alt="${team.name} Flag" class="flag-icon">
+            <span class="font-bold text-xl">${team.code}</span>
+            <span class="ml-auto text-2xl">🏆</span>
+        `;
+        finalWinnerBox.classList.add('selected', 'champion');
+        finalWinnerBox.dataset.team = teamCode;
+        finalWinnerBox.classList.remove('locked', 'empty-team');
+        finalWinnerBox.style.cursor = 'default';
+        finalWinnerBox.style.animation = 'championGlow 2s infinite alternate';
+    }
     
-    // Show champion text
+    // Mettre en évidence l'équipe sélectionnée
+    element.classList.add('selected-champion', 'champion');
+    
+    // Marquer l'autre finaliste comme perdant
+    const otherFinalistCode = teamCode === finalist1 ? finalist2 : finalist1;
+    const otherFinalistBox = document.querySelector(`[data-team="${otherFinalistCode}"]`);
+    if (otherFinalistBox && (otherFinalistBox.id === 'final-team1' || otherFinalistBox.id === 'final-team2')) {
+        otherFinalistBox.classList.remove('qualified');
+        otherFinalistBox.classList.add('eliminated');
+    }
+    
+    // Afficher le texte champion
     const championText = document.getElementById('championText');
     const championName = document.getElementById('championName');
     if (championText && championName) {
@@ -719,7 +1530,43 @@ function selectChampion(element) {
         championText.classList.remove('hidden');
     }
     
+    updateTeamStatuses();
     updateProgress();
+    
+    // Cacher le bouton Annuler
+    document.getElementById('cancelBtn').style.display = 'none';
+    currentSelection = null;
+    
+    // Animation de confirmation
+    if (element.style) {
+        element.style.animation = 'championGlow 2s infinite alternate';
+    }
+    
+    // Message de confirmation
+    const confirmation = document.createElement('div');
+    confirmation.innerHTML = `
+        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    background: rgba(0,0,0,0.9); color: #D4AF37; padding: 20px; 
+                    border-radius: 10px; border: 3px solid #D4AF37; z-index: 9999;
+                    text-align: center; animation: fadeIn 0.5s;">
+            <h3 style="font-size: 24px; margin-bottom: 10px;">🎉 CHAMPION SÉLECTIONNÉ !</h3>
+            <p style="font-size: 18px;">${team.name} est ton champion pour l'AFCON 2025 !</p>
+            <button onclick="this.parentElement.remove()" 
+                    style="margin-top: 15px; background: #00CC66; color: white; 
+                           border: none; padding: 10px 20px; border-radius: 5px; 
+                           cursor: pointer;">
+                OK
+            </button>
+        </div>
+    `;
+    document.body.appendChild(confirmation);
+    
+    // Supprimer automatiquement après 3 secondes
+    setTimeout(() => {
+        if (confirmation.parentNode) {
+            confirmation.parentNode.removeChild(confirmation);
+        }
+    }, 3000);
 }
 
 // Update progress bar
@@ -750,8 +1597,77 @@ function updateProgress() {
     }
 }
 
+// Ajouter cette fonction pour sélectionner le gagnant de la 3ème place
+function selectThirdPlaceWinner() {
+    const thirdTeam1 = document.getElementById('third-team1');
+    const thirdTeam2 = document.getElementById('third-team2');
+    
+    if (thirdTeam1 && thirdTeam2 && !thirdTeam1.classList.contains('empty-team') && !thirdTeam2.classList.contains('empty-team')) {
+        // Demander à l'utilisateur de sélectionner
+        const team1Code = thirdTeam1.dataset.team;
+        const team2Code = thirdTeam2.dataset.team;
+        
+        const team1 = allTeams.find(t => t.code === team1Code);
+        const team2 = allTeams.find(t => t.code === team2Code);
+        
+        const choice = confirm(`Sélectionner le gagnant pour la 3ème place:\n\n${team1.name} (OK)\nOU\n${team2.name} (Annuler)`);
+        
+        const winnerCode = choice ? team1Code : team2Code;
+        const winnerTeam = allTeams.find(t => t.code === winnerCode);
+        
+        // Mettre à jour l'affichage
+        if (choice) {
+            thirdTeam1.classList.add('third-place-winner');
+            thirdTeam2.classList.add('eliminated');
+        } else {
+            thirdTeam2.classList.add('third-place-winner');
+            thirdTeam1.classList.add('eliminated');
+        }
+        
+        // Stocker la prédiction
+        predictions['third-place-winner'] = winnerCode;
+        
+        updateProgress();
+        
+        alert(`✅ ${winnerTeam.name} sélectionné pour la 3ème place !`);
+    }
+}
+
+// Ajouter des écouteurs d'événements pour la 3ème place
+function initializeThirdPlaceSelection() {
+    const thirdTeam1 = document.getElementById('third-team1');
+    const thirdTeam2 = document.getElementById('third-team2');
+    
+    if (thirdTeam1 && thirdTeam2) {
+        // Créer de nouveaux éléments pour éviter les conflits
+        const newThirdTeam1 = thirdTeam1.cloneNode(true);
+        const newThirdTeam2 = thirdTeam2.cloneNode(true);
+        
+        thirdTeam1.parentNode.replaceChild(newThirdTeam1, thirdTeam1);
+        thirdTeam2.parentNode.replaceChild(newThirdTeam2, thirdTeam2);
+        
+        // Ajouter les écouteurs
+        newThirdTeam1.addEventListener('click', function() {
+            if (!this.classList.contains('empty-team') && !isReadOnlyMode) {
+                selectThirdPlaceWinner();
+            }
+        });
+        
+        newThirdTeam2.addEventListener('click', function() {
+            if (!this.classList.contains('empty-team') && !isReadOnlyMode) {
+                selectThirdPlaceWinner();
+            }
+        });
+    }
+}
+
 // Save predictions
 function savePredictions() {
+    if (isReadOnlyMode) {
+        alert('You are in view-only mode. Click "Reset" to make new predictions.');
+        return;
+    }
+    
     console.log('Saving predictions');
     
     const completed = Object.values(predictions).filter(p => p !== null).length;
@@ -767,18 +1683,15 @@ function savePredictions() {
             allTeams.find(t => t.code === predictions['final-winner']).name : 'Not selected'
     };
     
-    // Get current user
     const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
     const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
     
-    // Determine user ID
     let userId = 'guest';
     if (userProfile) {
         userId = userProfile.avatarSeed;
     } else if (adminSession && adminSession.loggedIn) {
         userId = adminSession.username.toLowerCase();
     } else {
-        // Guest users need to sign in
         if (confirm('Please sign in to save your predictions! Would you like to sign in now?')) {
             const loginModal = document.getElementById('loginModal');
             if (loginModal) {
@@ -788,25 +1701,18 @@ function savePredictions() {
         return;
     }
     
-    // Get all predictions
     const allPredictions = JSON.parse(localStorage.getItem('afcon2025_all_predictions')) || {};
-    
-    // Get user's predictions
     const userPredictions = allPredictions[userId] || [];
     
-    // Add new prediction
     userPredictions.unshift(data);
     
-    // Keep only last 10 predictions
     if (userPredictions.length > 10) {
         userPredictions.length = 10;
     }
     
-    // Save back to all predictions
     allPredictions[userId] = userPredictions;
     localStorage.setItem('afcon2025_all_predictions', JSON.stringify(allPredictions));
     
-    // Update saved predictions list
     loadSavedPredictions();
     
     alert('Predictions saved successfully!');
@@ -818,20 +1724,30 @@ function savePredictions() {
     }
 }
 
-// Reset all predictions UI (without confirmation)
+// Reset all predictions UI
 function resetAllPredictionsUI() {
     console.log('Resetting predictions UI');
     
-    // Reset predictions object
+    // Quitter le mode lecture seule
+    isReadOnlyMode = false;
+    
     Object.keys(predictions).forEach(key => {
         predictions[key] = null;
     });
     
-    // Reset all team boxes
     document.querySelectorAll('.team-box').forEach(box => {
-        box.classList.remove('selected');
-        box.classList.remove('locked');
+        box.classList.remove('selected', 'qualified', 'eliminated', 'locked', 'selected-champion', 'champion-selectable', 'finalist-ready');
+        box.style.cursor = 'pointer';
+        box.style.pointerEvents = 'auto';
+        box.style.transform = '';
+        box.style.boxShadow = '';
+        box.style.borderColor = '';
+        box.style.borderWidth = '';
         box.querySelector('.prediction-check')?.classList.add('hidden');
+        
+        // Supprimer les couronnes de hover
+        const crowns = box.querySelectorAll('.hover-crown');
+        crowns.forEach(crown => crown.remove());
     });
     
     // Reset R16 boxes
@@ -848,10 +1764,9 @@ function resetAllPredictionsUI() {
         }
     });
     
-    // Reset quarter finals to empty
+    // Reset quarter finals
     document.querySelectorAll('.team-box[id^="qf"]').forEach(box => {
-        box.classList.add('locked');
-        box.classList.add('empty-team');
+        box.classList.add('locked', 'empty-team');
         const matchId = box.id.split('-')[0];
         const teamNumber = box.id.includes('team1') ? '1' : '2';
         const matchNumber = matchId.replace('qf', '');
@@ -860,16 +1775,21 @@ function resetAllPredictionsUI() {
             <div class="flag-placeholder"></div>
             <span class="font-bold">Winner ${r16Match.toUpperCase()}</span>
         `;
+        box.removeAttribute('data-team');
+        box.style.cursor = 'default';
+        box.style.pointerEvents = 'none';
     });
     
     // Reset semi finals
     document.querySelectorAll('.team-box[id^="sf"]').forEach(box => {
-        box.classList.add('locked');
-        box.classList.add('empty-team');
+        box.classList.add('locked', 'empty-team');
         box.innerHTML = `
             <div class="flag-placeholder"></div>
             <span class="font-bold ${box.id.includes('sf1') || box.id.includes('sf2') ? 'text-lg' : ''}">${box.id.includes('team1') ? 'Winner QF1' : 'Winner QF2'}</span>
         `;
+        box.removeAttribute('data-team');
+        box.style.cursor = 'default';
+        box.style.pointerEvents = 'none';
     });
     
     // Reset finals
@@ -880,6 +1800,13 @@ function resetAllPredictionsUI() {
             <span class="font-bold text-xl">Winner SF1</span>
         `;
         finalTeam1.classList.add('locked', 'empty-team');
+        finalTeam1.removeAttribute('data-team');
+        finalTeam1.style.cursor = 'default';
+        finalTeam1.style.pointerEvents = 'none';
+        
+        // Supprimer les écouteurs d'événements
+        const newFinalTeam1 = finalTeam1.cloneNode(true);
+        finalTeam1.parentNode.replaceChild(newFinalTeam1, finalTeam1);
     }
     
     const finalTeam2 = document.getElementById('final-team2');
@@ -889,6 +1816,13 @@ function resetAllPredictionsUI() {
             <span class="font-bold text-xl">Winner SF2</span>
         `;
         finalTeam2.classList.add('locked', 'empty-team');
+        finalTeam2.removeAttribute('data-team');
+        finalTeam2.style.cursor = 'default';
+        finalTeam2.style.pointerEvents = 'none';
+        
+        // Supprimer les écouteurs d'événements
+        const newFinalTeam2 = finalTeam2.cloneNode(true);
+        finalTeam2.parentNode.replaceChild(newFinalTeam2, finalTeam2);
     }
     
     // Reset champion
@@ -899,7 +1833,11 @@ function resetAllPredictionsUI() {
             <span id="final-winner" class="font-bold text-xl">Select Champion</span>
         `;
         finalWinnerBox.classList.add('locked', 'empty-team');
-        finalWinnerBox.classList.remove('selected');
+        finalWinnerBox.classList.remove('selected', 'champion');
+        finalWinnerBox.removeAttribute('data-team');
+        finalWinnerBox.style.cursor = 'default';
+        finalWinnerBox.style.pointerEvents = 'none';
+        finalWinnerBox.style.animation = '';
     }
     
     // Reset third place
@@ -910,6 +1848,8 @@ function resetAllPredictionsUI() {
             <span class="font-bold">Loser SF1</span>
         `;
         thirdTeam1.classList.add('locked', 'empty-team');
+        thirdTeam1.style.cursor = 'default';
+        thirdTeam1.style.pointerEvents = 'none';
     }
     
     const thirdTeam2 = document.getElementById('third-team2');
@@ -919,6 +1859,8 @@ function resetAllPredictionsUI() {
             <span class="font-bold">Loser SF2</span>
         `;
         thirdTeam2.classList.add('locked', 'empty-team');
+        thirdTeam2.style.cursor = 'default';
+        thirdTeam2.style.pointerEvents = 'none';
     }
     
     // Hide champion text
@@ -927,7 +1869,25 @@ function resetAllPredictionsUI() {
         championText.classList.add('hidden');
     }
     
-    // Reinitialize event listeners
+    // Supprimer tous les messages
+    document.querySelectorAll('.qualified-status').forEach(el => {
+        el.remove();
+    });
+    
+    // Réactiver les boutons
+    document.getElementById('saveBtn').disabled = false;
+    document.getElementById('saveBtn').style.opacity = '1';
+    document.getElementById('saveBtn').style.cursor = 'pointer';
+    
+    document.getElementById('shareBtn').disabled = false;
+    document.getElementById('shareBtn').style.opacity = '1';
+    document.getElementById('shareBtn').style.cursor = 'pointer';
+    
+    // Cacher le bouton Annuler
+    document.getElementById('cancelBtn').style.display = 'none';
+    currentSelection = null;
+    
+    // Réinitialiser les listeners
     initializeRoundOf16();
 }
 
@@ -936,25 +1896,54 @@ function resetAllPredictions() {
     if (confirm('Are you sure you want to reset all predictions?')) {
         resetAllPredictionsUI();
         updateProgress();
-        alert('All predictions have been reset.');
+        alert('All predictions have been reset. You can now make new predictions.');
     }
 }
 
 // Share predictions
 function sharePredictions() {
+    if (isReadOnlyMode) {
+        alert('You are in view-only mode. Click "Reset" to make new predictions.');
+        return;
+    }
+    
     const champion = predictions['final-winner'] ? 
         allTeams.find(t => t.code === predictions['final-winner']).name : 'Not selected yet';
     
     let shareText = `My AFCON 2025 Predictions:\n\n`;
     shareText += `🏆 Champion: ${champion}\n\n`;
     
-    const finalist1 = predictions['final-team1'] ? 
-        allTeams.find(t => t.code === predictions['final-team1']).name : 'TBD';
-    const finalist2 = predictions['final-team2'] ? 
-        allTeams.find(t => t.code === predictions['final-team2']).name : 'TBD';
+    // Ajouter Round of 16
+    shareText += `Round of 16:\n`;
+    for (let i = 1; i <= 8; i++) {
+        const winner = predictions[`m${i}`];
+        if (winner) {
+            const winnerTeam = allTeams.find(t => t.code === winner);
+            shareText += `  Match ${i}: ${winnerTeam.name} wins\n`;
+        }
+    }
     
-    shareText += `Final: ${finalist1} vs ${finalist2}\n\n`;
-    shareText += `Make your predictions: ${window.location.href}`;
+    // Ajouter Quarter Finals
+    shareText += `\nQuarter Finals:\n`;
+    for (let i = 1; i <= 4; i++) {
+        const winner = predictions[`qf${i}`];
+        if (winner) {
+            const winnerTeam = allTeams.find(t => t.code === winner);
+            shareText += `  QF${i}: ${winnerTeam.name} advances\n`;
+        }
+    }
+    
+    // Ajouter Semi Finals
+    shareText += `\nSemi Finals:\n`;
+    for (let i = 1; i <= 2; i++) {
+        const winner = predictions[`sf${i}`];
+        if (winner) {
+            const winnerTeam = allTeams.find(t => t.code === winner);
+            shareText += `  SF${i}: ${winnerTeam.name} to Final\n`;
+        }
+    }
+    
+    shareText += `\nMake your predictions: ${window.location.href}`;
     
     if (navigator.share) {
         navigator.share({
@@ -964,128 +1953,11 @@ function sharePredictions() {
         }).catch(console.error);
     } else {
         navigator.clipboard.writeText(shareText).then(() => {
-            alert('Predictions copied to clipboard!');
+            alert('Predictions copied to clipboard! You can now share them.');
         }).catch(() => {
             prompt('Copy your predictions:', shareText);
         });
     }
-}
-
-// Take screenshot
-function takeScreenshot() {
-    const completed = Object.values(predictions).filter(p => p !== null).length;
-    if (completed < 15) {
-        alert(`Please complete all predictions before taking a screenshot (${completed}/15 completed).`);
-        return;
-    }
-    
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    if (loadingOverlay) {
-        loadingOverlay.classList.add('active');
-    }
-    
-    // Hide control panels and navigation for clean screenshot
-    const elementsToHide = [
-        document.querySelector('.fixed.top-20.right-4'),
-        document.querySelector('.fixed.top-16'),
-        document.querySelector('.nav-container'),
-        document.querySelector('.saved-predictions-toggle')
-    ];
-    
-    elementsToHide.forEach(el => {
-        if (el) el.style.display = 'none';
-    });
-    
-    // Add watermark text
-    const watermark = document.createElement('div');
-    watermark.innerHTML = `
-        <div style="position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; font-size: 12px; z-index: 9999;">
-            AFCON 2025 Predictor • ${window.location.href}
-        </div>
-    `;
-    document.body.appendChild(watermark);
-    
-    // Capture the bracket
-    html2canvas(document.getElementById('bracketContainer'), {
-        backgroundColor: '#1a0f0f',
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        allowTaint: true
-    }).then(canvas => {
-        // Restore hidden elements
-        elementsToHide.forEach(el => {
-            if (el) el.style.display = '';
-        });
-        
-        if (document.body.contains(watermark)) {
-            document.body.removeChild(watermark);
-        }
-        
-        // Show screenshot in modal
-        const screenshotImage = document.getElementById('screenshotImage');
-        const screenshotModal = document.getElementById('screenshotModal');
-        
-        if (screenshotImage) {
-            screenshotImage.src = canvas.toDataURL('image/png');
-        }
-        
-        if (screenshotModal) {
-            screenshotModal.classList.add('active');
-        }
-        
-        if (loadingOverlay) {
-            loadingOverlay.classList.remove('active');
-        }
-        
-        // Store canvas for download
-        window.screenshotCanvas = canvas;
-    }).catch(error => {
-        console.error('Screenshot error:', error);
-        alert('Error creating screenshot. Please try again.');
-        
-        // Restore hidden elements
-        elementsToHide.forEach(el => {
-            if (el) el.style.display = '';
-        });
-        
-        if (document.body.contains(watermark)) {
-            document.body.removeChild(watermark);
-        }
-        
-        if (loadingOverlay) {
-            loadingOverlay.classList.remove('active');
-        }
-    });
-}
-
-// Download screenshot
-function downloadScreenshot() {
-    if (!window.screenshotCanvas) return;
-    
-    const link = document.createElement('a');
-    link.download = `afcon-2025-predictions-${Date.now()}.png`;
-    link.href = window.screenshotCanvas.toDataURL('image/png');
-    link.click();
-}
-
-// Share screenshot
-function shareScreenshot() {
-    if (!window.screenshotCanvas) return;
-    
-    window.screenshotCanvas.toBlob(blob => {
-        const file = new File([blob], 'afcon-predictions.png', { type: 'image/png' });
-        
-        if (navigator.share && navigator.canShare({ files: [file] })) {
-            navigator.share({
-                files: [file],
-                title: 'My AFCON 2025 Predictions',
-                text: 'Check out my AFCON 2025 tournament predictions!'
-            }).catch(console.error);
-        } else {
-            alert('Sharing screenshots is not supported on this device/browser. You can download and share the image manually.');
-        }
-    }, 'image/png');
 }
 
 // ========================================
@@ -1105,11 +1977,9 @@ function updateProfileDisplay() {
     const adminIndicator = document.getElementById('adminIndicator');
     
     if (adminSession && adminSession.loggedIn) {
-        // Admin is logged in
         const displayName = adminSession.username;
         const avatarSeed = displayName.toLowerCase().replace(/\s/g, '');
         
-        // Update mini profile
         if (profileMiniAvatar) {
             profileMiniAvatar.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}&backgroundColor=D4AF37`;
             profileMiniAvatar.style.cursor = 'pointer';
@@ -1126,16 +1996,13 @@ function updateProfileDisplay() {
             profileMiniBtn.className = 'auth-btn bg-gradient-to-r from-[#D4AF37] to-[#b8942a]';
         }
         
-        // Show admin indicator
         if (adminIndicator) {
             adminIndicator.style.display = 'block';
         }
         
     } else if (userProfile) {
-        // Regular user is logged in
         const avatarSeed = userProfile.avatarSeed;
         
-        // Update mini profile
         if (profileMiniAvatar) {
             profileMiniAvatar.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}&backgroundColor=00CC66`;
             profileMiniAvatar.style.cursor = 'pointer';
@@ -1152,13 +2019,11 @@ function updateProfileDisplay() {
             profileMiniBtn.className = 'auth-btn';
         }
         
-        // Hide admin indicator
         if (adminIndicator) {
             adminIndicator.style.display = 'none';
         }
         
     } else {
-        // No one is logged in
         if (profileMiniAvatar) {
             profileMiniAvatar.src = 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest&backgroundColor=00CC66';
             profileMiniAvatar.style.cursor = 'pointer';
@@ -1175,7 +2040,6 @@ function updateProfileDisplay() {
             profileMiniBtn.className = 'auth-btn';
         }
         
-        // Hide admin indicator
         if (adminIndicator) {
             adminIndicator.style.display = 'none';
         }
@@ -1193,11 +2057,9 @@ function openProfileHistory() {
     
     if (!profileHistoryOverlay || !profileHistoryContent) return;
     
-    // Get user data
     const userProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
     const allUsers = JSON.parse(localStorage.getItem('afcon2025_all_users')) || [];
     
-    // Find current user in all users
     let currentUserData = null;
     if (userProfile) {
         currentUserData = allUsers.find(user => 
@@ -1205,15 +2067,11 @@ function openProfileHistory() {
         );
     }
     
-    // Prepare history items
     const historyItems = [];
     
-    // 1. Get user's actual history from storage (including registrations and logins)
     const userHistory = JSON.parse(localStorage.getItem(`afcon2025_user_history_${userProfile ? userProfile.avatarSeed : 'guest'}`)) || [];
     
-    // If no history exists, create it from current data
     if (userHistory.length === 0 && currentUserData) {
-        // Add initial registration
         historyItems.push({
             type: 'registration',
             title: 'Account Created',
@@ -1224,7 +2082,6 @@ function openProfileHistory() {
             action: 'signup'
         });
         
-        // Add recent logins
         if (currentUserData.loginCount > 1) {
             for (let i = 1; i <= Math.min(currentUserData.loginCount, 5); i++) {
                 const loginDate = new Date(currentUserData.registrationDate);
@@ -1242,11 +2099,9 @@ function openProfileHistory() {
             }
         }
     } else {
-        // Use existing history
         historyItems.push(...userHistory);
     }
     
-    // 2. Add current login if not already in history
     const today = new Date().toDateString();
     const hasTodayLogin = historyItems.some(item => 
         new Date(item.date).toDateString() === today && item.action === 'login'
@@ -1264,18 +2119,14 @@ function openProfileHistory() {
         });
     }
     
-    // Sort history by date (newest first)
     historyItems.sort((a, b) => new Date(b.date) - new Date(a.date));
     
-    // Calculate stats
     const registrations = historyItems.filter(item => item.action === 'signup').length;
     const logins = historyItems.filter(item => item.action === 'login').length;
     const totalSessions = registrations + logins;
     
-    // Build popup content
     let contentHTML = '';
     
-    // User profile summary
     contentHTML += `
         <div class="user-profile-summary">
             <img src="${userProfile ? `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile.avatarSeed}&backgroundColor=00CC66` : 'https://api.dicebear.com/7.x/avataaars/svg?seed=guest&backgroundColor=00CC66'}" 
@@ -1301,7 +2152,6 @@ function openProfileHistory() {
         </div>
     `;
     
-    // Stats section
     contentHTML += `
         <div class="history-stats">
             <div class="stat-card-history">
@@ -1323,7 +2173,6 @@ function openProfileHistory() {
         </div>
     `;
     
-    // History section
     contentHTML += `
         <div class="history-section-title">
             <i class="fas fa-history"></i> Connection History
@@ -1333,7 +2182,6 @@ function openProfileHistory() {
     if (historyItems.length > 0) {
         contentHTML += `<div class="history-list">`;
         
-        // Show only registration and login history (no predictions)
         const connectionHistory = historyItems.filter(item => 
             item.action === 'signup' || item.action === 'login'
         );
@@ -1360,9 +2208,7 @@ function openProfileHistory() {
                                         day: 'numeric',
                                         hour: '2-digit',
                                         minute: '2-digit'
-                                    })}
-                                </div>
-                                <div class="history-item-points" style="color: ${isRegistration ? '#00CC66' : '#D4AF37'}">
+                                    })}                                <div class="history-item-points" style="color: ${isRegistration ? '#00CC66' : '#D4AF37'}">
                                     <i class="fas ${isRegistration ? 'fa-user-plus' : 'fa-sign-in-alt'}"></i>
                                     ${isRegistration ? 'Registration' : 'Login'}
                                 </div>
@@ -1398,10 +2244,8 @@ function openProfileHistory() {
         `;
     }
     
-    // Update content
     profileHistoryContent.innerHTML = contentHTML;
     
-    // Show popup
     profileHistoryOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
@@ -1426,7 +2270,6 @@ function saveUserHistory(action, userName, userCountry) {
         action: action
     };
     
-    // Check if this registration already exists
     if (action === 'signup') {
         const existingRegistration = userHistory.find(item => 
             item.action === 'signup' && 
@@ -1437,7 +2280,6 @@ function saveUserHistory(action, userName, userCountry) {
             userHistory.push(historyEntry);
         }
     } else {
-        // For logins, only add if not already logged in today
         const today = new Date().toDateString();
         const todayLogin = userHistory.find(item => 
             item.action === 'login' && 
@@ -1449,7 +2291,6 @@ function saveUserHistory(action, userName, userCountry) {
         }
     }
     
-    // Keep only last 20 entries
     const sortedHistory = userHistory.sort((a, b) => new Date(b.date) - new Date(a.date));
     const limitedHistory = sortedHistory.slice(0, 20);
     
@@ -1467,12 +2308,10 @@ function closeProfileHistory() {
 
 // Initialize profile history functionality
 function initProfileHistory() {
-    // Add event listener to profile avatar and name
     const profileAvatar = document.getElementById('profileMiniAvatar');
     const profileName = document.getElementById('profileMiniName');
     const closeBtn = document.getElementById('closeHistoryPopup');
     
-    // Open popup when clicking on profile avatar
     if (profileAvatar) {
         profileAvatar.addEventListener('click', function(e) {
             e.preventDefault();
@@ -1481,7 +2320,6 @@ function initProfileHistory() {
         });
     }
     
-    // Open popup when clicking on profile name
     if (profileName) {
         profileName.addEventListener('click', function(e) {
             e.preventDefault();
@@ -1490,12 +2328,10 @@ function initProfileHistory() {
         });
     }
     
-    // Close popup when clicking close button
     if (closeBtn) {
         closeBtn.addEventListener('click', closeProfileHistory);
     }
     
-    // Close popup when clicking outside
     const overlay = document.getElementById('profileHistoryOverlay');
     if (overlay) {
         overlay.addEventListener('click', function(e) {
@@ -1505,7 +2341,6 @@ function initProfileHistory() {
         });
     }
     
-    // Close with Escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeProfileHistory();
@@ -1516,7 +2351,6 @@ function initProfileHistory() {
 // Logout user
 function logoutUser() {
     if (confirm('Are you sure you want to sign out?')) {
-        // Check if it's admin
         const adminSession = JSON.parse(localStorage.getItem('afcon2025_admin_session'));
         
         if (adminSession && adminSession.loggedIn) {
@@ -1529,7 +2363,7 @@ function logoutUser() {
         }
         
         updateProfileDisplay();
-        loadSavedPredictions(); // Reload predictions (will show empty for guest)
+        loadSavedPredictions();
     }
 }
 
@@ -1541,18 +2375,14 @@ function checkAdminSession() {
 
 // Handle admin login from main form
 function handleAdminLogin(username, password) {
-    // Check login attempts
     if (adminLoginAttempts >= MAX_ADMIN_ATTEMPTS) {
         alert('Too many failed attempts. Admin access is temporarily locked.');
         return false;
     }
     
-    // Validate credentials
     if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-        // Successful login
         adminLoginAttempts = 0;
         
-        // Create admin session
         const adminSession = {
             loggedIn: true,
             username: username,
@@ -1562,7 +2392,6 @@ function handleAdminLogin(username, password) {
         
         localStorage.setItem('afcon2025_admin_session', JSON.stringify(adminSession));
         
-        // Hide any open modal
         const loginModal = document.getElementById('loginModal');
         if (loginModal) {
             loginModal.classList.remove('active');
@@ -1570,18 +2399,15 @@ function handleAdminLogin(username, password) {
         
         alert('Admin login successful!');
         
-        // Update profile display
         updateProfileDisplay();
         
         return true;
     } else {
-        // Failed login
         adminLoginAttempts++;
         
         const remaining = MAX_ADMIN_ATTEMPTS - adminLoginAttempts;
         alert(`Invalid admin credentials! ${remaining} attempt(s) remaining.`);
         
-        // Lock if max attempts reached
         if (adminLoginAttempts >= MAX_ADMIN_ATTEMPTS) {
             alert('Admin access locked for 5 minutes due to too many failed attempts.');
             setTimeout(() => {
@@ -1598,19 +2424,17 @@ function handleAdminLogin(username, password) {
 function trackUserInStatistics(userName, userCountry, favoriteTeam) {
     const allUsers = JSON.parse(localStorage.getItem('afcon2025_all_users')) || [];
     
-    // Check if user already exists
     const existingUserIndex = allUsers.findIndex(user => 
         user.name.toLowerCase() === userName.toLowerCase() && 
         user.country === userCountry
     );
     
     if (existingUserIndex === -1) {
-        // Add new user (registration)
         const newUser = {
             name: userName,
             country: userCountry,
             favoriteTeam: favoriteTeam,
-            avatarSeed: userName.toLowerCase().replace(/\s/g, ''),
+            avatarSeed : userName.toLowerCase().replace(/\s/g, ''),
             registrationDate: new Date().toISOString(),
             lastLogin: new Date().toISOString(),
             loginCount: 1,
@@ -1618,15 +2442,12 @@ function trackUserInStatistics(userName, userCountry, favoriteTeam) {
         };
         allUsers.push(newUser);
         
-        // Save registration history
         saveUserHistory('signup', userName, userCountry);
         
     } else {
-        // Update existing user (login)
         allUsers[existingUserIndex].lastLogin = new Date().toISOString();
         allUsers[existingUserIndex].loginCount = (allUsers[existingUserIndex].loginCount || 0) + 1;
         
-        // Save login history
         saveUserHistory('login', userName, userCountry);
     }
     
@@ -1637,21 +2458,17 @@ function trackUserInStatistics(userName, userCountry, favoriteTeam) {
 function initializeUserManagement() {
     console.log('Initializing user management');
     
-    // Attach click events to login buttons
     const profileMiniBtn = document.getElementById('profileMiniBtn');
     const loginModal = document.getElementById('loginModal');
     
-    // Profile button
     if (profileMiniBtn) {
         profileMiniBtn.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             
             if (userProfile || checkAdminSession()) {
-                // User or Admin is logged in, log them out
                 logoutUser();
             } else {
-                // User is not logged in, show login modal
                 if (loginModal) {
                     loginModal.classList.add('active');
                 }
@@ -1659,7 +2476,6 @@ function initializeUserManagement() {
         });
     }
     
-    // Profile avatar click
     const profileMiniAvatar = document.getElementById('profileMiniAvatar');
     if (profileMiniAvatar) {
         profileMiniAvatar.addEventListener('click', function(e) {
@@ -1672,7 +2488,6 @@ function initializeUserManagement() {
         });
     }
     
-    // Close modal button
     const closeLoginModal = document.getElementById('closeLoginModal');
     if (closeLoginModal) {
         closeLoginModal.addEventListener('click', function() {
@@ -1682,7 +2497,6 @@ function initializeUserManagement() {
         });
     }
     
-    // Close modal when clicking outside
     if (loginModal) {
         loginModal.addEventListener('click', function(e) {
             if (e.target === this) {
@@ -1691,7 +2505,6 @@ function initializeUserManagement() {
         });
     }
     
-    // Login form submission
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
@@ -1707,23 +2520,19 @@ function initializeUserManagement() {
                 return;
             }
             
-            // Check if this is admin login attempt
             if (userName.toLowerCase() === ADMIN_CREDENTIALS.username.toLowerCase() && 
                 userPassword === ADMIN_CREDENTIALS.password) {
                 
-                // Handle admin login
                 handleAdminLogin(userName, userPassword);
                 this.reset();
                 return;
             }
             
-            // Check if this is a registration or login
             const existingProfile = JSON.parse(localStorage.getItem('afcon2025_user_profile'));
             const isNewUser = !existingProfile || 
                              (existingProfile.name !== userName || 
                               existingProfile.country !== userCountry);
             
-            // Regular user registration/login
             userProfile = {
                 name: userName,
                 country: userCountry,
@@ -1735,28 +2544,22 @@ function initializeUserManagement() {
             
             localStorage.setItem('afcon2025_user_profile', JSON.stringify(userProfile));
             
-            // Update display
             updateProfileDisplay();
             
-            // Close modal
             if (loginModal) {
                 loginModal.classList.remove('active');
             }
             
-            // Reset form
             this.reset();
             
-            // Show appropriate message
             if (isNewUser) {
                 alert(`Welcome to AFCON 2025 Hub, ${userName}! Your account has been created.`);
             } else {
                 alert(`Welcome back, ${userName}! You're now signed in.`);
             }
             
-            // Track user in statistics (this will save history)
             trackUserInStatistics(userName, userCountry, favoriteTeam);
             
-            // Reload saved predictions for the new user
             loadSavedPredictions();
         });
     }
@@ -1765,6 +2568,28 @@ function initializeUserManagement() {
 // ========================================
 // ERROR HANDLING
 // ========================================
+// Fonction pour debugger le curseur
+function debugCursor() {
+    const finalTeam1 = document.getElementById('final-team1');
+    const finalTeam2 = document.getElementById('final-team2');
+    
+    console.log('=== DEBUG CURSEUR ===');
+    console.log('final-team1:');
+    console.log('- Classe:', finalTeam1.className);
+    console.log('- Style cursor:', finalTeam1.style.cursor);
+    console.log('- Style pointer-events:', finalTeam1.style.pointerEvents);
+    console.log('- Computed cursor:', window.getComputedStyle(finalTeam1).cursor);
+    console.log('- Computed pointer-events:', window.getComputedStyle(finalTeam1).pointerEvents);
+    
+    console.log('final-team2:');
+    console.log('- Classe:', finalTeam2.className);
+    console.log('- Style cursor:', finalTeam2.style.cursor);
+    console.log('- Style pointer-events:', finalTeam2.style.pointerEvents);
+    console.log('- Computed cursor:', window.getComputedStyle(finalTeam2).cursor);
+    console.log('- Computed pointer-events:', window.getComputedStyle(finalTeam2).pointerEvents);
+    console.log('=== FIN DEBUG ===');
+}
+
 
 // Global error handler
 window.addEventListener('error', function(e) {
@@ -1774,3 +2599,4 @@ window.addEventListener('error', function(e) {
 
 // Log script initialization
 console.log('Predictor script loaded successfully');
+console.log(debugCursor())
